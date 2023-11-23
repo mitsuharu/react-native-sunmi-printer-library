@@ -90,5 +90,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // https://mvnrepository.com/artifact/com.sunmi/printerlibrary
+  implementation "com.sunmi:printerlibrary:1.0.22"
 }
 
