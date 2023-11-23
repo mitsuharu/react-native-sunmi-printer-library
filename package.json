@@ -1,5 +1,5 @@
 {
-  "name": "react-native-sunmi-printer-library",
+  "name": "@mitsuharu/react-native-sunmi-printer-library",
   "version": "0.1.0",
   "description": "React Native module that support to print by SUNMI devices ",
   "main": "lib/commonjs/index",
@@ -146,7 +146,8 @@
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "es5",
-    "useTabs": false
+    "useTabs": false,
+    "semi": false
   },
   "react-native-builder-bob": {
     "source": "src",
