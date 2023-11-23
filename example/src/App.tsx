@@ -1,18 +1,27 @@
-import * as React from 'react'
-
+import { useCallback, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { multiply } from 'react-native-sunmi-printer-library'
+import { printerInit } from 'react-native-sunmi-printer-library'
 
 export default function App() {
-    const [result, setResult] = React.useState<number | undefined>()
+   
 
-    React.useEffect(() => {
-        multiply(3, 7).then(setResult)
+    const aaa = useCallback(  async () => {
+        console.log('aaa')
+        try{
+            await printerInit()
+        } catch(error: any) {
+            console.log(error)
+
+        }
+    }, [])
+
+    useEffect(() => {
+        aaa()
     }, [])
 
     return (
         <View style={styles.container}>
-            <Text>Result: {result}</Text>
+            <Text>Result aa</Text>
         </View>
     )
 }

@@ -1,22 +1,16 @@
 import { NativeModules, Platform } from 'react-native'
 
-const LINKING_ERROR =
-  'The package \'react-native-sunmi-printer-library\' doesn\'t seem to be linked. Make sure: \n\n' +
-  Platform.select({ ios: '- You have run \'pod install\'\n', default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n'
-
-const SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
-    ? NativeModules.SunmiPrinterLibrary
-    : new Proxy(
-        {},
-        {
-            get() {
-                throw new Error(LINKING_ERROR)
-            },
-        }
-    )
-
-export function multiply(a: number, b: number): Promise<number> {
-    return SunmiPrinterLibrary.multiply(a, b)
+interface SunmiPrinterLibrary {
+  printerInit: () => Promise<void>
 }
+
+const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
+ 
+// export function multiply(a: number, b: number): Promise<number> {
+//     return SunmiPrinterLibrary.multiply(a, b)
+// }
+
+export const printerInit = Platform.select<() => Promise<void>>({
+    android: () => sunmiPrinterLibrary.printerInit(),
+    default: () => Promise.resolve(),
+})

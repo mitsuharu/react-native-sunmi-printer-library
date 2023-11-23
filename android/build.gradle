@@ -43,6 +43,7 @@ def supportsNamespace() {
 }
 
 android {
+  namespace = "com.sunmiprinterlibrary"
   if (supportsNamespace()) {
     namespace "com.sunmiprinterlibrary"
 
@@ -71,9 +72,15 @@ android {
     disable "GradleCompatible"
   }
 
+  def java_version = JavaVersion.VERSION_11
+
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility java_version
+    targetCompatibility java_version
+  }
+
+  kotlinOptions {
+    jvmTarget = java_version.majorVersion
   }
 }
 
