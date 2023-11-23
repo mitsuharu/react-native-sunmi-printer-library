@@ -1,7 +1,8 @@
 import { NativeModules, Platform } from 'react-native'
 
 interface SunmiPrinterLibrary {
-  printerInit: () => Promise<void>
+  connect: () => Promise<boolean>
+  printerInit: () => Promise<boolean>
 }
 
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
@@ -10,7 +11,12 @@ const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibra
 //     return SunmiPrinterLibrary.multiply(a, b)
 // }
 
-export const printerInit = Platform.select<() => Promise<void>>({
+export const connect = Platform.select<() => Promise<boolean>>({
+    android: () => sunmiPrinterLibrary.connect(),
+    default: () => Promise.resolve(false),
+})
+
+export const printerInit = Platform.select<() => Promise<boolean>>({
     android: () => sunmiPrinterLibrary.printerInit(),
-    default: () => Promise.resolve(),
+    default: () => Promise.resolve(false),
 })

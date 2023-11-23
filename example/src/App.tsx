@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { printerInit } from 'react-native-sunmi-printer-library'
+import { connect, printerInit } from 'react-native-sunmi-printer-library'
 
 export default function App() {
    
@@ -8,7 +8,15 @@ export default function App() {
     const aaa = useCallback(  async () => {
         console.log('aaa')
         try{
-            await printerInit()
+            console.log('call isConnected')
+
+            const isConnected: boolean = await connect()
+            console.log(`isConnected is ${isConnected}`)
+
+            console.log('call printerInit')
+
+            const isPrinterInit: boolean = await printerInit()
+            console.log(`isPrinterInit is ${isPrinterInit}`)
         } catch(error: any) {
             console.log(error)
 
