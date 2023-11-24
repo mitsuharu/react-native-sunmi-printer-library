@@ -1,7 +1,6 @@
 import { NativeModules, Platform } from 'react-native'
 
 interface SunmiPrinterLibrary {
-  isSupported: () => Promise<boolean>
   connect: () => Promise<boolean>
   printerInit: () => Promise<boolean>
   printerSelfChecking: () => Promise<boolean>
@@ -10,16 +9,12 @@ interface SunmiPrinterLibrary {
   getServiceVersion: () => Promise<string>
   getPrinterModal: () => Promise<string>
   getPrinterPaper: () => Promise<string>
+
+  printText: (text: string) => Promise<void>
 }
 
 const NOT_SUPPORTED = 'This device is not supported'
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
-
-// TODO: あとで直す
-export const isSupported = Platform.select<() => Promise<boolean>>({
-  android: () => Promise.resolve(true),
-  default: () => Promise.reject(NOT_SUPPORTED),
-})
 
 export const connect = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.connect(),
@@ -60,3 +55,9 @@ export const getPrinterPaper = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrinterPaper(),
   default: () => Promise.reject(NOT_SUPPORTED),
 })
+
+export const printText = Platform.select<(text: string) => Promise<void>>({
+  android: (text) => sunmiPrinterLibrary.printText(text),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+

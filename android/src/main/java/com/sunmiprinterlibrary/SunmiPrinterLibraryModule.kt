@@ -157,6 +157,18 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun printText(text: String, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      printerService?.printText(text, null)
+      promise.resolve(true)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
   companion object {
     const val NAME = "SunmiPrinterLibrary"
   }
