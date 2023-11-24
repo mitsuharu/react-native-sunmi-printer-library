@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { connect, printerInit } from 'react-native-sunmi-printer-library'
+import { connect, printerInit } from '@mitsuharu/react-native-sunmi-printer-library'
 
 export default function App() {
    
