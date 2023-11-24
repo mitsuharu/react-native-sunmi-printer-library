@@ -90,6 +90,73 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun printerSelfChecking(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      printerService?.printerSelfChecking(callback)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getPrinterSerialNo(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val result = printerService?.getPrinterSerialNo()
+      promise.resolve(result)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getPrinterVersion(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val result = printerService?.getPrinterVersion()
+      promise.resolve(result)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getServiceVersion(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val result = printerService?.getServiceVersion()
+      promise.resolve(result)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getPrinterModal(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val result = printerService?.getPrinterModal()
+      promise.resolve(result)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getPrinterPaper(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val result0 = printerService?.getPrinterPaper()
+      val result1 = if (result0 == 1) "58mm" else "80mm"
+      promise.resolve(result1)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
   companion object {
     const val NAME = "SunmiPrinterLibrary"
   }

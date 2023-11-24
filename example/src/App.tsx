@@ -1,48 +1,62 @@
 import React, { useCallback, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { connect, printerInit } from '@mitsuharu/react-native-sunmi-printer-library'
+import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 
 export default function App() {
    
+  const prepare = useCallback(  async () => {
+    console.log('prepare')
+    try{
+      console.log('call isConnected')
 
-    const aaa = useCallback(  async () => {
-        console.log('aaa')
-        try{
-            console.log('call isConnected')
+      const isConnected: boolean = await SunmiPrinterLibrary.connect()
+      console.log(`isConnected is ${isConnected}`)
 
-            const isConnected: boolean = await connect()
-            console.log(`isConnected is ${isConnected}`)
+      console.log('call printerInit')
 
-            console.log('call printerInit')
+      const isPrinterInit: boolean = await SunmiPrinterLibrary.printerInit()
+      console.log(`isPrinterInit is ${isPrinterInit}`)
 
-            const isPrinterInit: boolean = await printerInit()
-            console.log(`isPrinterInit is ${isPrinterInit}`)
-        } catch(error: any) {
-            console.log(error)
+      const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
+      console.log(`printerSerialNo is ${printerSerialNo}`)
 
-        }
-    }, [])
+      const printerVersion = await SunmiPrinterLibrary.getPrinterVersion()
+      console.log(`printerVersion is ${printerVersion}`)
+            
+      const serviceVersion = await SunmiPrinterLibrary.getServiceVersion()
+      console.log(`serviceVersion is ${serviceVersion}`)
+            
+      const printerModal = await SunmiPrinterLibrary.getPrinterModal()
+      console.log(`serviceVersion is ${printerModal}`)
 
-    useEffect(() => {
-        aaa()
-    }, [])
+      const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
+      console.log(`printerPaper is ${printerPaper}`)
 
-    return (
-        <View style={styles.container}>
-            <Text>Result aa</Text>
-        </View>
-    )
+    } catch(error: any) {
+      console.log(error)
+    }
+  }, [])
+
+  useEffect(() => {
+    prepare()
+  }, [])
+
+  return (
+    <View style={styles.container}>
+      <Text>Result aa</Text>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    box: {
-        width: 60,
-        height: 60,
-        marginVertical: 20,
-    },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  box: {
+    width: 60,
+    height: 60,
+    marginVertical: 20,
+  },
 })
