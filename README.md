@@ -2,6 +2,13 @@
 
 React Native module that support to print by SUNMI devices 
 
+## Develop
+
+```sh
+yarn
+yarn example android
+```
+
 ## Installation
 
 ```sh

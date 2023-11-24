@@ -9,11 +9,16 @@ import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.InnerResultCallback
 import com.sunmi.peripheral.printer.SunmiPrinterService
 
-
 class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
 
   private var printerService: SunmiPrinterService? = null
+
+  private enum class ReturnType {
+    String,
+    Boolean,
+    Print,
+  }
 
 //  var handler: InnerResultCallback = object : InnerResultCallback() {
 //    override fun onRunResult(isSuccess: Boolean) {
@@ -51,64 +56,78 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         }
         override fun onDisconnected() {
           printerService = null
-          promise.resolve("connect() is failed.")
+          promise.reject("0", "connect() is failed.")
         }
       }
       val result = InnerPrinterManager.getInstance().bindService(getReactApplicationContext(), callback)
-      if (result == false){
-        promise.reject("connect() is failed.")
+      if (!result){
+        promise.reject("0", "connect() is failed.")
       }
     } catch (e: Exception) {
-      promise.reject("connect() is failed. " + e.message)
+      promise.reject("0", "connect() is failed. " + e.message)
     }
   }
 
   @ReactMethod
   fun disconnect(promise: Promise) {
     try {
-      val callback: InnerPrinterCallback = object : InnerPrinterCallback() {
-        override fun onConnected(service: SunmiPrinterService) {
-          promise.resolve("disconnect() is failed.")
-        }
-        override fun onDisconnected() {
-          printerService = null
-          promise.resolve(true)
-        }
-      }
-      val result = InnerPrinterManager.getInstance().unBindService(getReactApplicationContext(), callback)
-      if (result == false){
-        promise.reject("disconnect() is failed.")
-      }
+      InnerPrinterManager.getInstance().unBindService(getReactApplicationContext(), null)
+      printerService = null
+      promise.resolve(true)
     } catch (e: Exception) {
-      promise.reject("disconnect() is failed. " + e.message)
+      promise.reject("0", "disconnect() is failed. " + e.message)
     }
   }
 
-
   @ReactMethod
   fun printerInit(promise: Promise) {
-    if (printerService == null){
-      promise.reject("printerService is not connected.")
-    }
+    validatePrinterService(promise)
     try {
-
-      val callback: InnerResultCallback = object : InnerResultCallback() {
-        override fun onRunResult(isSuccess: Boolean) {
-          promise.resolve(isSuccess)
-        }
-        override fun onRaiseException(code: Int, msg: String) {
-          promise.reject(msg)
-        }
-      }
-      printerService?.printerInit(null)
-       promise.resolve(true)
+      val callback = makeInnerResultCallback(promise)
+      printerService?.printerInit(callback)
     } catch (e: Exception) {
-      Log.i(TAG, "ERROR: " + e.message)
-      promise.reject(e.message)
+      promise.reject("0", e.message)
     }
   }
 
   companion object {
     const val NAME = "SunmiPrinterLibrary"
   }
+
+  /**
+   * printerService が有効かどうか調べる
+   */
+  private fun validatePrinterService(promise: Promise) {
+    if (printerService == null){
+      promise.reject("0", "PrinterService is disabled because InnerPrinter is not connected.")
+    }
+  }
+
+  /**
+   * 結果用のコールバックを生成する
+   */
+  private fun makeInnerResultCallback(promise: Promise, returnType: ReturnType = ReturnType.Boolean): InnerResultCallback {
+    val callback: InnerResultCallback = object : InnerResultCallback() {
+      override fun onRunResult(isSuccess: Boolean) {
+        if (returnType == ReturnType.Boolean){
+          promise.resolve(isSuccess)
+        }
+      }
+      override fun onReturnString(result: String) {
+        if (returnType == ReturnType.String){
+          promise.resolve(result)
+        }
+      }
+      override fun onRaiseException(code: Int, msg: String) {
+        promise.reject(code.toString(), msg)
+      }
+      override fun onPrintResult(code: Int, msg: String) {
+        if (returnType == ReturnType.Print){
+          promise.resolve(code.toString() + " " + msg)
+        }
+      }
+    }
+    return callback
+  }
+
 }
