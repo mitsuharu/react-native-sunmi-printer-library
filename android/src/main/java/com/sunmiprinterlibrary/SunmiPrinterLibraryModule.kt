@@ -162,8 +162,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     validatePrinterService(promise)
     try {
       val callback = makeInnerResultCallback(promise)
-      printerService?.printText(text, null)
-      promise.resolve(true)
+      printerService?.printText(text, callback)
     } catch (e: Exception) {
       promise.reject("0", e.message)
     }

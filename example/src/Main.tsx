@@ -30,7 +30,7 @@ const Component: React.FC<ComponentProps> = ({
           />
           <Button
             text="(b) onPressPrintText"
-            onPress={() => onPressPrintText()}
+            onPress={onPressPrintText}
           />
         </View>
       </ScrollView>
@@ -74,9 +74,9 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrintText = useCallback(async () => {
     try {
-      const text = 'あいうえおabc'
+      const text = 'あいうえお。abcde.'
       console.log(`onPressPrintText: ${text}`)
-      SunmiPrinterLibrary.printText(text)
+      await SunmiPrinterLibrary.printText(text)
       console.log('onPressPrintText: done')
     } catch(error: any) {
       console.warn(error)
