@@ -74,10 +74,8 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrintText = useCallback(async () => {
     try {
-      const text = 'あいうえお。abcde.'
-      console.log(`onPressPrintText: ${text}`)
-      await SunmiPrinterLibrary.printText(text)
-      console.log('onPressPrintText: done')
+      const text = '祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。おごれる人も久しからず。ただ春の夜の夢のごとし。たけき者も遂にはほろびぬ、ひとへに風の前の塵に同じ。'
+      SunmiPrinterLibrary.printText(text)
     } catch(error: any) {
       console.warn(error)
     }

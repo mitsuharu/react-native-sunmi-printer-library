@@ -60,4 +60,3 @@ export const printText = Platform.select<(text: string) => Promise<void>>({
   android: (text) => sunmiPrinterLibrary.printText(text),
   default: () => Promise.reject(NOT_SUPPORTED),
 })
-

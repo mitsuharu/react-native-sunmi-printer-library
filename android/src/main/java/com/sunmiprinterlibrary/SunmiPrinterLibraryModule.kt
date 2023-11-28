@@ -162,7 +162,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     validatePrinterService(promise)
     try {
       val callback = makeInnerResultCallback(promise)
-      printerService?.printText(text, callback)
+
+      // なぜか改行コードがないと、印刷が途中で止まる
+      // It stops to print text in middle if there is no a new line code. why...
+      printerService?.printText(text + "\n", callback)
     } catch (e: Exception) {
       promise.reject("0", e.message)
     }
