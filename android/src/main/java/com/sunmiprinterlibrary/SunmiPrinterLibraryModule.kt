@@ -282,6 +282,17 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  // setFontSize: (fontSize: number) => Promise<void>
+  @ReactMethod
+  fun setFontSize(fontSize: Float, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      printerService?.setFontSize(fontSize, callback)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
 
   @ReactMethod
   fun printText(text: String, promise: Promise) {

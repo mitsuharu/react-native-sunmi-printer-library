@@ -18,11 +18,12 @@ interface SunmiPrinterLibrary {
   getPrintedLength: () => Promise<string>
   updatePrinterState: () => Promise<number>
   sendRAWData: (base64: string) => Promise<void>  
-  setPrinterStyleBoolean(key: WoyouConstsBoolean, value: boolean): Promise<boolean>
-  setPrinterStyleNumber(key: WoyouConstsNumber, value: number): Promise<boolean>
-  setAlignment(alignment: Alignment): Promise<void>
+  setPrinterStyleBoolean: (key: WoyouConstsBoolean, value: boolean) => Promise<boolean>
+  setPrinterStyleNumber: (key: WoyouConstsNumber, value: number) => Promise<boolean>
+  setAlignment: (alignment: Alignment) => Promise<void>
+  setFontName: (fontName: FontName) => Promise<void>
 
-  setFontName(fontName: FontName): Promise<void>
+  setFontSize: (fontSize: number) => Promise<void>
 
   printText: (text: string) => Promise<void>
 
@@ -109,6 +110,11 @@ export const setAlignment = Platform.select<(alignment: Alignment) => Promise<vo
 
 export const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
   android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+
+export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>({
+  android: (fontSize) => sunmiPrinterLibrary.setFontSize(fontSize),
   default: () => Promise.reject(NOT_SUPPORTED),
 })
 
