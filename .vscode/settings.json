@@ -9,13 +9,15 @@
       "source.fixAll.eslint": true,
     },
     "cSpell.words": [
+      "Consts",
       "Emoto",
       "gradlew",
       "mitsuharu",
       "podspec",
       "pressable",
       "sunmi",
-      "typecheck"
+      "typecheck",
+      "Woyou"
     ],
   }
   
