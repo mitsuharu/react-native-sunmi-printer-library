@@ -264,6 +264,26 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun setFontName(fontName: String, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val _fontName = when (fontName) {
+        "chineseMonospaced" -> "gh"
+        else -> null
+      }
+      if (_fontName != null){
+        val callback = makeInnerResultCallback(promise)
+        printerService?.setFontName(_fontName, callback)
+      } else {
+        promise.reject("0", "setFontName is failed because key is incorrect.")
+      }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+
+  @ReactMethod
   fun printText(text: String, promise: Promise) {
     validatePrinterService(promise)
     try {

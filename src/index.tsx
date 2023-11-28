@@ -1,6 +1,8 @@
 import { NativeModules, Platform } from 'react-native'
 
 /*
+see: https://developer.sunmi.com/en-US/
+see: https://developer.sunmi.com/docs/en-US/xeghjk491/ciqeghjk513
 see: https://file.cdn.sunmi.com/SUNMIDOCS/%E5%95%86%E7%B1%B3%E5%86%85%E7%BD%AE%E6%89%93%E5%8D%B0%E6%9C%BA%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3EN-0224.pdf
 */
 
@@ -18,9 +20,9 @@ interface SunmiPrinterLibrary {
   sendRAWData: (base64: string) => Promise<void>  
   setPrinterStyleBoolean(key: WoyouConstsBoolean, value: boolean): Promise<boolean>
   setPrinterStyleNumber(key: WoyouConstsNumber, value: number): Promise<boolean>
-
-
   setAlignment(alignment: Alignment): Promise<void>
+
+  setFontName(fontName: FontName): Promise<void>
 
   printText: (text: string) => Promise<void>
 
@@ -32,7 +34,7 @@ interface SunmiPrinterLibrary {
 type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
 type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
 type Alignment = 'left' | 'center' | 'right'
-
+type FontName = 'chineseMonospaced'
 
 const NOT_SUPPORTED = 'This device is not supported'
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
@@ -105,6 +107,10 @@ export const setAlignment = Platform.select<(alignment: Alignment) => Promise<vo
   default: () => Promise.reject(NOT_SUPPORTED),
 })
 
+export const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
+  android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
 
 
 
