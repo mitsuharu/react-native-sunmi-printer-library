@@ -25,7 +25,7 @@ interface SunmiPrinterLibrary {
   setBold: (isBold: boolean) => Promise<void>
   setFontSize: (fontSize: number) => Promise<void>
   printText: (text: string) => Promise<void>
-
+  printTextWithFont: (text: string, typeface: Typeface, fontSize: number) => Promise<void>
   lineWrap: (count: number) => Promise<void>
 }
 
@@ -35,6 +35,7 @@ type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' 
 type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
 type Alignment = 'left' | 'center' | 'right'
 type FontName = 'chineseMonospaced'
+type Typeface = 'default'
 
 const NOT_SUPPORTED = 'This device is not supported'
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
@@ -126,6 +127,12 @@ export const printText = Platform.select<(text: string) => Promise<void>>({
   android: (text) => sunmiPrinterLibrary.printText(text),
   default: () => Promise.reject(NOT_SUPPORTED),
 })
+
+export const printTextWithFont = Platform.select<(text: string, typeface: Typeface, fontSize: number) => Promise<void>>({
+  android: (text, typeface, fontSize) => sunmiPrinterLibrary.printTextWithFont(text, typeface, fontSize),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+
 
 
 export const lineWrap = Platform.select<(count: number) => Promise<void>>({

@@ -293,7 +293,6 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
-
   @ReactMethod
   fun setBold(isBold: Boolean, promise: Promise) {
     validatePrinterService(promise)
@@ -319,6 +318,26 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       promise.reject("0", e.message)
     }
   }
+
+  @ReactMethod
+  fun printTextWithFont(text: String, typeface: String, fontSize: Float, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      val _typeface = when (typeface) {
+        "default" -> ""
+        else -> null
+      }
+      if (_typeface != null){
+        printerService?.printTextWithFont(text + "\n", _typeface, fontSize, callback)
+      } else {
+        promise.reject("0", "printTextWithFont is failed because typeface is incorrect.")
+      }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
 
   @ReactMethod
   fun lineWrap(count: Int, promise: Promise) {
