@@ -1,5 +1,9 @@
 import { NativeModules, Platform } from 'react-native'
 
+/*
+see: https://file.cdn.sunmi.com/SUNMIDOCS/%E5%95%86%E7%B1%B3%E5%86%85%E7%BD%AE%E6%89%93%E5%8D%B0%E6%9C%BA%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3EN-0224.pdf
+*/
+
 interface SunmiPrinterLibrary {
   connect: () => Promise<boolean>
   printerInit: () => Promise<boolean>
@@ -16,6 +20,8 @@ interface SunmiPrinterLibrary {
   setPrinterStyleNumber(key: WoyouConstsNumber, value: number): Promise<boolean>
 
 
+  setAlignment(alignment: Alignment): Promise<void>
+
   printText: (text: string) => Promise<void>
 
   lineWrap: (count: number) => Promise<void>
@@ -23,9 +29,9 @@ interface SunmiPrinterLibrary {
 
 // https://github.com/iminsoftware/PrinterLibrary/blob/master/printlibrary/src/main/java/com/sunmi/peripheral/printer/WoyouConsts.java
 
-export type WoyouConsts = WoyouConstsBoolean | WoyouConstsNumber
 type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
 type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
+type Alignment = 'left' | 'center' | 'right'
 
 
 const NOT_SUPPORTED = 'This device is not supported'
@@ -93,6 +99,12 @@ export function setPrinterStyle(key: WoyouConstsNumber, value: number): Promise<
 export function setPrinterStyle(key: WoyouConstsBoolean | WoyouConstsNumber, value: boolean | number): Promise<boolean> {
   return _setPrinterStyle(key, value)
 }
+
+export const setAlignment = Platform.select<(alignment: Alignment) => Promise<void>>({
+  android: (alignment) => sunmiPrinterLibrary.setAlignment(alignment),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+
 
 
 

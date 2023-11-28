@@ -243,6 +243,27 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun setAlignment(key: String, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val _key = when (key) {
+        "left" -> 0
+        "center" -> 1
+        "right" -> 2
+        else -> null
+      }
+      if (_key != null){
+        val callback = makeInnerResultCallback(promise)
+        printerService?.setAlignment(_key, callback)
+      } else {
+        promise.reject("0", "key is incorrect.")
+      }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
   fun printText(text: String, promise: Promise) {
     validatePrinterService(promise)
     try {
