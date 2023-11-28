@@ -202,8 +202,8 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         "invert" -> WoyouConsts.ENABLE_INVERT
         else -> null
       }
-      val _value = if (value) { 
-        WoyouConsts.ENABLE 
+      val _value = if (value) {
+        WoyouConsts.ENABLE
       } else {
         WoyouConsts.DISABLE
       }
@@ -282,7 +282,6 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  // setFontSize: (fontSize: number) => Promise<void>
   @ReactMethod
   fun setFontSize(fontSize: Float, promise: Promise) {
     validatePrinterService(promise)
@@ -294,14 +293,27 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+
+  @ReactMethod
+  fun setBold(isBold: Boolean, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      val data = ByteArray(3)
+      data[0] = 0x1B
+      data[1] = 0x45
+      data[2] = if (isBold) { 0x1 } else { 0x0 }
+      printerService?.sendRAWData(data, callback);
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
   @ReactMethod
   fun printText(text: String, promise: Promise) {
     validatePrinterService(promise)
     try {
       val callback = makeInnerResultCallback(promise)
-
-      // なぜか改行コードがないと、印刷が途中で止まる
-      // It stops to print text in middle if there is no a new line code. why...
       printerService?.printText(text + "\n", callback)
     } catch (e: Exception) {
       promise.reject("0", e.message)

@@ -22,9 +22,8 @@ interface SunmiPrinterLibrary {
   setPrinterStyleNumber: (key: WoyouConstsNumber, value: number) => Promise<boolean>
   setAlignment: (alignment: Alignment) => Promise<void>
   setFontName: (fontName: FontName) => Promise<void>
-
+  setBold: (isBold: boolean) => Promise<void>
   setFontSize: (fontSize: number) => Promise<void>
-
   printText: (text: string) => Promise<void>
 
   lineWrap: (count: number) => Promise<void>
@@ -118,7 +117,10 @@ export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>(
   default: () => Promise.reject(NOT_SUPPORTED),
 })
 
-
+export const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
+  android: (isBold) => sunmiPrinterLibrary.setBold(isBold),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
 
 export const printText = Platform.select<(text: string) => Promise<void>>({
   android: (text) => sunmiPrinterLibrary.printText(text),
