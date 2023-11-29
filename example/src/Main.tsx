@@ -88,8 +88,8 @@ const Container: React.FC<Props> = () => {
       // await SunmiPrinterLibrary.setPrinterStyle('leftSpacing', 10)
       // await SunmiPrinterLibrary.setAlignment('right')
 
-      // const text = '祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。おごれる人も久しからず。ただ春の夜の夢のごとし。たけき者も遂にはほろびぬ、ひとへに風の前の塵に同じ。'
-      // SunmiPrinterLibrary.printText(text)
+      const text = '祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。おごれる人も久しからず。ただ春の夜の夢のごとし。たけき者も遂にはほろびぬ、ひとへに風の前の塵に同じ。'
+      SunmiPrinterLibrary.printText(text)
 
       // SunmiPrinterLibrary.printOriginalText('κρχκμνκλρκνκνμρτυφ')
 
@@ -100,7 +100,11 @@ const Container: React.FC<Props> = () => {
 
       // SunmiPrinterLibrary.printBarCode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
 
-      SunmiPrinterLibrary.printQRCode('Hello World', 18, 'middle')
+      // SunmiPrinterLibrary.printQRCode('Hello World', 4, 'middle')
+
+      SunmiPrinterLibrary.print2DCode('aaaa', 'QR', 4, 'middle')
+      SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
+      SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
 
       SunmiPrinterLibrary.lineWrap(2)
     } catch(error: any) {

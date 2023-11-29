@@ -470,6 +470,16 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun print2DCode(text: String, symbology: Int, moduleSize: Int, errorLevel: Int, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)   
+        printerService?.print2DCode(text, symbology, moduleSize, errorLevel, callback)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
 
 
   @ReactMethod
