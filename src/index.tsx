@@ -29,6 +29,7 @@ interface SunmiPrinterLibrary {
   printOriginalText: (text: string) => Promise<void>
   printColumnsText: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
   printColumnsString: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
+  printBarCode: (text: string, symbology: BarCodeSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>
 
   lineWrap: (count: number) => Promise<void>
 }
@@ -40,6 +41,8 @@ type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosi
 type Alignment = 'left' | 'center' | 'right'
 type FontName = 'chineseMonospaced'
 type Typeface = 'default'
+type BarCodeSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8)' | 'CODE39' | 'ITF' | 'CODABAR' | 'CODE93' | 'CODE128'
+type TextPosition = 'none' | 'textAboveBarcode' | 'textUnderBarcode' | 'textAboveAndUnderBarcode'
 
 const NOT_SUPPORTED = 'This device is not supported'
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
@@ -155,7 +158,7 @@ export const printOriginalText = Platform.select<(text: string) => Promise<void>
  * Print a row of a table
  * 
  * @note
- * - This may not supports width and alignment for each column.
+ * - This may not supports width and alignment for each column. Its width means text length.
  * - This does not support Arabic Characters. If you print it, use printColumnsString.
  * 
  * @example
@@ -183,6 +186,21 @@ export const printColumnsText = Platform.select<(texts: string[], widths: number
  */
 export const printColumnsString = Platform.select<(texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>>({
   android: (texts, widths, alignments) => sunmiPrinterLibrary.printColumnsString(texts, widths, alignments),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+
+/**
+ * Print 1D BarCode
+ * 
+ * @note
+ * Text pattern (e.g. length, character) is determined by symbology.
+ * 
+ * @example
+ * SunmiPrinterLibrary.printBarCode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+ * 
+ */
+export const printBarCode = Platform.select<(text: string, symbology: BarCodeSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>>({
+  android: (text, symbology, height, width, textPosition) => sunmiPrinterLibrary.printBarCode(text, symbology, height, width, textPosition),
   default: () => Promise.reject(NOT_SUPPORTED),
 })
 

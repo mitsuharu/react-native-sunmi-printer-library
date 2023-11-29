@@ -412,10 +412,44 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       promise.reject("0", e.message)
     }
   }
- 
+
+  @ReactMethod
+  fun printBarCode(text: String, symbology: String, height: Int, width: Int, textPosition: String, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val _symbology = when (symbology) {
+        "UPC-A" -> 0
+        "UPC-E" -> 1
+        "JAN13(EAN13)" -> 2
+        "JAN8(EAN8)" -> 3
+        "CODE39" -> 4
+        "ITF" -> 5
+        "CODABAR" -> 6
+        "CODE93" -> 7
+        "CODE128" -> 8
+        else -> null
+      }
+      val _textPosition = when (textPosition) {
+        "none" -> 0
+        "textAboveBarcode" -> 1
+        "textUnderBarcode" -> 2
+        "textAboveAndUnderBarcode" -> 3
+        else -> null
+      }
+
+      if (_symbology != null && _textPosition != null) {   
+        val callback = makeInnerResultCallback(promise)   
+        printerService?.printBarCode(text, _symbology, height, width, _textPosition, callback)
+      } else {
+        promise.reject("0", "printBarCode is failed because alignments is incorrect.")
+      }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
 
 
-
+  
   @ReactMethod
   fun lineWrap(count: Int, promise: Promise) {
     validatePrinterService(promise)
