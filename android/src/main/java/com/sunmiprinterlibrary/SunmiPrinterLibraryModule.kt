@@ -338,6 +338,20 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun printOriginalText(text: String, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      printerService?.printOriginalText(text + "\n", callback)
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+
+
+
 
   @ReactMethod
   fun lineWrap(count: Int, promise: Promise) {

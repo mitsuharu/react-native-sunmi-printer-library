@@ -26,6 +26,9 @@ interface SunmiPrinterLibrary {
   setFontSize: (fontSize: number) => Promise<void>
   printText: (text: string) => Promise<void>
   printTextWithFont: (text: string, typeface: Typeface, fontSize: number) => Promise<void>
+  printOriginalText: (text: string) => Promise<void>
+
+
   lineWrap: (count: number) => Promise<void>
 }
 
@@ -133,6 +136,19 @@ export const printTextWithFont = Platform.select<(text: string, typeface: Typefa
   default: () => Promise.reject(NOT_SUPPORTED),
 })
 
+/**
+ * Print Vector Font
+ * 
+ * @note
+ * output characters are in the same width of vector fonts, which means that they are not monospace.
+ * 
+ * @example
+ * printOriginalText('κρχκμνκλρκνκνμρτυφ')
+ */
+export const printOriginalText = Platform.select<(text: string) => Promise<void>>({
+  android: (text) => sunmiPrinterLibrary.printOriginalText(text),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
 
 
 export const lineWrap = Platform.select<(count: number) => Promise<void>>({

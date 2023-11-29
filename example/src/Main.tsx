@@ -80,13 +80,14 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrintText = useCallback(async () => {
     try {
-      await SunmiPrinterLibrary.setPrinterStyle('italic', true)
-      await SunmiPrinterLibrary.setPrinterStyle('leftSpacing', 10)
-      await SunmiPrinterLibrary.setAlignment('right')
+      // await SunmiPrinterLibrary.setPrinterStyle('italic', true)
+      // await SunmiPrinterLibrary.setPrinterStyle('leftSpacing', 10)
+      // await SunmiPrinterLibrary.setAlignment('right')
 
       const text = '祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。おごれる人も久しからず。ただ春の夜の夢のごとし。たけき者も遂にはほろびぬ、ひとへに風の前の塵に同じ。'
       SunmiPrinterLibrary.printText(text)
 
+      SunmiPrinterLibrary.printOriginalText('κρχκμνκλρκνκνμρτυφ')
 
       SunmiPrinterLibrary.lineWrap(2)
     } catch(error: any) {
