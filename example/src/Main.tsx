@@ -98,7 +98,9 @@ const Container: React.FC<Props> = () => {
       //   [8, 8, 8], 
       //   ['center', 'center', 'center'])
 
-      SunmiPrinterLibrary.printBarCode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+      // SunmiPrinterLibrary.printBarCode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+
+      SunmiPrinterLibrary.printQRCode('Hello World', 18, 'middle')
 
       SunmiPrinterLibrary.lineWrap(2)
     } catch(error: any) {

@@ -448,8 +448,30 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun printQRCode(text: String, moduleSize: Int, errorLevel: String, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val _errorLevel = when (errorLevel) {
+        "low" -> 0
+        "middle" -> 1
+        "quartile" -> 2
+        "high" -> 3
+        else -> null
+      }
+      if (_errorLevel != null) {   
+        val callback = makeInnerResultCallback(promise)   
+        printerService?.printQRCode(text, moduleSize, _errorLevel, callback)
+      } else {
+        promise.reject("0", "printQRCode is failed because alignments is incorrect.")
+      }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
 
-  
+
+
   @ReactMethod
   fun lineWrap(count: Int, promise: Promise) {
     validatePrinterService(promise)
