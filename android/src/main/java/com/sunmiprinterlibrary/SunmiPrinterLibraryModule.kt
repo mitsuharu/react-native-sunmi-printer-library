@@ -5,6 +5,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableArray
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.InnerResultCallback
@@ -246,12 +247,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun setAlignment(key: String, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val _key = when (key) {
-        "left" -> 0
-        "center" -> 1
-        "right" -> 2
-        else -> null
-      }
+      val _key = alignmentToInt(key)
       if (_key != null){
         val callback = makeInnerResultCallback(promise)
         printerService?.setAlignment(_key, callback)
@@ -348,8 +344,75 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       promise.reject("0", e.message)
     }
   }
+  
+  @ReactMethod
+  fun printColumnsText(texts: ReadableArray, widths: ReadableArray, alignments: ReadableArray, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
 
+      var _texts = arrayOf<String>()  
+      for (i in 0..(texts.size()-1)){
+        _texts += texts.getString(i)
+      }
 
+      var _widths = intArrayOf() 
+      for (i in 0..(widths.size()-1)){
+        _widths += widths.getInt(i)
+      }
+
+      var _alignments = intArrayOf()
+      for (i in 0..(alignments.size()-1)){
+        val temp = alignmentToInt(alignments.getString(i))
+        if(temp != null){
+          _alignments += temp
+        }
+      }
+
+      if (_texts.size == _alignments.size && _texts.size == _widths.size) {      
+         printerService?.printColumnsText(_texts, _widths, _alignments, callback)
+       } else {
+         promise.reject("0", "printColumnsText is failed because alignments is incorrect.")
+       }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+
+  @ReactMethod
+  fun printColumnsString(texts: ReadableArray, widths: ReadableArray, alignments: ReadableArray, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+
+      var _texts = arrayOf<String>()  
+      for (i in 0..(texts.size()-1)){
+        _texts += texts.getString(i)
+      }
+
+      var _widths = intArrayOf() 
+      for (i in 0..(widths.size()-1)){
+        _widths += widths.getInt(i)
+      }
+
+      var _alignments = intArrayOf()
+      for (i in 0..(alignments.size()-1)){
+        val temp = alignmentToInt(alignments.getString(i))
+        if(temp != null){
+          _alignments += temp
+        }
+      }
+
+      if (_texts.size == _alignments.size && _texts.size == _widths.size) {      
+         printerService?.printColumnsString(_texts, _widths, _alignments, callback)
+       } else {
+         promise.reject("0", "printColumnsString is failed because alignments is incorrect.")
+       }
+    } catch (e: Exception) {
+      promise.reject("0", e.message)
+    }
+  }
+ 
 
 
 
@@ -400,6 +463,16 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       }
     }
     return callback
+  }
+
+  private fun alignmentToInt(alignment: String): Int? {
+    val value = when (alignment) {
+      "left" -> 0
+      "center" -> 1
+      "right" -> 2
+      else -> null
+    }
+    return value
   }
 
 }

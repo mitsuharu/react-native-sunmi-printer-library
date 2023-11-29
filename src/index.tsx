@@ -27,7 +27,8 @@ interface SunmiPrinterLibrary {
   printText: (text: string) => Promise<void>
   printTextWithFont: (text: string, typeface: Typeface, fontSize: number) => Promise<void>
   printOriginalText: (text: string) => Promise<void>
-
+  printColumnsText: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
+  printColumnsString: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
 
   lineWrap: (count: number) => Promise<void>
 }
@@ -149,6 +150,44 @@ export const printOriginalText = Platform.select<(text: string) => Promise<void>
   android: (text) => sunmiPrinterLibrary.printOriginalText(text),
   default: () => Promise.reject(NOT_SUPPORTED),
 })
+
+/**
+ * Print a row of a table
+ * 
+ * @note
+ * - This may not supports width and alignment for each column.
+ * - This does not support Arabic Characters. If you print it, use printColumnsString.
+ * 
+ * @example
+ * SunmiPrinterLibrary.printColumnsText(
+ *      ['apple', 'orange', 'banana'], 
+ *      [8, 8, 8], 
+ *      ['center', 'center', 'center'])
+ */
+export const printColumnsText = Platform.select<(texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>>({
+  android: (texts, widths, alignments) => sunmiPrinterLibrary.printColumnsText(texts, widths, alignments),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+
+/**
+ * Print a row of a table
+ * 
+ * @note
+ * This supports width and alignment for each column.
+ * 
+ * @example
+ * SunmiPrinterLibrary.printColumnsString(
+ *      ['apple', 'orange', 'banana'], 
+ *      [8, 8, 8], 
+ *      ['center', 'center', 'center'])
+ */
+export const printColumnsString = Platform.select<(texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>>({
+  android: (texts, widths, alignments) => sunmiPrinterLibrary.printColumnsString(texts, widths, alignments),
+  default: () => Promise.reject(NOT_SUPPORTED),
+})
+
+
+
 
 
 export const lineWrap = Platform.select<(count: number) => Promise<void>>({

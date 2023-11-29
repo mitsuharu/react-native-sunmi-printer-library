@@ -93,6 +93,12 @@ const Container: React.FC<Props> = () => {
 
       SunmiPrinterLibrary.printOriginalText('κρχκμνκλρκνκνμρτυφ')
 
+
+      SunmiPrinterLibrary.printColumnsText(
+        ['apple', 'orange', 'banana'], 
+        [8, 8, 8], 
+        ['center', 'center', 'center'])
+
       SunmiPrinterLibrary.lineWrap(2)
     } catch(error: any) {
       console.warn(error)
