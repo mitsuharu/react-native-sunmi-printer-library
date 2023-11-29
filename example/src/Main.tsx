@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
+import { useToast } from 'react-native-toast-notifications'
 
 type Props = Record<string, never>
 type ComponentProps = {
@@ -39,6 +40,7 @@ const Component: React.FC<ComponentProps> = ({
 }
 
 const Container: React.FC<Props> = () => {
+  const toast = useToast()
 
   const onPressPrepare = useCallback(async () => {
     try{
@@ -73,10 +75,12 @@ const Container: React.FC<Props> = () => {
       const updatePrinterState = await SunmiPrinterLibrary.updatePrinterState()
       console.log(`updatePrinterState is ${updatePrinterState}`)
 
+      toast.show('Prepare is OK')
     } catch(error: any) {
       console.warn(error)
+      toast.show(`Prepare is NG. ${error}`)
     }
-  }, [])
+  }, [toast])
 
   const onPressPrintText = useCallback(async () => {
     try {
@@ -92,8 +96,9 @@ const Container: React.FC<Props> = () => {
       SunmiPrinterLibrary.lineWrap(2)
     } catch(error: any) {
       console.warn(error)
+      toast.show(`PrintText is NG. ${error}`)
     }
-  }, [])
+  }, [toast])
 
   return (
     <Component
