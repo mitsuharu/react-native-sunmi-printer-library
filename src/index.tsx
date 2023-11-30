@@ -61,51 +61,105 @@ type BarCode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
 const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
 
+/**
+ * connect printer
+ * 
+ * @example
+ * await SunmiPrinterLibrary.connect()
+ */
 export const connect = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.connect(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * init printer
+ * 
+ * @note
+ * It calls printerInit after connects printer
+ * 
+ * @example
+ * await SunmiPrinterLibrary.printerInit()
+ */
 export const printerInit = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.printerInit(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-export const printerSelfChecking = Platform.select<() => Promise<boolean>>({
+/**
+ * prepare
+ * 
+ * @note
+ * It calls connect and printerInit.
+ * 
+ * @example
+ * await SunmiPrinterLibrary.prepare()
+ */
+export const prepare = async () => {
+  await connect()
+  const result = await printerInit()
+  return result
+}
+
+/**
+ * Print self-inspection
+ */
+export const printSelfChecking = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.printerSelfChecking(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get the SN of a printer board
+ */
 export const getPrinterSerialNo = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrinterSerialNo(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get printer firmware version
+ */
 export const getPrinterVersion = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrinterVersion(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get the version number of a print service
+ */
 export const getServiceVersion = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getServiceVersion(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get printer type interface
+ */
 export const getPrinterModal = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrinterModal(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get the current paper spec of a printer
+ */
 export const getPrinterPaper = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrinterPaper(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get the print length of a printhead
+ */
 export const getPrintedLength = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrintedLength(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Get the latest status of a printer
+ */
 export const updatePrinterState = Platform.select<() => Promise<number>>({
   android: () => sunmiPrinterLibrary.updatePrinterState(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
@@ -118,37 +172,85 @@ const _setPrinterStyle = Platform.select<((key: WoyouConstsBoolean | WoyouConsts
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Set printer style
+ * @param {WoyouConstsBoolean} key - "doubleWidth" | "doubleHeight" | "bold" | "underline" | "antiWhite" | "strikethrough" | "italic" | "invert"
+ * @param {boolean} value true | false
+ */
 export function setPrinterStyle(key: WoyouConstsBoolean, value: boolean): Promise<boolean>;
+/**
+ * Set printer style
+ * @param {WoyouConstsNumber} key - "textRightSpacing" | "relativePosition" | "absolutePosition" | "lineSpacing" | "leftSpacing" | "strikethroughStyle"
+ * @param {number} value integer
+ */
 export function setPrinterStyle(key: WoyouConstsNumber, value: number): Promise<boolean>;
+/**
+ * Set printer style
+ */
 export function setPrinterStyle(key: WoyouConstsBoolean | WoyouConstsNumber, value: boolean | number): Promise<boolean> {
   return _setPrinterStyle(key, value)
 }
 
+/**
+ * Set alignment
+ * 
+ * @param {Alignment} alignment "left" | "center" | "right"
+ */
 export const setAlignment = Platform.select<(alignment: Alignment) => Promise<void>>({
   android: (alignment) => sunmiPrinterLibrary.setAlignment(alignment),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Set print typeface (unavailable for now)
+ * 
+ * @note
+ * unavailable for now
+ * 
+ * @param {FontName} fontName "chineseMonospaced"
+ */
 export const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
   android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Set font size
+ * 
+ * @param {number} fontSize
+ */
 export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>({
   android: (fontSize) => sunmiPrinterLibrary.setFontSize(fontSize),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Set bold
+ * 
+ * @param {boolean} isBold
+ */
 export const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
   android: (isBold) => sunmiPrinterLibrary.setBold(isBold),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Print text
+ * 
+ * @param {string} text
+ */
 export const printText = Platform.select<(text: string) => Promise<void>>({
   android: (text) => sunmiPrinterLibrary.printText(text),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Print text in a specified typeface and size
+ * 
+ * @param {string} text
+ * @param {Typeface} typeface "default" only (unavailable for now)
+ * @param {number} fontSize
+ */
 export const printTextWithFont = Platform.select<(text: string, typeface: Typeface, fontSize: number) => Promise<void>>({
   android: (text, typeface, fontSize) => sunmiPrinterLibrary.printTextWithFont(text, typeface, fontSize),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),

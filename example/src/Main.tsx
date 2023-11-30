@@ -44,36 +44,33 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrepare = useCallback(async () => {
     try{
-      console.log('call isConnected')
 
-      const isConnected: boolean = await SunmiPrinterLibrary.connect()
-      console.log(`isConnected is ${isConnected}`)
 
-      console.log('call printerInit')
+      const isPrepared: boolean = await SunmiPrinterLibrary.prepare()
+      console.log(`isPrepared is ${isPrepared}`)
 
-      const isPrinterInit: boolean = await SunmiPrinterLibrary.printerInit()
-      console.log(`isPrinterInit is ${isPrinterInit}`)
+      SunmiPrinterLibrary.printSelfChecking()
 
-      const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
-      console.log(`printerSerialNo is ${printerSerialNo}`)
+      // const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
+      // console.log(`printerSerialNo is ${printerSerialNo}`)
 
-      const printerVersion = await SunmiPrinterLibrary.getPrinterVersion()
-      console.log(`printerVersion is ${printerVersion}`)
+      // const printerVersion = await SunmiPrinterLibrary.getPrinterVersion()
+      // console.log(`printerVersion is ${printerVersion}`)
             
-      const serviceVersion = await SunmiPrinterLibrary.getServiceVersion()
-      console.log(`serviceVersion is ${serviceVersion}`)
+      // const serviceVersion = await SunmiPrinterLibrary.getServiceVersion()
+      // console.log(`serviceVersion is ${serviceVersion}`)
             
-      const printerModal = await SunmiPrinterLibrary.getPrinterModal()
-      console.log(`serviceVersion is ${printerModal}`)
+      // const printerModal = await SunmiPrinterLibrary.getPrinterModal()
+      // console.log(`serviceVersion is ${printerModal}`)
 
-      const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
-      console.log(`printerPaper is ${printerPaper}`)
+      // const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
+      // console.log(`printerPaper is ${printerPaper}`)
 
-      const printedLength = await SunmiPrinterLibrary.getPrintedLength()
-      console.log(`printedLength is ${printedLength}`)
+      // const printedLength = await SunmiPrinterLibrary.getPrintedLength()
+      // console.log(`printedLength is ${printedLength}`)
 
-      const updatePrinterState = await SunmiPrinterLibrary.updatePrinterState()
-      console.log(`updatePrinterState is ${updatePrinterState}`)
+      // const updatePrinterState = await SunmiPrinterLibrary.updatePrinterState()
+      // console.log(`updatePrinterState is ${updatePrinterState}`)
 
       toast.show('Prepare is OK')
     } catch(error: any) {
