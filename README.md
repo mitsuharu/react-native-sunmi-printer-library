@@ -25,6 +25,11 @@ import { multiply } from 'react-native-sunmi-printer-library';
 const result = await multiply(3, 7);
 ```
 
+### not support
+
+- Transaction Print API
+- Cash Drawer API
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.

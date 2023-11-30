@@ -5,16 +5,17 @@ see: https://developer.sunmi.com/en-US/
 see: https://developer.sunmi.com/docs/en-US/xeghjk491/ciqeghjk513
 see: https://file.cdn.sunmi.com/SUNMIDOCS/%E5%95%86%E7%B1%B3%E5%86%85%E7%BD%AE%E6%89%93%E5%8D%B0%E6%9C%BA%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3EN-0224.pdf
 
+https://github.com/iminsoftware/PrinterLibrary/blob/master/printlibrary/src/main/java/com/sunmi/peripheral/printer/WoyouConsts.java
 
-TransBean.java
-https://github.com/shangmisunmi/SunmiPrinterDemo-Eclipse-/blob/master/PrinterTestDemo_eclipse/src/com/sunmi/trans/TransBean.java
-
-commitPrint などトランザクション系とopenDrawer（開けるものない）のでサポートしない
 
 */
 
+/**
+ * Native Method
+ */
 interface SunmiPrinterLibrary {
   connect: () => Promise<boolean>
+  disconnect: () => Promise<void>
   printerInit: () => Promise<boolean>
   printerSelfChecking: () => Promise<boolean>
   getPrinterSerialNo: () => Promise<string>
@@ -41,23 +42,25 @@ interface SunmiPrinterLibrary {
   print2DCode: (text: string, symbology: number, moduleSize: number, errorLevel: number)  => Promise<void>
   lineWrap: (count: number) => Promise<void>
   cutPaper: () => Promise<void>
+  getCutPaperTimes: () => Promise<number>
+  printBitmapBase64: (base64: string, pixelWidth: number) => Promise<void>
+  printBitmapBase64Custom: (base64: string, pixelWidth: number, type: number) => Promise<void>
 }
-
-// https://github.com/iminsoftware/PrinterLibrary/blob/master/printlibrary/src/main/java/com/sunmi/peripheral/printer/WoyouConsts.java
-
-type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
-type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
-// type WoyouConsts = WoyouConstsBoolean | WoyouConstsNumber
-type Alignment = 'left' | 'center' | 'right'
-type FontName = 'chineseMonospaced'
-type Typeface = 'default'
-type BarCode1DSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8)' | 'CODE39' | 'ITF' | 'CODABAR' | 'CODE93' | 'CODE128'
-type TextPosition = 'none' | 'textAboveBarcode' | 'textUnderBarcode' | 'textAboveAndUnderBarcode'
-type QRErrorLevel = 'low' | 'middle' | 'quartile' | 'high'
-type BarCode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
 
 const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
+
+export type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
+export type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
+export type Alignment = 'left' | 'center' | 'right'
+export type FontName = 'chineseMonospaced'
+export type Typeface = 'default'
+export type BarCode1DSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8)' | 'CODE39' | 'ITF' | 'CODABAR' | 'CODE93' | 'CODE128'
+export type TextPosition = 'none' | 'textAboveBarcode' | 'textUnderBarcode' | 'textAboveAndUnderBarcode'
+export type QRErrorLevel = 'low' | 'middle' | 'quartile' | 'high'
+export type BarCode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
+export type BitmapType = 'monochrome' | 'monochrome200' |'grayscale'
+export type PaperWidth = '58mm' | '80mm'
 
 /**
  * connect printer
@@ -65,7 +68,7 @@ const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibra
  * @example
  * await SunmiPrinterLibrary.connect()
  */
-export const connect = Platform.select<() => Promise<boolean>>({
+const connect = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.connect(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -79,7 +82,7 @@ export const connect = Platform.select<() => Promise<boolean>>({
  * @example
  * await SunmiPrinterLibrary.printerInit()
  */
-export const printerInit = Platform.select<() => Promise<boolean>>({
+const printerInit = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.printerInit(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -98,6 +101,17 @@ export const prepare = async () => {
   const result = await printerInit()
   return result
 }
+
+/**
+ * disconnect printer
+ *  
+ * @example
+ * await SunmiPrinterLibrary.disconnect()
+ */
+export const disconnect  = Platform.select<() => Promise<void>>({
+  android: () => sunmiPrinterLibrary.disconnect(),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
 
 /**
  * Print self-inspection
@@ -141,9 +155,32 @@ export const getPrinterModal = Platform.select<() => Promise<string>>({
 
 /**
  * Get the current paper spec of a printer
+ * 
+ * @returns "58mm" | "80mm"
  */
-export const getPrinterPaper = Platform.select<() => Promise<string>>({
-  android: () => sunmiPrinterLibrary.getPrinterPaper(),
+export const getPrinterPaper = Platform.select<() => Promise<PaperWidth>>({
+  android: async () => {
+    const result = await sunmiPrinterLibrary.getPrinterPaper()
+    return Promise.resolve(result as PaperWidth)
+  },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * Get max pixel width
+ * 
+ * @returns if width is 58mm" then 384 or it is "80mm" then 576
+ */
+export const getPrinterMaxPixelWidth = Platform.select<() => Promise<number>>({
+  android: async () => {
+    const result: PaperWidth = await getPrinterPaper()
+    switch (result) {
+    case '58mm': 
+      return Promise.resolve(384)
+    case '80mm':
+      return Promise.resolve(576)
+    }
+  },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
@@ -470,3 +507,64 @@ export const cutPaper = Platform.select<() => Promise<void>>({
   android: () => sunmiPrinterLibrary.cutPaper(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
+
+/**
+ * Get the number of times a cutter has been used
+ * 
+ * @note
+ * It is only available to the desktop devices with a cutter.
+ */
+export const getCutPaperTimes = Platform.select<() => Promise<number>>({
+  android: () => sunmiPrinterLibrary.getCutPaperTimes(),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * printBitmapBase64
+ * 
+ * @description
+ * print image that is encoded Base64
+ * 
+ * @param {string} base64 'data:image/png;base64,iVBORw0KGgoAAAA...'
+ * @param {number} pixelWidth if paper width is 58mm then max 384 or it is 80mm then max 576.
+ * 
+ * @example
+ * SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 194)
+ */
+export const printBitmapBase64 = Platform.select<(base64: string, pixelWidth: number) => Promise<void>>({
+  android: (base64, pixelWidth) => sunmiPrinterLibrary.printBitmapBase64(base64, pixelWidth),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * printBitmapBase64Custom
+ * 
+ * @description
+ * print image that is encoded Base64
+ * 
+ * @param {string} base64 'data:image/png;base64,iVBORw0KGgoAAAA...'
+ * @param {number} pixelWidth if paper width is 58mm then max 384 or it is 80mm then max 576.
+ * @param {BitmapType} type 'monochrome' | 'monochrome200' |'grayscale'
+ * 
+ * @example
+ * SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'grayscale')
+ */
+export const printBitmapBase64Custom = Platform.select<(base64: string, pixelWidth: number, type: BitmapType) => Promise<void>>({
+  android: (base64, pixelWidth, type) => {
+    let _type: number | null = null
+    if (type === 'monochrome'){
+      _type = 0
+    } else if (type === 'monochrome200'){
+      _type = 1
+    } if (type === 'grayscale'){
+      _type = 2
+    } 
+    if (_type == null){
+      return Promise.reject('printBitmapBase64Custom is failed. parameters are incorrect.')
+    }else {
+      return sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
+    }
+  },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+

@@ -1,5 +1,8 @@
 package com.sunmiprinterlibrary
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.RemoteException
 import android.util.Base64
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -10,7 +13,8 @@ import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.InnerResultCallback
 import com.sunmi.peripheral.printer.SunmiPrinterService
-import com.sunmi.peripheral.printer.WoyouConsts;
+import com.sunmi.peripheral.printer.WoyouConsts
+
 
 class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -344,19 +348,19 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       promise.reject("0", "printOriginalText is failed. " + e.message)
     }
   }
-  
+
   @ReactMethod
   fun printColumnsText(texts: ReadableArray, widths: ReadableArray, alignments: ReadableArray, promise: Promise) {
     validatePrinterService(promise)
     try {
       val callback = makeInnerResultCallback(promise)
 
-      var _texts = arrayOf<String>()  
+      var _texts = arrayOf<String>()
       for (i in 0..(texts.size()-1)){
         _texts += texts.getString(i)
       }
 
-      var _widths = intArrayOf() 
+      var _widths = intArrayOf()
       for (i in 0..(widths.size()-1)){
         _widths += widths.getInt(i)
       }
@@ -369,7 +373,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         }
       }
 
-      if (_texts.size == _alignments.size && _texts.size == _widths.size) {      
+      if (_texts.size == _alignments.size && _texts.size == _widths.size) {
          printerService?.printColumnsText(_texts, _widths, _alignments, callback)
        } else {
          promise.reject("0", "printColumnsText is failed because alignments is incorrect.")
@@ -385,12 +389,12 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     try {
       val callback = makeInnerResultCallback(promise)
 
-      var _texts = arrayOf<String>()  
+      var _texts = arrayOf<String>()
       for (i in 0..(texts.size()-1)){
         _texts += texts.getString(i)
       }
 
-      var _widths = intArrayOf() 
+      var _widths = intArrayOf()
       for (i in 0..(widths.size()-1)){
         _widths += widths.getInt(i)
       }
@@ -403,7 +407,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         }
       }
 
-      if (_texts.size == _alignments.size && _texts.size == _widths.size) {      
+      if (_texts.size == _alignments.size && _texts.size == _widths.size) {
          printerService?.printColumnsString(_texts, _widths, _alignments, callback)
        } else {
          promise.reject("0", "printColumnsString is failed because alignments is incorrect.")
@@ -437,8 +441,8 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         else -> null
       }
 
-      if (_symbology != null && _textPosition != null) {   
-        val callback = makeInnerResultCallback(promise)   
+      if (_symbology != null && _textPosition != null) {
+        val callback = makeInnerResultCallback(promise)
         printerService?.printBarCode(text, _symbology, height, width, _textPosition, callback)
       } else {
         promise.reject("0", "printBarCode is failed because alignments is incorrect.")
@@ -459,8 +463,8 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         "high" -> 3
         else -> null
       }
-      if (_errorLevel != null) {   
-        val callback = makeInnerResultCallback(promise)   
+      if (_errorLevel != null) {
+        val callback = makeInnerResultCallback(promise)
         printerService?.printQRCode(text, moduleSize, _errorLevel, callback)
       } else {
         promise.reject("0", "printQRCode is failed because alignments is incorrect.")
@@ -474,7 +478,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun print2DCode(text: String, symbology: Int, moduleSize: Int, errorLevel: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)   
+      val callback = makeInnerResultCallback(promise)
         printerService?.print2DCode(text, symbology, moduleSize, errorLevel, callback)
     } catch (e: Exception) {
       promise.reject("0", "print2DCode is failed. " + e.message)
@@ -500,6 +504,51 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       printerService?.cutPaper(callback)
     } catch (e: Exception) {
       promise.reject("0", "cutPaper is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getCutPaperTimes(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val result = printerService?.getCutPaperTimes()
+      promise.resolve(result)
+    } catch (e: Exception) {
+      promise.reject("0", "cutPaper is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun printBitmapBase64(base64: String, pixelWidth: Int, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      val pureBase64Encoded = base64.substring(base64.indexOf(",") + 1)
+      val decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT)
+      val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+      val w = decodedBitmap.width
+      val h = decodedBitmap.height
+      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
+      printerService?.printBitmap(image, callback)
+    } catch (e: Exception) {
+      promise.reject("0", "printBitmapBase64 is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun printBitmapBase64Custom(base64: String, pixelWidth: Int, type: Int, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise)
+      val pureBase64Encoded = base64.substring(base64.indexOf(",") + 1)
+      val decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT)
+      val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+      val w = decodedBitmap.width
+      val h = decodedBitmap.height
+      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
+      printerService?.printBitmapCustom(image, type, callback)
+    } catch (e: Exception) {
+      promise.reject("0", "printBitmapBase64Custom is failed. " + e.message)
     }
   }
 

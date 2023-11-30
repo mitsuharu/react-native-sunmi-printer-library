@@ -9,6 +9,7 @@ import {
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
+import { sampleImageBase64 } from './Resource'
 
 type Props = Record<string, never>
 type ComponentProps = {
@@ -49,7 +50,7 @@ const Container: React.FC<Props> = () => {
       const isPrepared: boolean = await SunmiPrinterLibrary.prepare()
       console.log(`isPrepared is ${isPrepared}`)
 
-      SunmiPrinterLibrary.printSelfChecking()
+      // SunmiPrinterLibrary.printSelfChecking()
 
       // const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
       // console.log(`printerSerialNo is ${printerSerialNo}`)
@@ -63,8 +64,8 @@ const Container: React.FC<Props> = () => {
       // const printerModal = await SunmiPrinterLibrary.getPrinterModal()
       // console.log(`serviceVersion is ${printerModal}`)
 
-      // const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
-      // console.log(`printerPaper is ${printerPaper}`)
+      const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
+      console.log(`printerPaper is ${printerPaper}`)
 
       // const printedLength = await SunmiPrinterLibrary.getPrintedLength()
       // console.log(`printedLength is ${printedLength}`)
@@ -86,7 +87,7 @@ const Container: React.FC<Props> = () => {
       // await SunmiPrinterLibrary.setAlignment('right')
 
       const text = '祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。おごれる人も久しからず。ただ春の夜の夢のごとし。たけき者も遂にはほろびぬ、ひとへに風の前の塵に同じ。'
-      SunmiPrinterLibrary.printText(text)
+      await SunmiPrinterLibrary.printText(text)
 
       // SunmiPrinterLibrary.printOriginalText('κρχκμνκλρκνκνμρτυφ')
 
@@ -103,9 +104,14 @@ const Container: React.FC<Props> = () => {
       // SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
       // SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
 
-      SunmiPrinterLibrary.lineWrap(2)
+      // await SunmiPrinterLibrary.lineWrap(2)
 
-      SunmiPrinterLibrary.cutPaper()
+      // await SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 194)
+      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'monochrome')
+      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'monochrome200')
+      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'grayscale')
+      await SunmiPrinterLibrary.lineWrap(4)
+      // SunmiPrinterLibrary.cutPaper()
     } catch(error: any) {
       console.warn(error)
       toast.show(`PrintText is NG. ${error}`)
