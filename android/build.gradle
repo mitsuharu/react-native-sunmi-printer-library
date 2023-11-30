@@ -43,6 +43,7 @@ def supportsNamespace() {
 }
 
 android {
+  namespace = "com.sunmiprinterlibrary"
   if (supportsNamespace()) {
     namespace "com.sunmiprinterlibrary"
 
@@ -58,7 +59,6 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-
   }
 
   buildTypes {
@@ -71,10 +71,16 @@ android {
     disable "GradleCompatible"
   }
 
+  def java_version = JavaVersion.VERSION_11
+
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility java_version
+    targetCompatibility java_version
   }
+
+  kotlinOptions {
+    jvmTarget = java_version.majorVersion
+}
 }
 
 repositories {
@@ -90,5 +96,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // https://mvnrepository.com/artifact/com.sunmi/printerlibrary
+  implementation "com.sunmi:printerlibrary:1.0.22"
 }
 

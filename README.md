@@ -2,6 +2,13 @@
 
 React Native module that support to print by SUNMI devices 
 
+## Develop
+
+```sh
+yarn
+yarn example android
+```
+
 ## Installation
 
 ```sh
@@ -17,6 +24,11 @@ import { multiply } from 'react-native-sunmi-printer-library';
 
 const result = await multiply(3, 7);
 ```
+
+### not support
+
+- Transaction Print API
+- Cash Drawer API
 
 ## Contributing
 

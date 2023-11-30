@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-sunmi-printer-library": ["./src/index"]
+      "@mitsuharu/react-native-sunmi-printer-library": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
