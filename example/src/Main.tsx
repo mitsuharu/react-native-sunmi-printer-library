@@ -9,30 +9,36 @@ import {
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
-import { sampleImageBase64 } from './Resource'
+import { sampleImageBase64 } from './SampleResource'
 
 type Props = Record<string, never>
 type ComponentProps = {
   onPressPrepare: () => void
   onPressPrintText: () => void
+  onPressPrintImage: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
   onPressPrepare,
   onPressPrintText,
+  onPressPrintImage,
 }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>react-native-sunmi-printer-library</Text>
+          <Text style={styles.sectionTitle}>@mitsuharu/react-native-sunmi-printer-library</Text>
           <Button
-            text="(a) prepare"
+            text="[MUST] prepare"
             onPress={onPressPrepare}
           />
           <Button
-            text="(b) onPressPrintText"
+            text="print text"
             onPress={onPressPrintText}
+          />
+          <Button
+            text="print image"
+            onPress={onPressPrintImage}
           />
         </View>
       </ScrollView>
@@ -106,15 +112,27 @@ const Container: React.FC<Props> = () => {
 
       // await SunmiPrinterLibrary.lineWrap(2)
 
-      // await SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 194)
-      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'monochrome')
-      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'monochrome200')
-      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'grayscale')
-      await SunmiPrinterLibrary.lineWrap(4)
-      // SunmiPrinterLibrary.cutPaper()
+
     } catch(error: any) {
       console.warn(error)
       toast.show(`PrintText is NG. ${error}`)
+    }
+  }, [toast])
+
+  const onPressPrintImage = useCallback(async() => {
+    try {
+      await SunmiPrinterLibrary.printText('画像印刷')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 384)
+      await SunmiPrinterLibrary.lineWrap(1)
+      // await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'monochrome')
+      // await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'monochrome200')
+      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'grayscale')
+      await SunmiPrinterLibrary.lineWrap(4)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`onPressPrintImage is failed. ${error}`)
     }
   }, [toast])
 
@@ -122,6 +140,7 @@ const Container: React.FC<Props> = () => {
     <Component
       onPressPrepare={onPressPrepare}
       onPressPrintText={onPressPrintText}
+      onPressPrintImage={onPressPrintImage}
     />
   )
 }

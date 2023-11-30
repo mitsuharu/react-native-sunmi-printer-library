@@ -531,7 +531,7 @@ export const getCutPaperTimes = Platform.select<() => Promise<number>>({
  * @example
  * SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 194)
  */
-export const printBitmapBase64 = Platform.select<(base64: string, pixelWidth: number) => Promise<void>>({
+export const printBitmapBase64 = Platform.select<(base64: string, pixelWidth: number | 384 | 576) => Promise<void>>({
   android: (base64, pixelWidth) => sunmiPrinterLibrary.printBitmapBase64(base64, pixelWidth),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -549,7 +549,7 @@ export const printBitmapBase64 = Platform.select<(base64: string, pixelWidth: nu
  * @example
  * SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'grayscale')
  */
-export const printBitmapBase64Custom = Platform.select<(base64: string, pixelWidth: number, type: BitmapType) => Promise<void>>({
+export const printBitmapBase64Custom = Platform.select<(base64: string, pixelWidth: number | 384 | 576, type: BitmapType) => Promise<void>>({
   android: (base64, pixelWidth, type) => {
     let _type: number | null = null
     if (type === 'monochrome'){
