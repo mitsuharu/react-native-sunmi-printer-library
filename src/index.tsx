@@ -268,46 +268,43 @@ export const printQRCode = Platform.select<(text: string, moduleSize: number, er
 const _print2DCode = Platform.select<((text: string, symbology: BarCode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number) => Promise<void>)>({
   android: (text, symbology, moduleSize, errorLevel) => {
 
-    let _symbology: number | null = null
-    if (symbology === 'QR'){
-      _symbology = 0
-    } else if (symbology === 'PDF417'){
-      _symbology = 1
-    } else if (symbology === 'DataMatrix'){
-      _symbology = 2
-    }
-    if (_symbology == null){
-      return Promise.reject('print2DCode is failed. errorLevel is incorrect.')
-    }
-
     switch (symbology) {
     case 'QR': {
-      let _errorLevel: number | null = null
-      if (errorLevel === 'low'){
-        _errorLevel = 0
-      } else if (errorLevel === 'middle'){
-        _errorLevel = 1
-      } else if (errorLevel === 'quartile'){
-        _errorLevel = 2
-      } else if (errorLevel === 'high'){
-        _errorLevel = 3
+      if ( typeof errorLevel != 'number'){
+        // If symbology is QR, print2DCode is equivalent to printQRCode.
+        return printQRCode(text, moduleSize, errorLevel)
+      }else {
+        return Promise.reject('print2DCode is failed. parameters are incorrect.')
       }
-      if (_errorLevel == null){
-        return Promise.reject('print2DCode is failed. errorLevel is incorrect.')
-      }
-      if (moduleSize < 4 || 16 < moduleSize) {
-        return Promise.reject('print2DCode is failed. If QR, moduleSize should be within 4-16.')
-      }
-      return sunmiPrinterLibrary.print2DCode(text, _symbology, moduleSize, _errorLevel)
     }
     default:{
+      let _symbology: number | null = null
+      if (symbology === 'PDF417'){
+        _symbology = 1
+      } else if (symbology === 'DataMatrix'){
+        _symbology = 2
+      }
+      if (_symbology == null){
+        return Promise.reject('print2DCode is failed. symbology is incorrect.')
+      }
       if (typeof errorLevel != 'number'){
         return Promise.reject('print2DCode is failed. errorLevel is incorrect.')
       }
-      if (symbology === 'PDF417' && (moduleSize < 1 || 4 < moduleSize)){
-        return Promise.reject('print2DCode is failed. If PDF417, moduleSize should be within 1-4.')
-      }else if (symbology === 'DataMatrix' && (moduleSize < 4 || 16 < moduleSize)){
-        return Promise.reject('print2DCode is failed. If DataMatrix, moduleSize should be within 4-16.')
+      if (symbology === 'PDF417' ) {
+        if (moduleSize < 1 || 4 < moduleSize){
+          return Promise.reject('print2DCode is failed. If PDF417, moduleSize should be within 1-4.')
+        }
+        if (errorLevel < 0 || 3 < errorLevel){
+          return Promise.reject('print2DCode is failed. If PDF417, errorLevel should be within 0-3.')
+        }
+      }
+      else if (symbology === 'DataMatrix') { 
+        if  (moduleSize < 4 || 16 < moduleSize){
+          return Promise.reject('print2DCode is failed. If DataMatrix, moduleSize should be within 4-16.')
+        }
+        if (errorLevel < 0 || 8 < errorLevel){
+          return Promise.reject('print2DCode is failed. If DataMatrix, errorLevel should be within 0-8.')
+        }
       }
       return sunmiPrinterLibrary.print2DCode(text, _symbology, moduleSize, errorLevel)
     }}
@@ -317,29 +314,38 @@ const _print2DCode = Platform.select<((text: string, symbology: BarCode2DSymbolo
 
 /**
  * Print 2D code (QR)
- * @param text 
- * @param symbology 
- * @param moduleSize 
- * @param errorLevel 
- * @returns 
+ * 
+ * @param {string} text - 2D barcode to be printed.
+ * @param {BarCode2DSymbology} symbology - set 'QR'
+ * @param {number} moduleSize - It is a size of a QR code block and should be within 4-16.
+ * @param {QRErrorLevel} errorLevel - QR code error correction level
+ * 
+* @example
+ * SunmiPrinterLibrary.print2DCode('aaaa', 'QR', 4, 'middle')
  */
-export function print2DCode(text: string, symbology: 'QR', moduleSize: number, errorLevel: QRErrorLevel): Promise<void>;
+export function print2DCode(text: string, symbology: 'QR', moduleSize: number, errorLevel: QRErrorLevel): Promise<void>
 /**
  * Print 2D code (PDF417)
- * @param text 
- * @param symbology 
- * @param moduleSize 
- * @param errorLevel 
- * @returns 
+ * 
+ * @param {string} text - 2D barcode to be printed.
+ * @param {BarCode2DSymbology} symbology - set 'PDF417'
+ * @param {number} moduleSize - It is a size of a QR code block and should be within 1-4.
+ * @param {QRErrorLevel} errorLevel - It is error correction level and should be within 0 - 3
+ * 
+* @example
+ * SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
  */
 export function print2DCode(text: string, symbology: 'PDF417', moduleSize: number, errorLevel: number): Promise<void>;
 /**
  * Print 2D code (DataMatrix)
- * @param text 
- * @param symbology 
- * @param moduleSize 
- * @param errorLevel 
- * @returns 
+ * 
+ * @param {string} text - 2D barcode to be printed.
+ * @param {BarCode2DSymbology} symbology - set 'DataMatrix'
+ * @param {number} moduleSize - It is a size of a QR code block and should be within 4-16.
+ * @param {QRErrorLevel} errorLevel - It is error correction level and should be within 0 - 8
+ * 
+* @example
+ * SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
  */
 export function print2DCode(text: string, symbology: 'DataMatrix', moduleSize: number, errorLevel: number): Promise<void>;
 export function print2DCode(text: string, symbology: BarCode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number): Promise<void>{

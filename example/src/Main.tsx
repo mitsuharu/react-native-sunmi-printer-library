@@ -102,9 +102,9 @@ const Container: React.FC<Props> = () => {
 
       // SunmiPrinterLibrary.printQRCode('Hello World', 4, 'middle')
 
-      SunmiPrinterLibrary.print2DCode('aaaa', 'QR', 4, 'middle')
-      SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
-      SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
+      // SunmiPrinterLibrary.print2DCode('aaaa', 'QR', 4, 'middle')
+      // SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
+      // SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
 
       SunmiPrinterLibrary.lineWrap(2)
     } catch(error: any) {
