@@ -104,6 +104,8 @@ const Container: React.FC<Props> = () => {
       // SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
 
       SunmiPrinterLibrary.lineWrap(2)
+
+      SunmiPrinterLibrary.cutPaper()
     } catch(error: any) {
       console.warn(error)
       toast.show(`PrintText is NG. ${error}`)

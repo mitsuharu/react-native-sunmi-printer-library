@@ -38,11 +38,9 @@ interface SunmiPrinterLibrary {
   printColumnsString: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
   printBarCode: (text: string, symbology: BarCode1DSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>
   printQRCode: (text: string, moduleSize: number, errorLevel: QRErrorLevel)  => Promise<void>
-
   print2DCode: (text: string, symbology: number, moduleSize: number, errorLevel: number)  => Promise<void>
-
-
   lineWrap: (count: number) => Promise<void>
+  cutPaper: () => Promise<void>
 }
 
 // https://github.com/iminsoftware/PrinterLibrary/blob/master/printlibrary/src/main/java/com/sunmi/peripheral/printer/WoyouConsts.java
@@ -454,10 +452,21 @@ export function print2DCode(text: string, symbology: BarCode2DSymbology, moduleS
   return _print2DCode(text, symbology, moduleSize, errorLevel)
 }
 
-
-
-
+/**
+ * Implement n LFs on the paper
+ */
 export const lineWrap = Platform.select<(count: number) => Promise<void>>({
   android: (count) => sunmiPrinterLibrary.lineWrap(count),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * Cut paper
+ * 
+ * @note
+ * It is only available to the desktop devices with a cutter.
+ */
+export const cutPaper = Platform.select<() => Promise<void>>({
+  android: () => sunmiPrinterLibrary.cutPaper(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
