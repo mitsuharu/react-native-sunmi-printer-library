@@ -1,14 +1,8 @@
 import { NativeModules, Platform } from 'react-native'
 
-/*
-see: https://developer.sunmi.com/en-US/
-see: https://developer.sunmi.com/docs/en-US/xeghjk491/ciqeghjk513
-see: https://file.cdn.sunmi.com/SUNMIDOCS/%E5%95%86%E7%B1%B3%E5%86%85%E7%BD%AE%E6%89%93%E5%8D%B0%E6%9C%BA%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3EN-0224.pdf
-
-https://github.com/iminsoftware/PrinterLibrary/blob/master/printlibrary/src/main/java/com/sunmi/peripheral/printer/WoyouConsts.java
-
-
-*/
+/**
+ * see: SUNMI Developers <https://developer.sunmi.com/en-US/>
+ */
 
 /**
  * Native Method
@@ -37,7 +31,7 @@ interface SunmiPrinterLibrary {
   printOriginalText: (text: string) => Promise<void>
   printColumnsText: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
   printColumnsString: (texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>
-  printBarCode: (text: string, symbology: BarCode1DSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>
+  printBarcode: (text: string, symbology: Barcode1DSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>
   printQRCode: (text: string, moduleSize: number, errorLevel: QRErrorLevel)  => Promise<void>
   print2DCode: (text: string, symbology: number, moduleSize: number, errorLevel: number)  => Promise<void>
   lineWrap: (count: number) => Promise<void>
@@ -55,13 +49,16 @@ export type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absol
 export type Alignment = 'left' | 'center' | 'right'
 export type FontName = 'chineseMonospaced'
 export type Typeface = 'default'
-export type BarCode1DSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8)' | 'CODE39' | 'ITF' | 'CODABAR' | 'CODE93' | 'CODE128'
+export type Barcode1DSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8)' | 'CODE39' | 'ITF' | 'CODABAR' | 'CODE93' | 'CODE128'
 export type TextPosition = 'none' | 'textAboveBarcode' | 'textUnderBarcode' | 'textAboveAndUnderBarcode'
 export type QRErrorLevel = 'low' | 'middle' | 'quartile' | 'high'
-export type BarCode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
+export type Barcode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
 export type BitmapType = 'monochrome' | 'monochrome200' |'grayscale'
 export type PaperWidth = '58mm' | '80mm'
-
+export const MaxPixelWidth: {[width in PaperWidth]: number} = {
+  '58mm' : 384,
+  '80mm' : 576
+}
 export const defaultFontSize = 24
 
 /**
@@ -76,7 +73,7 @@ const connect = Platform.select<() => Promise<boolean>>({
 })
 
 /**
- * init printer
+ * initialize printer
  * 
  * @note
  * It calls printerInit after connects printer
@@ -93,7 +90,7 @@ const printerInit = Platform.select<() => Promise<boolean>>({
  * prepare
  * 
  * @note
- * It calls connect and printerInit.
+ * It must call to connect and initialize printer. If re-call it, reset text stylings.
  * 
  * @example
  * await SunmiPrinterLibrary.prepare()
@@ -107,11 +104,16 @@ export const prepare = async () => {
 
 /**
  * disconnect printer
+ * 
+ * @note
+ * It cannot disconnect. why...?
+ * "Service not registered: com.sunmiprinterlibrary.SunmiPrinterLibraryModule$disconnect$callback$1@4a31ba4"
  *  
  * @example
  * await SunmiPrinterLibrary.disconnect()
  */
-export const disconnect  = Platform.select<() => Promise<void>>({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const disconnect  = Platform.select<() => Promise<void>>({
   android: () => sunmiPrinterLibrary.disconnect(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -177,12 +179,7 @@ export const getPrinterPaper = Platform.select<() => Promise<PaperWidth>>({
 export const getPrinterMaxPixelWidth = Platform.select<() => Promise<number>>({
   android: async () => {
     const result: PaperWidth = await getPrinterPaper()
-    switch (result) {
-    case '58mm': 
-      return Promise.resolve(384)
-    case '80mm':
-      return Promise.resolve(576)
-    }
+    return Promise.resolve(MaxPixelWidth[result])
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -195,11 +192,46 @@ export const getPrintedLength = Platform.select<() => Promise<string>>({
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+const PrinterState: { [value: number]: string } = {
+  1: 'The printer works normally',
+  2: 'Preparing printer',
+  3: 'Abnormal communication',
+  4: 'Out of paper',
+  5: 'Overheated',
+  6: 'Open the lid',
+  7: 'The paper cutter is abnormal',
+  8: 'The paper cutter has been recovered',
+  9: 'No black mark has been detected',
+  505: 'No printer has been detected',
+  507: 'Failed to upgrade the printer firmware',
+}
+
 /**
  * Get the latest status of a printer
+ * 
+ * @returns value: number, description: string
+ * - 1: The printer works normally
+ * - 2: Preparing printer
+ * - 3: Abnormal communication
+ * - 4: Out of paper
+ * - 5: Overheated
+ * - 6: Open the lid
+ * - 7: The paper cutter is abnormal
+ * - 8: The paper cutter has been recovered
+ * - 9: No black mark has been detected
+ * - 505: No printer has been detected
+ * - 507: Failed to upgrade the printer firmware
  */
-export const updatePrinterState = Platform.select<() => Promise<number>>({
-  android: () => sunmiPrinterLibrary.updatePrinterState(),
+export const updatePrinterState = Platform.select<() => Promise<{value: number, description: string}>>({
+  android: async () => {
+    const value = await sunmiPrinterLibrary.updatePrinterState()
+    const description = PrinterState[value]
+    if (description){
+      return Promise.resolve({value, description})
+    }else {
+      return Promise.reject('updatePrinterState is failed.') 
+    }
+  },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
@@ -247,7 +279,8 @@ export const setAlignment = Platform.select<(alignment: Alignment) => Promise<vo
  * 
  * @param {FontName} fontName "chineseMonospaced"
  */
-export const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
   android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -265,17 +298,18 @@ export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>(
 /**
  * Set default font size
  */
-export const setDefaultFontSize = Platform.select<() => Promise<void>>({
-  android: () => sunmiPrinterLibrary.setFontSize(defaultFontSize),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+export const setDefaultFontSize = () => sunmiPrinterLibrary.setFontSize(defaultFontSize)
 
 /**
  * Set bold
  * 
+ * @note
+ * It is better to use setPrinterStyle.
+ * 
  * @param {boolean} isBold
  */
-export const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
   android: (isBold) => sunmiPrinterLibrary.setBold(isBold),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -373,18 +407,18 @@ export const printColumnsString = Platform.select<(texts: string[], widths: numb
  * - UPC-A
  *    - 12-digit number (the last digit is for parity check)
  * - code128
- *    - Code128 can be devided into subset A, B and C:
+ *    - Code128 can be divided into subset A, B and C:
  *    - 128A: numbers, upper-case letters, and control characters, etc. 
  *    - 128B: numbers, upper- and lower-case letters and special character. 
  *    - 128C: numbers only. It must have an even number of digits (if it has an odd number of digits, the last digit will be omitted). 
  *    - By default, the interface uses subset B. “{A” or “{C” should be added before the content if you need to use subset A or C, for example: “{A2344A”, ”{C123123”, ”{A1A{B13B{C12”.
  * 
  * @example
- * SunmiPrinterLibrary.printBarCode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+ * SunmiPrinterLibrary.printBarcode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
  * 
  */
-export const printBarCode = Platform.select<(text: string, symbology: BarCode1DSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>>({
-  android: (text, symbology, height, width, textPosition) => sunmiPrinterLibrary.printBarCode(text, symbology, height, width, textPosition),
+export const printBarcode = Platform.select<(text: string, symbology: Barcode1DSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>>({
+  android: (text, symbology, height, width, textPosition) => sunmiPrinterLibrary.printBarcode(text, symbology, height, width, textPosition),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
@@ -412,10 +446,8 @@ export const printQRCode = Platform.select<(text: string, moduleSize: number, er
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-
-const _print2DCode = Platform.select<((text: string, symbology: BarCode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number) => Promise<void>)>({
+const _print2DCode = Platform.select<((text: string, symbology: Barcode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number) => Promise<void>)>({
   android: (text, symbology, moduleSize, errorLevel) => {
-
     switch (symbology) {
     case 'QR': {
       if ( typeof errorLevel != 'number'){
@@ -496,7 +528,7 @@ export function print2DCode(text: string, symbology: 'PDF417', moduleSize: numbe
  * SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
  */
 export function print2DCode(text: string, symbology: 'DataMatrix', moduleSize: number, errorLevel: number): Promise<void>;
-export function print2DCode(text: string, symbology: BarCode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number): Promise<void>{
+export function print2DCode(text: string, symbology: Barcode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number): Promise<void>{
   return _print2DCode(text, symbology, moduleSize, errorLevel)
 }
 
@@ -579,3 +611,33 @@ export const printBitmapBase64Custom = Platform.select<(base64: string, pixelWid
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
+const BarTypeCharacter: {[type in BarType]: string} = {
+  'line': '-',
+  'double': '=',
+  'dots': '･',
+  'wave': '~',
+  'plus': '+',
+  'star': '*',
+}
+
+/**
+ * print HorizontalRule by text
+ * 
+ * @note
+ * This function is an original method.
+ * It may not be displayed correctly depending on your environment.
+ * It is calculated from the character width.
+ * 
+ * @param {BarType} barType - 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star' 
+ */
+export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
+  android: async (barType) => {
+    const lengthPerCharacter = 0.5
+    const pixelWidth = await getPrinterMaxPixelWidth()
+    const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
+    const text = BarTypeCharacter[barType].repeat(count)
+    return sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
+  },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})

@@ -29,6 +29,7 @@ const result = await multiply(3, 7);
 
 - Transaction Print API
 - Cash Drawer API
+- Black Mark Print API
 
 ## Contributing
 

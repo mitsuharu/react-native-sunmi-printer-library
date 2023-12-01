@@ -16,16 +16,20 @@ type ComponentProps = {
   onPressPrepare: () => void
   onPressPrintSelfChecking: () => void
   onPressPrintText: () => void
+  onPressPrintTable: () => void
   onPressPrintModifiedText: () => void
   onPressPrintImage: () => void
+  onPressPrintBarcode: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
   onPressPrepare,
   onPressPrintSelfChecking,
   onPressPrintText,
+  onPressPrintTable,
   onPressPrintModifiedText,
   onPressPrintImage,
+  onPressPrintBarcode,
 }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -45,8 +49,16 @@ const Component: React.FC<ComponentProps> = ({
             onPress={onPressPrintText}
           />
           <Button
+            text="print table"
+            onPress={onPressPrintTable}
+          />
+          <Button
             text="print modified text"
             onPress={onPressPrintModifiedText}
+          />
+          <Button
+            text="print BarCode / QR code"
+            onPress={onPressPrintBarcode}
           />
           <Button
             text="print image"
@@ -84,8 +96,8 @@ const Container: React.FC<Props> = () => {
       const printedLength = await SunmiPrinterLibrary.getPrintedLength()
       console.log(`printedLength is ${printedLength}`)
 
-      const updatePrinterState = await SunmiPrinterLibrary.updatePrinterState()
-      console.log(`updatePrinterState is ${updatePrinterState}`)
+      const {value, description} = await SunmiPrinterLibrary.updatePrinterState()
+      console.log(`updatePrinterState is (${value}, ${description}).`)
 
       toast.show('Prepare is OK')
     } catch(error: any) {
@@ -97,9 +109,14 @@ const Container: React.FC<Props> = () => {
   const onPressPrintSelfChecking = useCallback(async () => {
     try{
       await SunmiPrinterLibrary.printText('Print Self-Checking')
-      await SunmiPrinterLibrary.lineWrap(2)
+      await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.printSelfChecking()
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      SunmiPrinterLibrary.setBold(true)
+      SunmiPrinterLibrary.setAlignment('right')
+      
     } catch(error: any) {
       console.warn(error)
       toast.show(`onPressPrintSelfChecking is failed. ${error}`)
@@ -108,10 +125,6 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrintText = useCallback(async () => {
     try {
-      // await SunmiPrinterLibrary.setPrinterStyle('italic', true)
-      // await SunmiPrinterLibrary.setPrinterStyle('leftSpacing', 10)
-      // await SunmiPrinterLibrary.setAlignment('right')
-
       await SunmiPrinterLibrary.printText('Print Text')
       await SunmiPrinterLibrary.lineWrap(1)
 
@@ -121,24 +134,49 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.printText(sampleTextJa)
       await SunmiPrinterLibrary.lineWrap(1)
 
-      // SunmiPrinterLibrary.printOriginalText('κρχκμνκλρκνκνμρτυφ')
-
-      // SunmiPrinterLibrary.printColumnsText(
-      //   ['apple', 'orange', 'banana'], 
-      //   [8, 8, 8], 
-      //   ['center', 'center', 'center'])
-
-      // SunmiPrinterLibrary.printBarCode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
-
-      // SunmiPrinterLibrary.printQRCode('Hello World', 4, 'middle')
-
-      // SunmiPrinterLibrary.print2DCode('aaaa', 'QR', 4, 'middle')
-      // SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
-      // SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
-
       await SunmiPrinterLibrary.lineWrap(3)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`PrintText is failed. ${error}`)
+    }
+  }, [toast])
 
+  const onPressPrintTable = useCallback(async () => {
+    try {
+      await SunmiPrinterLibrary.printText('Print Table')
+      await SunmiPrinterLibrary.lineWrap(1)
 
+      await SunmiPrinterLibrary.printHR('plus')
+
+      await SunmiPrinterLibrary.printColumnsString(
+        ['', 'apple', 'mellon', 'banana'], 
+        [8, 8, 8, 8], 
+        ['left', 'center', 'center', 'center'])
+
+      await SunmiPrinterLibrary.printHR('double')
+
+      await SunmiPrinterLibrary.printColumnsString(
+        ['color', 'red', 'green', 'yellow'], 
+        [8, 8, 8, 8], 
+        ['left', 'center', 'center', 'center'])
+
+      await SunmiPrinterLibrary.printHR('line')
+
+      await SunmiPrinterLibrary.printColumnsString(
+        ['taste', 'good', 'good', 'good'], 
+        [8, 8, 8, 8], 
+        ['left', 'center', 'center', 'center'])
+        
+      await SunmiPrinterLibrary.printHR('wave')
+
+      await SunmiPrinterLibrary.printColumnsString(
+        ['shape', 'small', 'ball', 'crescent'], 
+        [8, 8, 6, 10], 
+        ['left', 'center', 'center', 'center'])
+
+      await SunmiPrinterLibrary.printHR('star')
+        
+      await SunmiPrinterLibrary.lineWrap(3)
     } catch(error: any) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
@@ -187,6 +225,29 @@ const Container: React.FC<Props> = () => {
     }
   }, [toast])
 
+  const onPressPrintBarcode = useCallback(async() => {
+    try {
+      await SunmiPrinterLibrary.printText('Print BarCode')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.printText('(1) Barcode')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      SunmiPrinterLibrary.printBarcode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+      await SunmiPrinterLibrary.lineWrap(2)
+
+      await SunmiPrinterLibrary.printText('(2) QR code')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
+      await SunmiPrinterLibrary.lineWrap(4)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`onPressPrintImage is failed. ${error}`)
+    }
+  }, [toast])
+
+
   const onPressPrintImage = useCallback(async() => {
     try {
       await SunmiPrinterLibrary.printText('Print Image')
@@ -211,10 +272,12 @@ const Container: React.FC<Props> = () => {
 
   return (
     <Component {...{
-      onPressPrepare, 
+      onPressPrepare,
       onPressPrintSelfChecking,
       onPressPrintText,
+      onPressPrintTable,
       onPressPrintModifiedText, 
+      onPressPrintBarcode,
       onPressPrintImage
     }} />
   )

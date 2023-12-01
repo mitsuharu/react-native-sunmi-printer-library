@@ -20,27 +20,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
 
   private var printerService: SunmiPrinterService? = null
-
-//  var handler: InnerResultCallback = object : InnerResultCallback() {
-//    override fun onRunResult(isSuccess: Boolean) {
-//      if (isSuccess) {
-//        val map: WritableMap = Arguments.createMap()
-//        map.putBoolean("success", true)
-//        promise.resolve(map)
-//      }
-//    }
-
-//    override fun onReturnString(result: String) {
-//    }
-
-//    override fun onRaiseException(code: Int, msg: String) {
-//      promise.reject(code.toString(), msg)
-//    }
-
-//    override fun onPrintResult(code: Int, msg: String) {
-//    }
-//  }
-
+ 
   init {}
 
   override fun getName(): String {
@@ -72,9 +52,16 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun disconnect(promise: Promise) {
     try {
-      InnerPrinterManager.getInstance().unBindService(getReactApplicationContext(), null)
-      printerService = null
-      promise.resolve(true)
+      val callback: InnerPrinterCallback = object : InnerPrinterCallback() {
+        override fun onConnected(service: SunmiPrinterService) {
+          promise.reject("0", "disconnect() is failed.")
+        }
+        override fun onDisconnected() {
+          printerService = null
+          promise.resolve(true)
+        }
+      }
+      InnerPrinterManager.getInstance().unBindService(getReactApplicationContext(), callback)
     } catch (e: Exception) {
       promise.reject("0", "disconnect() is failed. " + e.message)
     }
@@ -418,7 +405,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun printBarCode(text: String, symbology: String, height: Int, width: Int, textPosition: String, promise: Promise) {
+  fun printBarcode(text: String, symbology: String, height: Int, width: Int, textPosition: String, promise: Promise) {
     validatePrinterService(promise)
     try {
       val _symbology = when (symbology) {
