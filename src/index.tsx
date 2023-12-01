@@ -102,21 +102,22 @@ export const prepare = async () => {
   return true
 }
 
-/**
- * disconnect printer
- * 
- * @note
- * It cannot disconnect. why...?
- * "Service not registered: com.sunmiprinterlibrary.SunmiPrinterLibraryModule$disconnect$callback$1@4a31ba4"
- *  
- * @example
- * await SunmiPrinterLibrary.disconnect()
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const disconnect  = Platform.select<() => Promise<void>>({
-  android: () => sunmiPrinterLibrary.disconnect(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// !!! This is temporarily comment-out because it is not available. !!!
+// 
+// /**
+//  * disconnect printer
+//  * 
+//  * @note
+//  * It cannot disconnect. why...?
+//  * "Service not registered: com.sunmiprinterlibrary.SunmiPrinterLibraryModule$disconnect$callback$1@4a31ba4"
+//  *  
+//  * @example
+//  * await SunmiPrinterLibrary.disconnect()
+//  */
+// export const disconnect  = Platform.select<() => Promise<void>>({
+//   android: () => sunmiPrinterLibrary.disconnect(),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
 /**
  * Print self-inspection
@@ -271,19 +272,20 @@ export const setAlignment = Platform.select<(alignment: Alignment) => Promise<vo
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-/**
- * Set print typeface (unavailable for now)
- * 
- * @note
- * unavailable for now
- * 
- * @param {FontName} fontName "chineseMonospaced"
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
-  android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// !!! This is temporarily comment-out because it is not available. !!!
+//
+// /**
+//  * Set print typeface (unavailable for now)
+//  * 
+//  * @note
+//  * unavailable for now
+//  * 
+//  * @param {FontName} fontName "chineseMonospaced"
+//  */
+// export const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
+//   android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
 /**
  * Set font size
@@ -300,19 +302,21 @@ export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>(
  */
 export const setDefaultFontSize = () => sunmiPrinterLibrary.setFontSize(defaultFontSize)
 
-/**
- * Set bold
- * 
- * @note
- * It is better to use setPrinterStyle.
- * 
- * @param {boolean} isBold
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
-  android: (isBold) => sunmiPrinterLibrary.setBold(isBold),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// !!! This is temporarily comment-out. !!!
+//
+// /**
+//  * Set bold
+//  * 
+//  * @note
+//  * It is better to use setPrinterStyle.
+//  * 
+//  * @param {boolean} isBold
+//  */
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
+//   android: (isBold) => sunmiPrinterLibrary.setBold(isBold),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
 /**
  * Print text
@@ -611,7 +615,7 @@ export const printBitmapBase64Custom = Platform.select<(base64: string, pixelWid
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
+export type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
 const BarTypeCharacter: {[type in BarType]: string} = {
   'line': '-',
   'double': '=',

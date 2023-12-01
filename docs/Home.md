@@ -2,7 +2,6 @@
 
 React Native module that support to print for SUNMI mobile thermal printer devices.
 
-
 ## Installation
 
 ```shell
