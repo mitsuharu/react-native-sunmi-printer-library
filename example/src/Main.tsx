@@ -113,9 +113,6 @@ const Container: React.FC<Props> = () => {
 
       await SunmiPrinterLibrary.printSelfChecking()
       await SunmiPrinterLibrary.lineWrap(1)
-
-      SunmiPrinterLibrary.setBold(true)
-      SunmiPrinterLibrary.setAlignment('right')
       
     } catch(error: any) {
       console.warn(error)
