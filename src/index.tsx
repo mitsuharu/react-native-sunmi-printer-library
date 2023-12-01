@@ -62,6 +62,8 @@ export type BarCode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
 export type BitmapType = 'monochrome' | 'monochrome200' |'grayscale'
 export type PaperWidth = '58mm' | '80mm'
 
+export const defaultFontSize = 24
+
 /**
  * connect printer
  * 
@@ -98,8 +100,9 @@ const printerInit = Platform.select<() => Promise<boolean>>({
  */
 export const prepare = async () => {
   await connect()
-  const result = await printerInit()
-  return result
+  await printerInit()
+  await setDefaultFontSize()
+  return true
 }
 
 /**
@@ -256,6 +259,14 @@ export const setFontName = Platform.select<(fontName: FontName) => Promise<void>
  */
 export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>({
   android: (fontSize) => sunmiPrinterLibrary.setFontSize(fontSize),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * Set default font size
+ */
+export const setDefaultFontSize = Platform.select<() => Promise<void>>({
+  android: () => sunmiPrinterLibrary.setFontSize(defaultFontSize),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 

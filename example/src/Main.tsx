@@ -9,18 +9,22 @@ import {
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
-import { sampleImageBase64 } from './SampleResource'
+import { sampleImageBase64, sampleTextEn, sampleTextJa } from './SampleResource'
 
 type Props = Record<string, never>
 type ComponentProps = {
   onPressPrepare: () => void
+  onPressPrintSelfChecking: () => void
   onPressPrintText: () => void
+  onPressPrintModifiedText: () => void
   onPressPrintImage: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
   onPressPrepare,
+  onPressPrintSelfChecking,
   onPressPrintText,
+  onPressPrintModifiedText,
   onPressPrintImage,
 }) => {
   return (
@@ -33,8 +37,16 @@ const Component: React.FC<ComponentProps> = ({
             onPress={onPressPrepare}
           />
           <Button
+            text="print Self-Checking"
+            onPress={onPressPrintSelfChecking}
+          />
+          <Button
             text="print text"
             onPress={onPressPrintText}
+          />
+          <Button
+            text="print modified text"
+            onPress={onPressPrintModifiedText}
           />
           <Button
             text="print image"
@@ -51,38 +63,46 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrepare = useCallback(async () => {
     try{
-
-
       const isPrepared: boolean = await SunmiPrinterLibrary.prepare()
       console.log(`isPrepared is ${isPrepared}`)
 
-      // SunmiPrinterLibrary.printSelfChecking()
+      const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
+      console.log(`printerSerialNo is ${printerSerialNo}`)
 
-      // const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
-      // console.log(`printerSerialNo is ${printerSerialNo}`)
-
-      // const printerVersion = await SunmiPrinterLibrary.getPrinterVersion()
-      // console.log(`printerVersion is ${printerVersion}`)
+      const printerVersion = await SunmiPrinterLibrary.getPrinterVersion()
+      console.log(`printerVersion is ${printerVersion}`)
             
-      // const serviceVersion = await SunmiPrinterLibrary.getServiceVersion()
-      // console.log(`serviceVersion is ${serviceVersion}`)
+      const serviceVersion = await SunmiPrinterLibrary.getServiceVersion()
+      console.log(`serviceVersion is ${serviceVersion}`)
             
-      // const printerModal = await SunmiPrinterLibrary.getPrinterModal()
-      // console.log(`serviceVersion is ${printerModal}`)
+      const printerModal = await SunmiPrinterLibrary.getPrinterModal()
+      console.log(`serviceVersion is ${printerModal}`)
 
       const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
       console.log(`printerPaper is ${printerPaper}`)
 
-      // const printedLength = await SunmiPrinterLibrary.getPrintedLength()
-      // console.log(`printedLength is ${printedLength}`)
+      const printedLength = await SunmiPrinterLibrary.getPrintedLength()
+      console.log(`printedLength is ${printedLength}`)
 
-      // const updatePrinterState = await SunmiPrinterLibrary.updatePrinterState()
-      // console.log(`updatePrinterState is ${updatePrinterState}`)
+      const updatePrinterState = await SunmiPrinterLibrary.updatePrinterState()
+      console.log(`updatePrinterState is ${updatePrinterState}`)
 
       toast.show('Prepare is OK')
     } catch(error: any) {
       console.warn(error)
-      toast.show(`Prepare is NG. ${error}`)
+      toast.show(`Prepare is failed. ${error}`)
+    }
+  }, [toast])
+
+  const onPressPrintSelfChecking = useCallback(async () => {
+    try{
+      await SunmiPrinterLibrary.printText('Print Self-Checking')
+      await SunmiPrinterLibrary.lineWrap(2)
+
+      await SunmiPrinterLibrary.printSelfChecking()
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`onPressPrintSelfChecking is failed. ${error}`)
     }
   }, [toast])
 
@@ -92,8 +112,14 @@ const Container: React.FC<Props> = () => {
       // await SunmiPrinterLibrary.setPrinterStyle('leftSpacing', 10)
       // await SunmiPrinterLibrary.setAlignment('right')
 
-      const text = '祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。おごれる人も久しからず。ただ春の夜の夢のごとし。たけき者も遂にはほろびぬ、ひとへに風の前の塵に同じ。'
-      await SunmiPrinterLibrary.printText(text)
+      await SunmiPrinterLibrary.printText('Print Text')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.printText(sampleTextEn)
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.printText(sampleTextJa)
+      await SunmiPrinterLibrary.lineWrap(1)
 
       // SunmiPrinterLibrary.printOriginalText('κρχκμνκλρκνκνμρτυφ')
 
@@ -110,24 +136,71 @@ const Container: React.FC<Props> = () => {
       // SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
       // SunmiPrinterLibrary.print2DCode('aaaa', 'DataMatrix', 4, 4)
 
-      // await SunmiPrinterLibrary.lineWrap(2)
+      await SunmiPrinterLibrary.lineWrap(3)
 
 
     } catch(error: any) {
       console.warn(error)
-      toast.show(`PrintText is NG. ${error}`)
+      toast.show(`PrintText is failed. ${error}`)
+    }
+  }, [toast])
+
+  const onPressPrintModifiedText = useCallback(async () => {
+    try {
+      await SunmiPrinterLibrary.printText('Print ModifiedText')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.setAlignment('right')
+      await SunmiPrinterLibrary.printText('right')
+
+      await SunmiPrinterLibrary.setAlignment('center')
+      await SunmiPrinterLibrary.printText('center')
+
+      await SunmiPrinterLibrary.setAlignment('left')
+      await SunmiPrinterLibrary.printText('left')
+
+      await SunmiPrinterLibrary.lineWrap(1)
+      
+      await SunmiPrinterLibrary.setPrinterStyle('bold', true)
+      await SunmiPrinterLibrary.printText('bold')
+      await SunmiPrinterLibrary.setPrinterStyle('bold', false)
+      
+      await SunmiPrinterLibrary.setPrinterStyle('italic', true)
+      await SunmiPrinterLibrary.printText('italic')
+      await SunmiPrinterLibrary.setPrinterStyle('italic', false)
+      
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.setFontSize(16)
+      await SunmiPrinterLibrary.printText('font size is 16')
+
+      await SunmiPrinterLibrary.setFontSize(32)
+      await SunmiPrinterLibrary.printText('font size is 32')
+
+      await SunmiPrinterLibrary.setDefaultFontSize()
+      await SunmiPrinterLibrary.printText(`font size is default (${SunmiPrinterLibrary.defaultFontSize})`)
+
+      await SunmiPrinterLibrary.lineWrap(3)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`PrintText is failed. ${error}`)
     }
   }, [toast])
 
   const onPressPrintImage = useCallback(async() => {
     try {
-      await SunmiPrinterLibrary.printText('画像印刷')
+      await SunmiPrinterLibrary.printText('Print Image')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.printText('(1) monochrome')
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 384)
+      await SunmiPrinterLibrary.lineWrap(2)
+
+      await SunmiPrinterLibrary.printText('(2) grayscale')
       await SunmiPrinterLibrary.lineWrap(1)
-      // await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'monochrome')
-      // await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'monochrome200')
+
       await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'grayscale')
       await SunmiPrinterLibrary.lineWrap(4)
     } catch(error: any) {
@@ -137,11 +210,13 @@ const Container: React.FC<Props> = () => {
   }, [toast])
 
   return (
-    <Component
-      onPressPrepare={onPressPrepare}
-      onPressPrintText={onPressPrintText}
-      onPressPrintImage={onPressPrintImage}
-    />
+    <Component {...{
+      onPressPrepare, 
+      onPressPrintSelfChecking,
+      onPressPrintText,
+      onPressPrintModifiedText, 
+      onPressPrintImage
+    }} />
   )
 }
 
