@@ -1,0 +1,23 @@
+{
+    "files.insertFinalNewline": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+    },
+    "cSpell.words": [
+      "Consts",
+      "Emoto",
+      "gradlew",
+      "mitsuharu",
+      "podspec",
+      "pressable",
+      "sunmi",
+      "typecheck",
+      "Woyou"
+    ],
+  }
+  
