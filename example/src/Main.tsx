@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
+  DeviceEventEmitter,
 } from 'react-native'
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
@@ -20,6 +21,7 @@ type ComponentProps = {
   onPressPrintModifiedText: () => void
   onPressPrintImage: () => void
   onPressPrintBarcode: () => void
+  onPressScan: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
@@ -30,6 +32,7 @@ const Component: React.FC<ComponentProps> = ({
   onPressPrintModifiedText,
   onPressPrintImage,
   onPressPrintBarcode,
+  onPressScan,
 }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -63,6 +66,10 @@ const Component: React.FC<ComponentProps> = ({
           <Button
             text="print image"
             onPress={onPressPrintImage}
+          />
+          <Button
+            text="scan"
+            onPress={onPressScan}
           />
         </View>
       </ScrollView>
@@ -267,6 +274,33 @@ const Container: React.FC<Props> = () => {
     }
   }, [toast])
 
+  const onPressScan = useCallback(async ()=>{
+    try{
+      const result = await SunmiPrinterLibrary.scan()
+      console.warn(`onPressScan is ${result}`)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`onPressScan is failed. ${error}`)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    DeviceEventEmitter.addListener(
+      SunmiPrinterLibrary.EventType.onScanSuccess,
+      (message) => {
+        console.log(`[onScanSuccess] ${message}`)
+      })
+    DeviceEventEmitter.addListener(
+      SunmiPrinterLibrary.EventType.onScanFailed, 
+      (message) => {
+        console.log(`[onScanFailed] ${message}`)
+      })
+    return () => {
+      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanSuccess)
+      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanFailed)
+    }
+  }, [])
+
   return (
     <Component {...{
       onPressPrepare,
@@ -275,7 +309,8 @@ const Container: React.FC<Props> = () => {
       onPressPrintTable,
       onPressPrintModifiedText, 
       onPressPrintBarcode,
-      onPressPrintImage
+      onPressPrintImage,
+      onPressScan
     }} />
   )
 }

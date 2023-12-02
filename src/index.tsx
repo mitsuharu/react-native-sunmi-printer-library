@@ -5,7 +5,7 @@ import { NativeModules, Platform } from 'react-native'
  */
 
 /**
- * Native Method
+ * Native Method for Printer
  */
 interface SunmiPrinterLibrary {
   connect: () => Promise<boolean>
@@ -41,8 +41,17 @@ interface SunmiPrinterLibrary {
   printBitmapBase64Custom: (base64: string, pixelWidth: number, type: number) => Promise<void>
 }
 
-const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
+/**
+ * Native Method for Scanner
+ */
+interface SunmiScannerLibrary {
+  scan: () => Promise<string>
+}
+
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
+const sunmiScannerLibrary: SunmiScannerLibrary = NativeModules.SunmiScannerLibrary
+
+const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
 
 export type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
 export type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
@@ -60,6 +69,10 @@ export const MaxPixelWidth: {[width in PaperWidth]: number} = {
   '80mm' : 576
 }
 export const defaultFontSize = 24
+export const EventType = {
+  onScanSuccess: 'onScanSuccess',
+  onScanFailed: 'onScanFailed',
+}
 
 /**
  * connect printer
@@ -643,5 +656,41 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
     const text = BarTypeCharacter[barType].repeat(count)
     return sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
   },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * scan barcode / QR code
+ * 
+ * @example
+ * 
+ * ```
+ * const result = await SunmiPrinterLibrary.scan()
+ * ```
+ * 
+ * OR
+ * 
+ * ```
+ * const scan = () => {
+ *    SunmiPrinterLibrary.scan()
+ * }
+ * 
+ * useEffect(() => {
+ *    DeviceEventEmitter.addListener(SunmiPrinterLibrary.EventType.onScanSuccess, (message) => {
+ *       console.log(message)
+ *    })
+ *    DeviceEventEmitter.addListener(SunmiPrinterLibrary.EventType.onScanFailed, (message) => {
+ *       console.log(message)
+ *    })
+ *    return () => {
+ *       DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanSuccess)
+ *       DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanFailed)
+ *    }
+ * }, [])
+ *```
+ *
+ */
+export const scan = Platform.select<() => Promise<string>>({
+  android: async () => sunmiScannerLibrary.scan(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
