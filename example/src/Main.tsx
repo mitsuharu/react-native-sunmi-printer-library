@@ -1,35 +1,42 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
+  DeviceEventEmitter,
 } from 'react-native'
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
-import { sampleImageBase64, sampleTextEn, sampleTextJa } from './SampleResource'
+import { sampleImageBase64, sampleTextEn, sampleTextHelloWorld, sampleTextJa } from './SampleResource'
 
 type Props = Record<string, never>
 type ComponentProps = {
   onPressPrepare: () => void
   onPressPrintSelfChecking: () => void
-  onPressPrintText: () => void
+  onPressPrintText: () => void,
+  onPressPrintTextAwait: () => void
+  onPressPrintTextAsync:() => void,
   onPressPrintTable: () => void
   onPressPrintModifiedText: () => void
   onPressPrintImage: () => void
   onPressPrintBarcode: () => void
+  onPressScan: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
   onPressPrepare,
   onPressPrintSelfChecking,
   onPressPrintText,
+  onPressPrintTextAwait,
+  onPressPrintTextAsync,
   onPressPrintTable,
   onPressPrintModifiedText,
   onPressPrintImage,
   onPressPrintBarcode,
+  onPressScan,
 }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -49,6 +56,14 @@ const Component: React.FC<ComponentProps> = ({
             onPress={onPressPrintText}
           />
           <Button
+            text="print text (await)"
+            onPress={onPressPrintTextAwait}
+          />
+          <Button
+            text="print text (async)"
+            onPress={onPressPrintTextAsync}
+          />
+          <Button
             text="print table"
             onPress={onPressPrintTable}
           />
@@ -63,6 +78,10 @@ const Component: React.FC<ComponentProps> = ({
           <Button
             text="print image"
             onPress={onPressPrintImage}
+          />
+          <Button
+            text="scan"
+            onPress={onPressScan}
           />
         </View>
       </ScrollView>
@@ -122,7 +141,7 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrintText = useCallback(async () => {
     try {
-      await SunmiPrinterLibrary.printText('Print Text')
+      await SunmiPrinterLibrary.printText('Print Text (await)')
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.printText(sampleTextEn)
@@ -132,6 +151,52 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.lineWrap(3)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`PrintText is failed. ${error}`)
+    }
+  }, [toast])
+
+  const onPressPrintTextAwait = useCallback(async () => {
+    try {
+      await SunmiPrinterLibrary.printText('Print Text (await)')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.printText('0 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('1 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('2 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('3 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('4 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('5 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('6 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('7 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('8 ' + sampleTextHelloWorld)
+      await SunmiPrinterLibrary.printText('9 ' + sampleTextHelloWorld)
+
+      await SunmiPrinterLibrary.lineWrap(3)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`PrintText is failed. ${error}`)
+    }
+  }, [toast])
+
+  const onPressPrintTextAsync = useCallback(async () => {
+    try {
+      SunmiPrinterLibrary.printText('Print Text (no await)')
+      SunmiPrinterLibrary.lineWrap(1)
+
+      SunmiPrinterLibrary.printText('0 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('1 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('2 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('3 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('4 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('5 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('6 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('7 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('8 ' + sampleTextHelloWorld)
+      SunmiPrinterLibrary.printText('9 ' + sampleTextHelloWorld)
+
+      SunmiPrinterLibrary.lineWrap(3)
     } catch(error: any) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
@@ -267,15 +332,45 @@ const Container: React.FC<Props> = () => {
     }
   }, [toast])
 
+  const onPressScan = useCallback(async ()=>{
+    try{
+      const result = await SunmiPrinterLibrary.scan()
+      console.warn(`onPressScan is ${result}`)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`onPressScan is failed. ${error}`)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    DeviceEventEmitter.addListener(
+      SunmiPrinterLibrary.EventType.onScanSuccess,
+      (message) => {
+        console.log(`[onScanSuccess] ${message}`)
+      })
+    DeviceEventEmitter.addListener(
+      SunmiPrinterLibrary.EventType.onScanFailed, 
+      (message) => {
+        console.log(`[onScanFailed] ${message}`)
+      })
+    return () => {
+      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanSuccess)
+      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanFailed)
+    }
+  }, [])
+
   return (
     <Component {...{
       onPressPrepare,
       onPressPrintSelfChecking,
       onPressPrintText,
+      onPressPrintTextAwait,
+      onPressPrintTextAsync,
       onPressPrintTable,
       onPressPrintModifiedText, 
       onPressPrintBarcode,
-      onPressPrintImage
+      onPressPrintImage,
+      onPressScan
     }} />
   )
 }

@@ -27,6 +27,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     return NAME
   }
 
+  companion object {
+    const val NAME = "SunmiPrinterLibrary"
+  }
+
   @ReactMethod
   fun connect(promise: Promise) {
     try {
@@ -537,10 +541,6 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     } catch (e: Exception) {
       promise.reject("0", "printBitmapBase64Custom is failed. " + e.message)
     }
-  }
-
-  companion object {
-    const val NAME = "SunmiPrinterLibrary"
   }
 
   /**
