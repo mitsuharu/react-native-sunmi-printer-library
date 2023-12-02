@@ -1,6 +1,7 @@
 {
   "name": "@mitsuharu/react-native-sunmi-printer-library",
   "version": "0.1.0",
+  "private": true,
   "description": "React Native module that support to print by SUNMI devices ",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
