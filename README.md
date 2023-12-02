@@ -1,11 +1,6 @@
 # @mitsuharu/react-native-sunmi-printer-library
 
-React Native module that support to print for SUNMI mobile thermal printer devices.
-
-> [!CAUTION]
-> 現在開発中です
->  Currently under development.
-
+React Native module that support for SUNMI mobile printer devices.
 
 ## Installation
 
@@ -23,12 +18,81 @@ yarn add @mitsuharu/react-native-sunmi-printer-library
 
 You see `example` directory for details.
 
+### prepare
+
 ```typescript
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
-
-await SunmiPrinterLibrary.prepare()
-await SunmiPrinterLibrary.printText('Print Text')
 ```
+```typescript
+await SunmiPrinterLibrary.prepare()
+```
+
+
+### print Text
+
+```typescript
+await SunmiPrinterLibrary.printText('Hello World')
+```
+
+OR
+
+```typescript
+SunmiPrinterLibrary.printText('Hello World')
+```
+
+### modify test
+
+```typescript
+await SunmiPrinterLibrary.setAlignment('center')
+await SunmiPrinterLibrary.setPrinterStyle('bold', true)
+await SunmiPrinterLibrary.setFontSize(32)
+await SunmiPrinterLibrary.printText('Hello World')
+```
+
+### print Image (Base64)
+
+```typescript
+const base64 = 'data:image/png;base64,iVBORw0KGgoAAAA...'
+await SunmiPrinterLibrary.printBitmapBase64(base64, 384)
+await SunmiPrinterLibrary.printBitmapBase64Custom(base64, 384, 'grayscale')
+```
+
+### print QR code
+
+```typescript
+await SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
+```
+
+### scan QR code
+
+```typescript
+const reulst = await SunmiPrinterLibrary.scan()
+```
+
+OR
+
+```typescript
+SunmiPrinterLibrary.scan()
+```
+```typescript
+useEffect(() => {
+   DeviceEventEmitter.addListener(
+      SunmiPrinterLibrary.EventType.onScanSuccess,
+      (message) => {
+        console.log(`[onScanSuccess] ${message}`)
+      })
+   DeviceEventEmitter.addListener(
+      SunmiPrinterLibrary.EventType.onScanFailed, 
+      (message) => {
+        console.log(`[onScanFailed] ${message}`)
+      })
+   return () => {
+      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanSuccess)
+      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanFailed)
+    }
+}, [])
+```
+
 
 ### not support
 
