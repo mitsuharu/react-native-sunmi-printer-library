@@ -642,11 +642,18 @@ const BarTypeCharacter: {[type in BarType]: string} = {
  * print HorizontalRule by text
  * 
  * @note
+ * It NEEDs await.
+ * 
+ * @note
  * This function is an original method.
  * It may not be displayed correctly depending on your environment.
  * It is calculated from the character width.
  * 
  * @param {BarType} barType - 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star' 
+ * 
+ * @example
+ * await SunmiPrinterLibrary.printHR('plus') 
+ * 
  */
 export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
   android: async (barType) => {
