@@ -4,11 +4,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.RemoteException
 import android.util.Base64
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.WritableMap
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.InnerResultCallback
@@ -90,6 +92,29 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       printerService?.printerSelfChecking(callback)
     } catch (e: Exception) {
       promise.reject("0", "printSelfChecking is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun getPrinterInfo(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val serialNumber = printerService?.getPrinterSerialNo()
+      val printerVersion = printerService?.getPrinterVersion()
+      val serviceVersion = printerService?.getServiceVersion()
+      val printerModal = printerService?.getPrinterModal()
+      val paperWidth = if (printerService?.getPrinterPaper() == 1) "58mm" else "80mm"
+
+      val map: WritableMap = Arguments.createMap()
+      map.putString("serialNumber", serialNumber)
+      map.putString("printerVersion", printerVersion)
+      map.putString("serviceVersion", serviceVersion)
+      map.putString("printerModal", printerModal)
+      map.putString("paperWidth", paperWidth)
+
+      promise.resolve(map)
+    } catch (e: Exception) {
+      promise.reject("0", "getPrinterInfo is failed. " + e.message)
     }
   }
 
