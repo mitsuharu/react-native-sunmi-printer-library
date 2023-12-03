@@ -12,6 +12,7 @@ interface SunmiPrinterLibrary {
   disconnect: () => Promise<void>
   printerInit: () => Promise<boolean>
   printerSelfChecking: () => Promise<boolean>
+  getPrinterInfo: () => Promise<NativePrinterInfo>
   getPrinterSerialNo: () => Promise<string>
   getPrinterVersion: () => Promise<string>
   getServiceVersion: () => Promise<string>
@@ -73,6 +74,17 @@ export const EventType = {
   onScanSuccess: 'onScanSuccess',
   onScanFailed: 'onScanFailed',
 }
+type NativePrinterInfo = {
+  serialNumber: string,
+  printerVersion: string,
+  serviceVersion: string,
+  printerModal: string,
+  paperWidth: string,
+}
+export type PrinterInfo = NativePrinterInfo & {
+  paperWidth: PaperWidth,
+  pixelWidth: number,
+}
 
 /**
  * connect printer
@@ -115,8 +127,22 @@ export const prepare = async () => {
   return true
 }
 
+/**
+ * reset printer style
+ * 
+ * @example
+ * await SunmiPrinterLibrary.resetPrinterStyle()
+ */
+export const resetPrinterStyle = async () => {
+  await printerInit()
+  await setDefaultFontSize()
+  return true
+}
+
 // !!! This is temporarily comment-out because it is not available. !!!
-// 
+// FIXME: It can not use disconnect().
+// error message > Service not registered: com.sunmiprinterlibrary.SunmiPrinterLibraryModule$disconnect$callback$1@bb8f7ce
+//
 // /**
 //  * disconnect printer
 //  * 
@@ -177,7 +203,7 @@ export const getPrinterModal = Platform.select<() => Promise<string>>({
  * 
  * @returns "58mm" | "80mm"
  */
-export const getPrinterPaper = Platform.select<() => Promise<PaperWidth>>({
+export const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
   android: async () => {
     const result = await sunmiPrinterLibrary.getPrinterPaper()
     return Promise.resolve(result as PaperWidth)
@@ -192,7 +218,7 @@ export const getPrinterPaper = Platform.select<() => Promise<PaperWidth>>({
  */
 export const getPrinterMaxPixelWidth = Platform.select<() => Promise<number>>({
   android: async () => {
-    const result: PaperWidth = await getPrinterPaper()
+    const result: PaperWidth = await getPaperWidth()
     return Promise.resolve(MaxPixelWidth[result])
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
@@ -236,14 +262,14 @@ const PrinterState: { [value: number]: string } = {
  * - 505: No printer has been detected
  * - 507: Failed to upgrade the printer firmware
  */
-export const updatePrinterState = Platform.select<() => Promise<{value: number, description: string}>>({
+export const getPrinterState = Platform.select<() => Promise<{value: number, description: string}>>({
   android: async () => {
     const value = await sunmiPrinterLibrary.updatePrinterState()
     const description = PrinterState[value]
     if (description){
       return Promise.resolve({value, description})
     }else {
-      return Promise.reject('updatePrinterState is failed.') 
+      return Promise.reject('getPrinterState is failed.') 
     }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
@@ -698,6 +724,32 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
  *
  */
 export const scan = Platform.select<() => Promise<string>>({
-  android: async () => sunmiScannerLibrary.scan(),
+  android: () => sunmiScannerLibrary.scan(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
+
+/**
+ * get Printer info.
+ * 
+ * @note
+ * It gets printer information, such as serial number, in bulk.
+ * 
+ * @example
+ *  const {
+ *      serialNumber, printerVersion, serviceVersion, printerModal, paperWidth, pixelWidth
+ *    } = await SunmiPrinterLibrary.getPrinterInfo()
+ */
+export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
+  android: async () => {
+    const nativeResult: NativePrinterInfo = await sunmiPrinterLibrary.getPrinterInfo()
+    const paperWidth: PaperWidth = nativeResult.paperWidth as PaperWidth
+    const result: PrinterInfo = {
+      ...nativeResult,
+      paperWidth: paperWidth,
+      pixelWidth : MaxPixelWidth[paperWidth],
+    }
+    return Promise.resolve(result)
+  },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+

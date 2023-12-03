@@ -97,26 +97,21 @@ const Container: React.FC<Props> = () => {
       const isPrepared: boolean = await SunmiPrinterLibrary.prepare()
       console.log(`isPrepared is ${isPrepared}`)
 
-      const printerSerialNo: string = await SunmiPrinterLibrary.getPrinterSerialNo()
-      console.log(`printerSerialNo is ${printerSerialNo}`)
-
-      const printerVersion = await SunmiPrinterLibrary.getPrinterVersion()
+      const {
+        serialNumber, printerVersion, serviceVersion, printerModal, paperWidth, pixelWidth
+      } = await SunmiPrinterLibrary.getPrinterInfo()
+      console.log(`serialNumber is ${serialNumber}`)
       console.log(`printerVersion is ${printerVersion}`)
-            
-      const serviceVersion = await SunmiPrinterLibrary.getServiceVersion()
       console.log(`serviceVersion is ${serviceVersion}`)
-            
-      const printerModal = await SunmiPrinterLibrary.getPrinterModal()
-      console.log(`serviceVersion is ${printerModal}`)
-
-      const printerPaper = await SunmiPrinterLibrary.getPrinterPaper()
-      console.log(`printerPaper is ${printerPaper}`)
+      console.log(`printerModal is ${printerModal}`)
+      console.log(`paperWidth is ${paperWidth}`)
+      console.log(`pixelWidth is ${pixelWidth}`)
 
       const printedLength = await SunmiPrinterLibrary.getPrintedLength()
       console.log(`printedLength is ${printedLength}`)
 
-      const {value, description} = await SunmiPrinterLibrary.updatePrinterState()
-      console.log(`updatePrinterState is (${value}, ${description}).`)
+      const {value, description} = await SunmiPrinterLibrary.getPrinterState()
+      console.log(`getPrinterState is (${value}, ${description}).`)
 
       toast.show('Prepare is OK')
     } catch(error: any) {
@@ -280,6 +275,7 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.setDefaultFontSize()
       await SunmiPrinterLibrary.printText(`font size is default (${SunmiPrinterLibrary.defaultFontSize})`)
 
+      await SunmiPrinterLibrary.resetPrinterStyle()
       await SunmiPrinterLibrary.lineWrap(3)
     } catch(error: any) {
       console.warn(error)
