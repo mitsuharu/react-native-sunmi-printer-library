@@ -36,8 +36,9 @@
   },
   "keywords": [
     "react-native",
-    "ios",
-    "android"
+    "android",
+    "sunmi",
+    "printer"
   ],
   "repository": "https://github.com/mitsuharu/react-native-sunmi-printer-library",
   "author": "Mitsuharu Emoto <mthr1982@gmail.com> (https://github.com/mitsuharu)",
