@@ -23,10 +23,10 @@ You see `example` directory for details.
 ```typescript
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 ```
+
 ```typescript
 await SunmiPrinterLibrary.prepare()
 ```
-
 
 ### print Text
 
@@ -75,6 +75,7 @@ OR
 ```typescript
 SunmiPrinterLibrary.scan()
 ```
+
 ```typescript
 useEffect(() => {
    DeviceEventEmitter.addListener(
