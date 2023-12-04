@@ -40,11 +40,12 @@ OR
 SunmiPrinterLibrary.printText('Hello World')
 ```
 
-### modify test
+### change style
 
 ```typescript
 await SunmiPrinterLibrary.setAlignment('center')
-await SunmiPrinterLibrary.setPrinterStyle('bold', true)
+await SunmiPrinterLibrary.setTextStyle('bold', true)
+await SunmiPrinterLibrary.setParagraphStyle('textRightSpacing', 5)
 await SunmiPrinterLibrary.setFontSize(32)
 await SunmiPrinterLibrary.printText('Hello World')
 ```

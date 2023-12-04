@@ -209,7 +209,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun setPrinterStyleBoolean(key: String, value: Boolean, promise: Promise) {
+  fun setTextStyle(key: String, value: Boolean, promise: Promise) {
     validatePrinterService(promise)
     try {
       val _key = when (key) {
@@ -232,15 +232,15 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         printerService?.setPrinterStyle(_key, _value)
         promise.resolve(true)
       }else{
-        promise.reject("0", "native#setPrinterStyleBoolean() is failed. key or value is incorrect.")
+        promise.reject("0", "native#setTextStyle() is failed. key or value is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "native#setPrinterStyleBoolean() is failed. " + e.message)
+      promise.reject("0", "native#setTextStyle() is failed. " + e.message)
     }
   }
 
   @ReactMethod
-  fun setPrinterStyleNumber(key: String, value: Int, promise: Promise) {
+  fun setParagraphStyle(key: String, value: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
       val _key = when (key) {
@@ -256,10 +256,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         printerService?.setPrinterStyle(_key, value)
         promise.resolve(true)
       } else {
-        promise.reject("0", "native#setPrinterStyleNumber is failed. key is incorrect.")
+        promise.reject("0", "native#setParagraphStyle() is failed. key is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "native#setPrinterStyleNumber is failed. " + e.message)
+      promise.reject("0", "native#setParagraphStyle() is failed. " + e.message)
     }
   }
 
