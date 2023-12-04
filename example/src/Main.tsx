@@ -285,19 +285,19 @@ const Container: React.FC<Props> = () => {
 
   const onPressPrintBarcode = useCallback(async() => {
     try {
-      await SunmiPrinterLibrary.printText('Print BarCode')
+      await SunmiPrinterLibrary.printText('Print Barcode')
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.printText('(1) Barcode')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      SunmiPrinterLibrary.printBarcode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+      await SunmiPrinterLibrary.printBarcode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
       await SunmiPrinterLibrary.lineWrap(2)
 
       await SunmiPrinterLibrary.printText('(2) QR code')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
+      await SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
       await SunmiPrinterLibrary.lineWrap(4)
     } catch(error: any) {
       console.warn(error)

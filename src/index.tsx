@@ -57,12 +57,11 @@ const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
 export type TextStyle = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
 export type ParagraphStyle = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
 export type Alignment = 'left' | 'center' | 'right'
-export type FontName = 'chineseMonospaced'
+type FontName = 'chineseMonospaced'
 export type Typeface = 'default'
 export type Barcode1DSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8)' | 'CODE39' | 'ITF' | 'CODABAR' | 'CODE93' | 'CODE128'
 export type TextPosition = 'none' | 'textAboveBarcode' | 'textUnderBarcode' | 'textAboveAndUnderBarcode'
 export type QRErrorLevel = 'low' | 'middle' | 'quartile' | 'high'
-export type Barcode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
 export type PaperWidth = '58mm' | '80mm'
 export const MaxPixelWidth: {[width in PaperWidth]: number} = {
   '58mm' : 384,
@@ -463,100 +462,77 @@ export const printBarcode = Platform.select<(text: string, symbology: Barcode1DS
  * SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
  */
 export const printQRCode = Platform.select<(text: string, moduleSize: number, errorLevel: QRErrorLevel) => Promise<void>>({
-  android: (text, moduleSize, errorLevel) => {
-    if (moduleSize < 4 || 16 < moduleSize) {
-      return Promise.reject('printQrCode is failed. moduleSize should be within 4-16.')
+  android: async (text, moduleSize, errorLevel) => {
+    try {
+      if (moduleSize < 4 || 16 < moduleSize) {
+        return Promise.reject('printQrCode is failed. moduleSize should be within 4-16.')
+      }
+      await sunmiPrinterLibrary.printQRCode(text, moduleSize, errorLevel)
+      return Promise.resolve()
+    } catch (error: any){
+      return Promise.reject(`printQRCode is failed. ${error.message}`)
     }
-    return sunmiPrinterLibrary.printQRCode(text, moduleSize, errorLevel)
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-const _print2DCode = Platform.select<((text: string, symbology: Barcode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number) => Promise<void>)>({
-  android: (text, symbology, moduleSize, errorLevel) => {
-    switch (symbology) {
-    case 'QR': {
-      if ( typeof errorLevel != 'number'){
-        // If symbology is QR, print2DCode is equivalent to printQRCode.
-        return printQRCode(text, moduleSize, errorLevel)
-      }else {
-        return Promise.reject('print2DCode is failed. parameters are incorrect.')
-      }
-    }
-    default:{
-      let _symbology: number | null = null
-      if (symbology === 'PDF417'){
-        _symbology = 1
-      } else if (symbology === 'DataMatrix'){
-        _symbology = 2
-      }
-      if (_symbology == null){
-        return Promise.reject('print2DCode is failed. symbology is incorrect.')
-      }
-      if (typeof errorLevel != 'number'){
-        return Promise.reject('print2DCode is failed. errorLevel is incorrect.')
-      }
-      if (symbology === 'PDF417' ) {
-        if (moduleSize < 1 || 4 < moduleSize){
-          return Promise.reject('print2DCode is failed. If PDF417, moduleSize should be within 1-4.')
-        }
-        if (errorLevel < 0 || 3 < errorLevel){
-          return Promise.reject('print2DCode is failed. If PDF417, errorLevel should be within 0-3.')
-        }
-      }
-      else if (symbology === 'DataMatrix') { 
-        if  (moduleSize < 4 || 16 < moduleSize){
-          return Promise.reject('print2DCode is failed. If DataMatrix, moduleSize should be within 4-16.')
-        }
-        if (errorLevel < 0 || 8 < errorLevel){
-          return Promise.reject('print2DCode is failed. If DataMatrix, errorLevel should be within 0-8.')
-        }
-      }
-      return sunmiPrinterLibrary.print2DCode(text, _symbology, moduleSize, errorLevel)
-    }}
-  },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
-
-/**
- * Print 2D code (QR)
- * 
- * @param {string} text - 2D barcode to be printed.
- * @param {BarCode2DSymbology} symbology - set 'QR'
- * @param {number} moduleSize - It is a size of a QR code block and should be within 4-16.
- * @param {QRErrorLevel} errorLevel - QR code error correction level
- * 
-* @example
- * SunmiPrinterLibrary.print2DCode('aaaa', 'QR', 4, 'middle')
- */
-export function print2DCode(text: string, symbology: 'QR', moduleSize: number, errorLevel: QRErrorLevel): Promise<void>
 /**
  * Print 2D code (PDF417)
  * 
  * @param {string} text - 2D barcode to be printed.
- * @param {BarCode2DSymbology} symbology - set 'PDF417'
- * @param {number} moduleSize - It is a size of a QR code block and should be within 1-4.
- * @param {QRErrorLevel} errorLevel - It is error correction level and should be within 0 - 3
+ * @param {number} moduleSize - It is a size of a QR code block and should be within 1 - 4.
+ * @param {number} errorLevel - It is error correction level and should be within 0 - 3
  * 
-* @example
- * SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
+ * @example
+ * SunmiPrinterLibrary.print2DCodePDF417('Hello World', 4, 2)
  */
-export function print2DCode(text: string, symbology: 'PDF417', moduleSize: number, errorLevel: number): Promise<void>;
+export const print2DCodePDF417 = Platform.select<((text: string,  moduleSize: number, errorLevel: number) => Promise<void>)>({
+  android: async (text, moduleSize, errorLevel) => {
+    try{
+      const symbology = 2
+      if (moduleSize < 1 || 4 < moduleSize){
+        return Promise.reject('print2DCodePDF417 is failed. If PDF417, moduleSize should be within 1-4.')
+      }
+      if (errorLevel < 0 || 3 < errorLevel){
+        return Promise.reject('print2DCodePDF417 is failed. If PDF417, errorLevel should be within 0-3.')
+      }
+      await sunmiPrinterLibrary.print2DCode(text, symbology, moduleSize, errorLevel)
+      return Promise.resolve()
+    } catch (error: any) {
+      return Promise.reject('print2DCodePDF417() is failed.' + error.message)
+    }
+  },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
 /**
  * Print 2D code (DataMatrix)
  * 
  * @param {string} text - 2D barcode to be printed.
- * @param {BarCode2DSymbology} symbology - set 'DataMatrix'
- * @param {number} moduleSize - It is a size of a QR code block and should be within 4-16.
- * @param {QRErrorLevel} errorLevel - It is error correction level and should be within 0 - 8
+ * @param {number} moduleSize - It is a size of a QR code block and should be within 4 - 16.
+ * @param {number} errorLevel - It is error correction level and should be within 0 - 3
  * 
-* @example
- * SunmiPrinterLibrary.print2DCode('aaaa', 'PDF417', 4, 4)
+ * @example
+ * SunmiPrinterLibrary.print2DCodeDataMatrix('Hello World', 12, 2)
  */
-export function print2DCode(text: string, symbology: 'DataMatrix', moduleSize: number, errorLevel: number): Promise<void>;
-export function print2DCode(text: string, symbology: Barcode2DSymbology, moduleSize: number, errorLevel: QRErrorLevel | number): Promise<void>{
-  return _print2DCode(text, symbology, moduleSize, errorLevel)
-}
+export const print2DCodeDataMatrix = Platform.select<((text: string, moduleSize: number, errorLevel: number) => Promise<void>)>({
+  android: async (text, moduleSize, errorLevel) => {
+    try {
+      const symbology = 3
+      if  (moduleSize < 4 || 16 < moduleSize){
+        return Promise.reject('print2DCode is failed. If DataMatrix, moduleSize should be within 4 - 16.')
+      }
+      if (errorLevel < 0 || 3 < errorLevel){
+        return Promise.reject('print2DCode is failed. If DataMatrix, errorLevel should be within 0 - 3.')
+      }
+      await sunmiPrinterLibrary.print2DCode(text, symbology, moduleSize, errorLevel)
+      return Promise.resolve()
+    } catch (error: any) {
+      return Promise.reject('print2DCodeDataMatrix() is failed.' + error.message)
+    }
+  },
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
 
 /**
  * Implement n LFs on the paper
@@ -602,9 +578,14 @@ export const getCutPaperTimes = Platform.select<() => Promise<number>>({
  * SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'grayscale')
  */
 export const printImage = Platform.select<(base64: string, pixelWidth: number, type: 'binary' | 'grayscale') => Promise<void>>({
-  android: (base64, pixelWidth, type) => {
-    const _type: number = type === 'binary' ? 0 : 2
-    return sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
+  android: async (base64, pixelWidth, type) => {
+    try{
+      const _type: number = type === 'binary' ? 0 : 2
+      await sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
+      return Promise.resolve()
+    } catch (error: any) {
+      Promise.reject('printImage is failed.')
+    }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -655,7 +636,8 @@ export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'w
       const pixelWidth = MaxPixelWidth[ await getPaperWidth()]
       const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
       const text = separator.repeat(count)
-      return sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
+      await sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
+      return Promise.resolve()
     } catch(error: any) {
       Promise.reject('printHR is failed.' + error.message)
     }
