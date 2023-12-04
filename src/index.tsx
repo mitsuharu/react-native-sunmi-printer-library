@@ -625,16 +625,6 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-export type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
-const BarTypeCharacter: {[type in BarType]: string} = {
-  'line': '-',
-  'double': '=',
-  'dots': '･',
-  'wave': '~',
-  'plus': '+',
-  'star': '*',
-}
-
 /**
  * print HorizontalRule by text
  * 
@@ -652,13 +642,39 @@ const BarTypeCharacter: {[type in BarType]: string} = {
  * await SunmiPrinterLibrary.printHR('plus') 
  * 
  */
-export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
+export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star') => Promise<void>>({
   android: async (barType) => {
-    const lengthPerCharacter = 0.5
-    const pixelWidth = await getPrinterMaxPixelWidth()
-    const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
-    const text = BarTypeCharacter[barType].repeat(count)
-    return sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
+    try {
+      let separator = '-'
+      switch (barType){
+      case 'line':
+        separator = '-'
+        break
+      case 'double':
+        separator = '='
+        break
+      case 'dots':
+        separator = '･'
+        break
+      case 'wave':
+        separator = '~'
+        break
+      case 'plus':
+        separator = '+'
+        break
+      case 'star':
+        separator = '*'
+        break
+      }
+
+      const lengthPerCharacter = 0.5
+      const pixelWidth = await getPrinterMaxPixelWidth()
+      const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
+      const text = separator.repeat(count)
+      return sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
+    } catch(error: any) {
+      Promise.reject('printHR is failed.' + error.message)
+    }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
