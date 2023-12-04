@@ -53,8 +53,8 @@ await SunmiPrinterLibrary.printText('Hello World')
 
 ```typescript
 const base64 = 'data:image/png;base64,iVBORw0KGgoAAAA...'
-await SunmiPrinterLibrary.printBitmapBase64(base64, 384)
-await SunmiPrinterLibrary.printBitmapBase64Custom(base64, 384, 'grayscale')
+await SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'binary')
+await SunmiPrinterLibrary.printImage(base64, 384, 'grayscale')
 ```
 
 ### print QR code
