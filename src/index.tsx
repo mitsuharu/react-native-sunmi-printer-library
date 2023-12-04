@@ -120,10 +120,14 @@ const printerInit = Platform.select<() => Promise<boolean>>({
  * await SunmiPrinterLibrary.prepare()
  */
 export const prepare = async () => {
-  await connect()
-  await printerInit()
-  await setDefaultFontSize()
-  return true
+  try{
+    await connect()
+    await printerInit()
+    await setDefaultFontSize()
+    return true
+  } catch (error: any) {
+    return Promise.reject('prepare() is failed.' + error.message)
+  }
 }
 
 /**
@@ -133,9 +137,13 @@ export const prepare = async () => {
  * await SunmiPrinterLibrary.resetPrinterStyle()
  */
 export const resetPrinterStyle = async () => {
-  await printerInit()
-  await setDefaultFontSize()
-  return true
+  try{
+    await printerInit()
+    await setDefaultFontSize()
+    return true
+  } catch (error: any) {
+    return Promise.reject('prepare() is failed.' + error.message)
+  }
 }
 
 // !!! This is temporarily comment-out because it is not available. !!!
@@ -204,8 +212,12 @@ export const getPrinterModal = Platform.select<() => Promise<string>>({
  */
 export const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
   android: async () => {
-    const result = await sunmiPrinterLibrary.getPrinterPaper()
-    return Promise.resolve(result as PaperWidth)
+    try{
+      const result = await sunmiPrinterLibrary.getPrinterPaper()
+      return Promise.resolve(result as PaperWidth)
+    } catch (error: any) {
+      return Promise.reject('getPaperWidth() is failed.' + error.message)
+    }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -217,8 +229,12 @@ export const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
  */
 export const getPrinterMaxPixelWidth = Platform.select<() => Promise<number>>({
   android: async () => {
-    const result: PaperWidth = await getPaperWidth()
-    return Promise.resolve(MaxPixelWidth[result])
+    try{
+      const result: PaperWidth = await getPaperWidth()
+      return Promise.resolve(MaxPixelWidth[result])
+    } catch (error: any) {
+      return Promise.reject('getPrinterMaxPixelWidth() is failed.' + error.message)
+    }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
@@ -247,29 +263,20 @@ const PrinterState: { [value: number]: string } = {
 
 /**
  * Get the latest status of a printer
- * 
- * @returns value: number, description: string
- * - 1: The printer works normally
- * - 2: Preparing printer
- * - 3: Abnormal communication
- * - 4: Out of paper
- * - 5: Overheated
- * - 6: Open the lid
- * - 7: The paper cutter is abnormal
- * - 8: The paper cutter has been recovered
- * - 9: No black mark has been detected
- * - 505: No printer has been detected
- * - 507: Failed to upgrade the printer firmware
  */
 export const getPrinterState = Platform.select<() => Promise<{value: number, description: string}>>({
   android: async () => {
-    const value = await sunmiPrinterLibrary.updatePrinterState()
-    const description = PrinterState[value]
-    if (description){
-      return Promise.resolve({value, description})
-    }else {
-      return Promise.reject('getPrinterState is failed.') 
-    }
+    try{
+      const value = await sunmiPrinterLibrary.updatePrinterState()
+      const description = PrinterState[value]
+      if (description){
+        return Promise.resolve({value, description})
+      }else {
+        return Promise.reject('getPrinterState is failed.') 
+      }
+    } catch (error: any) {
+      return Promise.reject('getPrinterState() is failed.' + error.message)
+    } 
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
