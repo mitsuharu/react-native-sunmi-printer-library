@@ -20,7 +20,7 @@ type ComponentProps = {
   onPressPrintTextAwait: () => void
   onPressPrintTextAsync:() => void,
   onPressPrintTable: () => void
-  onPressPrintModifiedText: () => void
+  onPressPrintChangingStyle: () => void
   onPressPrintImage: () => void
   onPressPrintBarcode: () => void
   onPressScan: () => void
@@ -33,7 +33,7 @@ const Component: React.FC<ComponentProps> = ({
   onPressPrintTextAwait,
   onPressPrintTextAsync,
   onPressPrintTable,
-  onPressPrintModifiedText,
+  onPressPrintChangingStyle,
   onPressPrintImage,
   onPressPrintBarcode,
   onPressScan,
@@ -68,8 +68,8 @@ const Component: React.FC<ComponentProps> = ({
             onPress={onPressPrintTable}
           />
           <Button
-            text="print modified text"
-            onPress={onPressPrintModifiedText}
+            text="Print changing styles"
+            onPress={onPressPrintChangingStyle}
           />
           <Button
             text="print BarCode / QR code"
@@ -240,9 +240,9 @@ const Container: React.FC<Props> = () => {
     }
   }, [toast])
 
-  const onPressPrintModifiedText = useCallback(async () => {
+  const onPressPrintChangingStyle = useCallback(async () => {
     try {
-      await SunmiPrinterLibrary.printText('Print ModifiedText')
+      await SunmiPrinterLibrary.printText('Print changing styles')
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.setAlignment('right')
@@ -253,18 +253,18 @@ const Container: React.FC<Props> = () => {
 
       await SunmiPrinterLibrary.setAlignment('left')
       await SunmiPrinterLibrary.printText('left')
-
-      await SunmiPrinterLibrary.lineWrap(1)
       
-      await SunmiPrinterLibrary.setPrinterStyle('bold', true)
+      await SunmiPrinterLibrary.setTextStyle('bold', true)
       await SunmiPrinterLibrary.printText('bold')
-      await SunmiPrinterLibrary.setPrinterStyle('bold', false)
+      await SunmiPrinterLibrary.setTextStyle('bold', false)
       
-      await SunmiPrinterLibrary.setPrinterStyle('italic', true)
+      await SunmiPrinterLibrary.setTextStyle('italic', true)
       await SunmiPrinterLibrary.printText('italic')
-      await SunmiPrinterLibrary.setPrinterStyle('italic', false)
-      
-      await SunmiPrinterLibrary.lineWrap(1)
+      await SunmiPrinterLibrary.setTextStyle('italic', false)
+
+      await SunmiPrinterLibrary.setParagraphStyle('leftSpacing', 50)
+      await SunmiPrinterLibrary.printText('leftSpacing sets 50.')
+      await SunmiPrinterLibrary.setParagraphStyle('leftSpacing', 0)
 
       await SunmiPrinterLibrary.setFontSize(16)
       await SunmiPrinterLibrary.printText('font size is 16')
@@ -363,7 +363,7 @@ const Container: React.FC<Props> = () => {
       onPressPrintTextAwait,
       onPressPrintTextAsync,
       onPressPrintTable,
-      onPressPrintModifiedText, 
+      onPressPrintChangingStyle, 
       onPressPrintBarcode,
       onPressPrintImage,
       onPressScan

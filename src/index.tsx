@@ -21,8 +21,8 @@ interface SunmiPrinterLibrary {
   getPrintedLength: () => Promise<string>
   updatePrinterState: () => Promise<number>
   sendRAWData: (base64: string) => Promise<void>  
-  setPrinterStyleBoolean: (key: WoyouConstsBoolean, value: boolean) => Promise<boolean>
-  setPrinterStyleNumber: (key: WoyouConstsNumber, value: number) => Promise<boolean>
+  setTextStyle: (key: TextStyle, value: boolean) => Promise<boolean>
+  setParagraphStyle: (key: ParagraphStyle, value: number) => Promise<boolean>
   setAlignment: (alignment: Alignment) => Promise<void>
   setFontName: (fontName: FontName) => Promise<void>
   setBold: (isBold: boolean) => Promise<void>
@@ -54,8 +54,8 @@ const sunmiScannerLibrary: SunmiScannerLibrary = NativeModules.SunmiScannerLibra
 
 const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
 
-export type WoyouConstsBoolean = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
-export type WoyouConstsNumber = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
+export type TextStyle = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
+export type ParagraphStyle = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
 export type Alignment = 'left' | 'center' | 'right'
 export type FontName = 'chineseMonospaced'
 export type Typeface = 'default'
@@ -281,31 +281,25 @@ export const getPrinterState = Platform.select<() => Promise<{value: number, des
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-const _setPrinterStyle = Platform.select<((key: WoyouConstsBoolean | WoyouConstsNumber, value: boolean | number) => Promise<boolean>)>({
-  android: (key, value) => (typeof value === 'boolean')
-    ? sunmiPrinterLibrary.setPrinterStyleBoolean(key as WoyouConstsBoolean, value)
-    : sunmiPrinterLibrary.setPrinterStyleNumber(key as WoyouConstsNumber, value),
+/**
+ * Set printer style
+ * @param {TextStyle} key - "doubleWidth" | "doubleHeight" | "bold" | "underline" | "antiWhite" | "strikethrough" | "italic" | "invert"
+ * @param {boolean} value true | false
+ */
+export const setTextStyle = Platform.select<((style: TextStyle, value: boolean) => Promise<boolean>)>({
+  android: (style, value) => sunmiPrinterLibrary.setTextStyle(style as TextStyle, value),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
 /**
  * Set printer style
- * @param {WoyouConstsBoolean} key - "doubleWidth" | "doubleHeight" | "bold" | "underline" | "antiWhite" | "strikethrough" | "italic" | "invert"
- * @param {boolean} value true | false
- */
-export function setPrinterStyle(key: WoyouConstsBoolean, value: boolean): Promise<boolean>;
-/**
- * Set printer style
- * @param {WoyouConstsNumber} key - "textRightSpacing" | "relativePosition" | "absolutePosition" | "lineSpacing" | "leftSpacing" | "strikethroughStyle"
+ * @param {ParagraphStyle} key - "textRightSpacing" | "relativePosition" | "absolutePosition" | "lineSpacing" | "leftSpacing" | "strikethroughStyle"
  * @param {number} value integer
  */
-export function setPrinterStyle(key: WoyouConstsNumber, value: number): Promise<boolean>;
-/**
- * Set printer style
- */
-export function setPrinterStyle(key: WoyouConstsBoolean | WoyouConstsNumber, value: boolean | number): Promise<boolean> {
-  return _setPrinterStyle(key, value)
-}
+export const setParagraphStyle = Platform.select<((style: ParagraphStyle, value: number) => Promise<boolean>)>({
+  android: (style, value) => sunmiPrinterLibrary.setParagraphStyle(style as ParagraphStyle, value),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
 
 /**
  * Set alignment
