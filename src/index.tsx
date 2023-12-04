@@ -142,7 +142,7 @@ export const resetPrinterStyle = async () => {
     await setDefaultFontSize()
     return true
   } catch (error: any) {
-    return Promise.reject('prepare() is failed.' + error.message)
+    return Promise.reject('resetPrinterStyle() is failed.' + error.message)
   }
 }
 
@@ -217,23 +217,6 @@ export const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
       return Promise.resolve(result as PaperWidth)
     } catch (error: any) {
       return Promise.reject('getPaperWidth() is failed.' + error.message)
-    }
-  },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
-
-/**
- * Get max pixel width
- * 
- * @returns if width is 58mm" then 384 or it is "80mm" then 576
- */
-export const getPrinterMaxPixelWidth = Platform.select<() => Promise<number>>({
-  android: async () => {
-    try{
-      const result: PaperWidth = await getPaperWidth()
-      return Promise.resolve(MaxPixelWidth[result])
-    } catch (error: any) {
-      return Promise.reject('getPrinterMaxPixelWidth() is failed.' + error.message)
     }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
@@ -669,7 +652,7 @@ export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'w
       }
 
       const lengthPerCharacter = 0.5
-      const pixelWidth = await getPrinterMaxPixelWidth()
+      const pixelWidth = MaxPixelWidth[ await getPaperWidth()]
       const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
       const text = separator.repeat(count)
       return sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)

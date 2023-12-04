@@ -72,7 +72,7 @@ const Component: React.FC<ComponentProps> = ({
             onPress={onPressPrintChangingStyle}
           />
           <Button
-            text="print BarCode / QR code"
+            text="print Barcode / QR code"
             onPress={onPressPrintBarcode}
           />
           <Button
