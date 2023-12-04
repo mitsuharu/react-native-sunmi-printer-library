@@ -311,16 +311,16 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.printText('Print Image')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      await SunmiPrinterLibrary.printText('(1) monochrome')
+      await SunmiPrinterLibrary.printText('(1) binary')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      await SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 384)
+      await SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'binary')
       await SunmiPrinterLibrary.lineWrap(2)
 
       await SunmiPrinterLibrary.printText('(2) grayscale')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      await SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 384, 'grayscale')
+      await SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'grayscale')
       await SunmiPrinterLibrary.lineWrap(4)
     } catch(error: any) {
       console.warn(error)

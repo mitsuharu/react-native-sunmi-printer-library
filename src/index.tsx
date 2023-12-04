@@ -63,7 +63,6 @@ export type Barcode1DSymbology = 'UPC-A' | 'UPC-E' | 'JAN13(EAN13)' | 'JAN8(EAN8
 export type TextPosition = 'none' | 'textAboveBarcode' | 'textUnderBarcode' | 'textAboveAndUnderBarcode'
 export type QRErrorLevel = 'low' | 'middle' | 'quartile' | 'high'
 export type Barcode2DSymbology = 'QR' | 'PDF417' | 'DataMatrix'
-export type BitmapType = 'monochrome' | 'monochrome200' |'grayscale'
 export type PaperWidth = '58mm' | '80mm'
 export const MaxPixelWidth: {[width in PaperWidth]: number} = {
   '58mm' : 384,
@@ -606,50 +605,22 @@ export const getCutPaperTimes = Platform.select<() => Promise<number>>({
 })
 
 /**
- * printBitmapBase64
+ * print image
  * 
  * @description
  * print image that is encoded Base64
  * 
  * @param {string} base64 'data:image/png;base64,iVBORw0KGgoAAAA...'
  * @param {number} pixelWidth if paper width is 58mm then max 384 or it is 80mm then max 576.
+ * @param {'binary' | 'grayscale'} type 'binary' or 'grayscale'
  * 
  * @example
- * SunmiPrinterLibrary.printBitmapBase64(sampleImageBase64, 194)
+ * SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'grayscale')
  */
-export const printBitmapBase64 = Platform.select<(base64: string, pixelWidth: number | 384 | 576) => Promise<void>>({
-  android: (base64, pixelWidth) => sunmiPrinterLibrary.printBitmapBase64(base64, pixelWidth),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
-
-/**
- * printBitmapBase64Custom
- * 
- * @description
- * print image that is encoded Base64
- * 
- * @param {string} base64 'data:image/png;base64,iVBORw0KGgoAAAA...'
- * @param {number} pixelWidth if paper width is 58mm then max 384 or it is 80mm then max 576.
- * @param {BitmapType} type 'monochrome' | 'monochrome200' |'grayscale'
- * 
- * @example
- * SunmiPrinterLibrary.printBitmapBase64Custom(sampleImageBase64, 194, 'grayscale')
- */
-export const printBitmapBase64Custom = Platform.select<(base64: string, pixelWidth: number | 384 | 576, type: BitmapType) => Promise<void>>({
+export const printImage = Platform.select<(base64: string, pixelWidth: number, type: 'binary' | 'grayscale') => Promise<void>>({
   android: (base64, pixelWidth, type) => {
-    let _type: number | null = null
-    if (type === 'monochrome'){
-      _type = 0
-    } else if (type === 'monochrome200'){
-      _type = 1
-    } if (type === 'grayscale'){
-      _type = 2
-    } 
-    if (_type == null){
-      return Promise.reject('printBitmapBase64Custom is failed. parameters are incorrect.')
-    }else {
-      return sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
-    }
+    const _type: number = type === 'binary' ? 0 : 2
+    return sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
