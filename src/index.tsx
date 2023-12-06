@@ -172,44 +172,44 @@ export const printSelfChecking = Platform.select<() => Promise<boolean>>({
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-/**
- * Get the SN of a printer board
- */
-export const getPrinterSerialNo = Platform.select<() => Promise<string>>({
-  android: () => sunmiPrinterLibrary.getPrinterSerialNo(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// /**
+//  * Get the SN of a printer board
+//  */
+// export const getPrinterSerialNo = Platform.select<() => Promise<string>>({
+//   android: () => sunmiPrinterLibrary.getPrinterSerialNo(),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
-/**
- * Get printer firmware version
- */
-export const getPrinterVersion = Platform.select<() => Promise<string>>({
-  android: () => sunmiPrinterLibrary.getPrinterVersion(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// /**
+//  * Get printer firmware version
+//  */
+// export const getPrinterVersion = Platform.select<() => Promise<string>>({
+//   android: () => sunmiPrinterLibrary.getPrinterVersion(),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
-/**
- * Get the version number of a print service
- */
-export const getServiceVersion = Platform.select<() => Promise<string>>({
-  android: () => sunmiPrinterLibrary.getServiceVersion(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// /**
+//  * Get the version number of a print service
+//  */
+// export const getServiceVersion = Platform.select<() => Promise<string>>({
+//   android: () => sunmiPrinterLibrary.getServiceVersion(),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
-/**
- * Get printer type interface
- */
-export const getPrinterModal = Platform.select<() => Promise<string>>({
-  android: () => sunmiPrinterLibrary.getPrinterModal(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
-})
+// /**
+//  * Get printer type interface
+//  */
+// export const getPrinterModal = Platform.select<() => Promise<string>>({
+//   android: () => sunmiPrinterLibrary.getPrinterModal(),
+//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+// })
 
 /**
  * Get the current paper spec of a printer
  * 
  * @returns "58mm" | "80mm"
  */
-export const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
+const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
   android: async () => {
     try{
       const result = await sunmiPrinterLibrary.getPrinterPaper()
@@ -229,7 +229,7 @@ export const getPrintedLength = Platform.select<() => Promise<string>>({
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
-const PrinterState: { [value: number]: string } = {
+const PrinterState = {
   1: 'The printer works normally',
   2: 'Preparing printer',
   3: 'Abnormal communication',
@@ -243,19 +243,17 @@ const PrinterState: { [value: number]: string } = {
   507: 'Failed to upgrade the printer firmware',
 }
 
+type PrinterStateKeys = keyof typeof PrinterState
+
 /**
  * Get the latest status of a printer
  */
 export const getPrinterState = Platform.select<() => Promise<{value: number, description: string}>>({
   android: async () => {
     try{
-      const value = await sunmiPrinterLibrary.updatePrinterState()
+      const value: PrinterStateKeys = await sunmiPrinterLibrary.updatePrinterState() as PrinterStateKeys
       const description = PrinterState[value]
-      if (description){
-        return Promise.resolve({value, description})
-      }else {
-        return Promise.reject('getPrinterState is failed.') 
-      }
+      return Promise.resolve({value, description})
     } catch (error: any) {
       return Promise.reject('getPrinterState() is failed.' + error.message)
     } 
