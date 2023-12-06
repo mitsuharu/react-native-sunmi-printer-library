@@ -463,7 +463,7 @@ export const printQRCode = Platform.select<(text: string, moduleSize: number, er
   android: async (text, moduleSize, errorLevel) => {
     try {
       if (moduleSize < 4 || 16 < moduleSize) {
-        return Promise.reject('printQrCode is failed. moduleSize should be within 4-16.')
+        return Promise.reject('printQrCode is failed. moduleSize should be within 4 - 16.')
       }
       await sunmiPrinterLibrary.printQRCode(text, moduleSize, errorLevel)
       return Promise.resolve()
