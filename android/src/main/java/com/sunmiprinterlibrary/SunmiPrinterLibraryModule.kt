@@ -43,15 +43,15 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         }
         override fun onDisconnected() {
           printerService = null
-          promise.reject("0", "connect() is failed.")
+          promise.reject("0", "native#connect() is failed.")
         }
       }
       val result = InnerPrinterManager.getInstance().bindService(getReactApplicationContext(), callback)
       if (!result){
-        promise.reject("0", "connect() is failed.")
+        promise.reject("0", "native#connect() is failed.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "connect() is failed. " + e.message)
+      promise.reject("0", "native#connect() is failed. " + e.message)
     }
   }
 
@@ -60,7 +60,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     try {
       val callback: InnerPrinterCallback = object : InnerPrinterCallback() {
         override fun onConnected(service: SunmiPrinterService) {
-          promise.reject("0", "disconnect() is failed.")
+          promise.reject("0", "native#disconnect() is failed.")
         }
         override fun onDisconnected() {
           printerService = null
@@ -69,7 +69,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       }
       InnerPrinterManager.getInstance().unBindService(getReactApplicationContext(), callback)
     } catch (e: Exception) {
-      promise.reject("0", "disconnect() is failed. " + e.message)
+      promise.reject("0", "native#disconnect() is failed. " + e.message)
     }
   }
 
@@ -77,10 +77,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printerInit(promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printerInit() is failed.")
       printerService?.printerInit(callback)
     } catch (e: Exception) {
-      promise.reject("0", "printerInit is failed. " + e.message)
+      promise.reject("0", "native#printerInit() is failed. " + e.message)
     }
   }
 
@@ -88,10 +88,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printerSelfChecking(promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printSelfChecking() is failed.")
       printerService?.printerSelfChecking(callback)
     } catch (e: Exception) {
-      promise.reject("0", "printSelfChecking is failed. " + e.message)
+      promise.reject("0", "native#printSelfChecking() is failed. " + e.message)
     }
   }
 
@@ -99,10 +99,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun getPrinterInfo(promise: Promise) {
     validatePrinterService(promise)
     try {
-      val serialNumber = printerService?.getPrinterSerialNo()
-      val printerVersion = printerService?.getPrinterVersion()
-      val serviceVersion = printerService?.getServiceVersion()
-      val printerModal = printerService?.getPrinterModal()
+      val serialNumber = printerService?.getPrinterSerialNo()?.replace("[\n\r]".toRegex(), "")
+      val printerVersion = printerService?.getPrinterVersion()?.replace("[\n\r]".toRegex(), "")
+      val serviceVersion = printerService?.getServiceVersion()?.replace("[\n\r]".toRegex(), "")
+      val printerModal = printerService?.getPrinterModal()?.replace("[\n\r]".toRegex(), "")
       val paperWidth = if (printerService?.getPrinterPaper() == 1) "58mm" else "80mm"
 
       val map: WritableMap = Arguments.createMap()
@@ -114,7 +114,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
 
       promise.resolve(map)
     } catch (e: Exception) {
-      promise.reject("0", "getPrinterInfo is failed. " + e.message)
+      promise.reject("0", "native#getPrinterInfo() is failed. " + e.message)
     }
   }
 
@@ -125,7 +125,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result = printerService?.getPrinterSerialNo()
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("0", "getPrinterSerialNo is failed. " + e.message)
+      promise.reject("0", "native#getPrinterSerialNo() is failed. " + e.message)
     }
   }
 
@@ -136,7 +136,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result = printerService?.getPrinterVersion()
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("0", "getPrinterVersion is failed. " + e.message)
+      promise.reject("0", "native#getPrinterVersion() is failed. " + e.message)
     }
   }
 
@@ -147,7 +147,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result = printerService?.getServiceVersion()
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("0", "getServiceVersion is failed. " + e.message)
+      promise.reject("0", "native#getServiceVersion() is failed. " + e.message)
     }
   }
 
@@ -158,7 +158,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result = printerService?.getPrinterModal()
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("0", "getPrinterModal is failed. " + e.message)
+      promise.reject("0", "native#getPrinterModal() is failed. " + e.message)
     }
   }
 
@@ -170,7 +170,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result1 = if (result0 == 1) "58mm" else "80mm"
       promise.resolve(result1)
     } catch (e: Exception) {
-      promise.reject("0", "getPrinterPaper is failed. " + e.message)
+      promise.reject("0", "native#getPrinterPaper() is failed. " + e.message)
     }
   }
 
@@ -178,10 +178,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun getPrintedLength(promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#getPrintedLength() is failed.")
       printerService?.getPrintedLength(callback)
     } catch (e: Exception) {
-      promise.reject("0", "getPrintedLength is failed. " + e.message)
+      promise.reject("0", "native#getPrintedLength() is failed. " + e.message)
     }
   }
 
@@ -192,7 +192,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result = printerService?.updatePrinterState()
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("0", "updatePrinterState is failed. " + e.message)
+      promise.reject("0", "native#updatePrinterState() is failed. " + e.message)
     }
   }
 
@@ -200,16 +200,16 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun sendRAWData(base64: String, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#sendRAWData() is failed.")
       val date = Base64.decode(base64, Base64.DEFAULT);
       printerService?.sendRAWData(date, callback);
     } catch (e: Exception) {
-      promise.reject("0", "sendRAWData is failed. " + e.message)
+      promise.reject("0", "native#sendRAWData() is failed. " + e.message)
     }
   }
 
   @ReactMethod
-  fun setPrinterStyleBoolean(key: String, value: Boolean, promise: Promise) {
+  fun setTextStyle(key: String, value: Boolean, promise: Promise) {
     validatePrinterService(promise)
     try {
       val _key = when (key) {
@@ -232,15 +232,15 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         printerService?.setPrinterStyle(_key, _value)
         promise.resolve(true)
       }else{
-        promise.reject("0", "key or value is incorrect.")
+        promise.reject("0", "native#setTextStyle() is failed. key or value is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "setPrinterStyleBoolean is failed. " + e.message)
+      promise.reject("0", "native#setTextStyle() is failed. " + e.message)
     }
   }
 
   @ReactMethod
-  fun setPrinterStyleNumber(key: String, value: Int, promise: Promise) {
+  fun setParagraphStyle(key: String, value: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
       val _key = when (key) {
@@ -256,10 +256,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         printerService?.setPrinterStyle(_key, value)
         promise.resolve(true)
       } else {
-        promise.reject("0", "key is incorrect.")
+        promise.reject("0", "native#setParagraphStyle() is failed. key is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "setPrinterStyleNumber is failed. " + e.message)
+      promise.reject("0", "native#setParagraphStyle() is failed. " + e.message)
     }
   }
 
@@ -269,13 +269,13 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     try {
       val _key = alignmentToInt(key)
       if (_key != null){
-        val callback = makeInnerResultCallback(promise)
+        val callback = makeInnerResultCallback(promise, "native#setAlignment is failed.")
         printerService?.setAlignment(_key, callback)
       } else {
-        promise.reject("0", "key is incorrect.")
+        promise.reject("0", "native#setAlignment is failed. key is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "setAlignment is failed. " + e.message)
+      promise.reject("0", "native#setAlignment is failed. " + e.message)
     }
   }
 
@@ -288,13 +288,13 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         else -> null
       }
       if (_fontName != null){
-        val callback = makeInnerResultCallback(promise)
+        val callback = makeInnerResultCallback(promise, "native#setFontName() is failed.")
         printerService?.setFontName(_fontName, callback)
       } else {
-        promise.reject("0", "setFontName is failed because key is incorrect.")
+        promise.reject("0", "native#setFontName() is failed because key is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "setFontName is failed. " + e.message)
+      promise.reject("0", "native#setFontName() is failed. " + e.message)
     }
   }
 
@@ -302,10 +302,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun setFontSize(fontSize: Float, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#setFontSize() is failed.")
       printerService?.setFontSize(fontSize, callback)
     } catch (e: Exception) {
-      promise.reject("0", "setFontSize is failed. " + e.message)
+      promise.reject("0", "native#setFontSize() is failed. " + e.message)
     }
   }
 
@@ -313,14 +313,14 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun setBold(isBold: Boolean, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#setBold() is failed.")
       val data = ByteArray(3)
       data[0] = 0x1B
       data[1] = 0x45
       data[2] = if (isBold) { 0x1 } else { 0x0 }
       printerService?.sendRAWData(data, callback);
     } catch (e: Exception) {
-      promise.reject("0", "setBold is failed. " + e.message)
+      promise.reject("0", "native#setBold() is failed. " + e.message)
     }
   }
 
@@ -328,10 +328,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printText(text: String, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printText() is failed.")
       printerService?.printText(text + "\n", callback)
     } catch (e: Exception) {
-      promise.reject("0", "printText is failed. " + e.message)
+      promise.reject("0", "native#printText() is failed. " + e.message)
     }
   }
 
@@ -339,7 +339,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printTextWithFont(text: String, typeface: String, fontSize: Float, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printTextWithFont is failed.")
       val _typeface = when (typeface) {
         "default" -> ""
         else -> null
@@ -347,10 +347,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       if (_typeface != null){
         printerService?.printTextWithFont(text + "\n", _typeface, fontSize, callback)
       } else {
-        promise.reject("0", "printTextWithFont is failed because typeface is incorrect.")
+        promise.reject("0", "native#printTextWithFont is failed because typeface is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "printTextWithFont is failed. " + e.message)
+      promise.reject("0", "native#printTextWithFont is failed. " + e.message)
     }
   }
 
@@ -358,10 +358,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printOriginalText(text: String, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printOriginalText is failed.")
       printerService?.printOriginalText(text + "\n", callback)
     } catch (e: Exception) {
-      promise.reject("0", "printOriginalText is failed. " + e.message)
+      promise.reject("0", "native#printOriginalText is failed. " + e.message)
     }
   }
 
@@ -369,7 +369,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printColumnsText(texts: ReadableArray, widths: ReadableArray, alignments: ReadableArray, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printColumnsText is failed.")
 
       var _texts = arrayOf<String>()
       for (i in 0..(texts.size()-1)){
@@ -392,10 +392,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       if (_texts.size == _alignments.size && _texts.size == _widths.size) {
          printerService?.printColumnsText(_texts, _widths, _alignments, callback)
        } else {
-         promise.reject("0", "printColumnsText is failed because alignments is incorrect.")
+         promise.reject("0", "native#printColumnsText is failed because alignments is incorrect.")
        }
     } catch (e: Exception) {
-      promise.reject("0", "printColumnsText is failed. " + e.message)
+      promise.reject("0", "native#printColumnsText is failed. " + e.message)
     }
   }
 
@@ -403,7 +403,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printColumnsString(texts: ReadableArray, widths: ReadableArray, alignments: ReadableArray, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printColumnsString is failed.")
 
       var _texts = arrayOf<String>()
       for (i in 0..(texts.size()-1)){
@@ -426,10 +426,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       if (_texts.size == _alignments.size && _texts.size == _widths.size) {
          printerService?.printColumnsString(_texts, _widths, _alignments, callback)
        } else {
-         promise.reject("0", "printColumnsString is failed because alignments is incorrect.")
+         promise.reject("0", "native#printColumnsString is failed because alignments is incorrect.")
        }
     } catch (e: Exception) {
-      promise.reject("0", "printColumnsString is failed. " + e.message)
+      promise.reject("0", "native#printColumnsString is failed. " + e.message)
     }
   }
 
@@ -458,13 +458,13 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       }
 
       if (_symbology != null && _textPosition != null) {
-        val callback = makeInnerResultCallback(promise)
+        val callback = makeInnerResultCallback(promise, "native#printBarCode is failed.")
         printerService?.printBarCode(text, _symbology, height, width, _textPosition, callback)
       } else {
-        promise.reject("0", "printBarCode is failed because alignments is incorrect.")
+        promise.reject("0", "native#printBarCode is failed because alignments is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "printBarCode is failed. " + e.message)
+      promise.reject("0", "native#printBarCode is failed. " + e.message)
     }
   }
 
@@ -480,13 +480,13 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
         else -> null
       }
       if (_errorLevel != null) {
-        val callback = makeInnerResultCallback(promise)
+        val callback = makeInnerResultCallback(promise, "native#printQRCode is failed.")
         printerService?.printQRCode(text, moduleSize, _errorLevel, callback)
       } else {
-        promise.reject("0", "printQRCode is failed because alignments is incorrect.")
+        promise.reject("0", "native#printQRCode is failed because alignments is incorrect.")
       }
     } catch (e: Exception) {
-      promise.reject("0", "printQRCode is failed. " + e.message)
+      promise.reject("0", "native#printQRCode is failed. " + e.message)
     }
   }
 
@@ -494,10 +494,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun print2DCode(text: String, symbology: Int, moduleSize: Int, errorLevel: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#print2DCode is failed.")
         printerService?.print2DCode(text, symbology, moduleSize, errorLevel, callback)
     } catch (e: Exception) {
-      promise.reject("0", "print2DCode is failed. " + e.message)
+      promise.reject("0", "native#print2DCode is failed. " + e.message)
     }
   }
 
@@ -505,10 +505,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun lineWrap(count: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#lineWrap is failed.")
       printerService?.lineWrap(count, callback)
     } catch (e: Exception) {
-      promise.reject("0", "lineWrap is failed. " + e.message)
+      promise.reject("0", "native#lineWrap is failed. " + e.message)
     }
   }
 
@@ -516,10 +516,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun cutPaper(promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#cutPaper is failed.")
       printerService?.cutPaper(callback)
     } catch (e: Exception) {
-      promise.reject("0", "cutPaper is failed. " + e.message)
+      promise.reject("0", "native#cutPaper is failed. " + e.message)
     }
   }
 
@@ -530,7 +530,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val result = printerService?.getCutPaperTimes()
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("0", "cutPaper is failed. " + e.message)
+      promise.reject("0", "native#cutPaper is failed. " + e.message)
     }
   }
 
@@ -538,7 +538,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printBitmapBase64(base64: String, pixelWidth: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printBitmapBase64 is failed.")
       val pureBase64Encoded = base64.substring(base64.indexOf(",") + 1)
       val decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT)
       val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
@@ -547,7 +547,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
       printerService?.printBitmap(image, callback)
     } catch (e: Exception) {
-      promise.reject("0", "printBitmapBase64 is failed. " + e.message)
+      promise.reject("0", "native#printBitmapBase64 is failed. " + e.message)
     }
   }
 
@@ -555,7 +555,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun printBitmapBase64Custom(base64: String, pixelWidth: Int, type: Int, promise: Promise) {
     validatePrinterService(promise)
     try {
-      val callback = makeInnerResultCallback(promise)
+      val callback = makeInnerResultCallback(promise, "native#printBitmapBase64Custom is failed.")
       val pureBase64Encoded = base64.substring(base64.indexOf(",") + 1)
       val decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT)
       val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
@@ -564,7 +564,7 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
       printerService?.printBitmapCustom(image, type, callback)
     } catch (e: Exception) {
-      promise.reject("0", "printBitmapBase64Custom is failed. " + e.message)
+      promise.reject("0", "native#printBitmapBase64Custom is failed. " + e.message)
     }
   }
 
@@ -580,13 +580,14 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   /**
    * 結果用のコールバックを生成する
    */
-  private fun makeInnerResultCallback(promise: Promise): InnerResultCallback {
+  private fun makeInnerResultCallback(promise: Promise, errorMessage: String? = null): InnerResultCallback {
     val callback: InnerResultCallback = object : InnerResultCallback() {
       override fun onRunResult(isSuccess: Boolean) {
         if (isSuccess){
           promise.resolve(isSuccess)
         } else {
-          promise.reject("0", "isSuccess is false.")
+          val message = if (errorMessage != null) errorMessage else "onRunResult is failed."
+          promise.reject("0", message)
         }
       }
       override fun onReturnString(result: String) {

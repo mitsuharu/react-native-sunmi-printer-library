@@ -23,10 +23,10 @@ You see `example` directory for details.
 ```typescript
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 ```
+
 ```typescript
 await SunmiPrinterLibrary.prepare()
 ```
-
 
 ### print Text
 
@@ -40,11 +40,12 @@ OR
 SunmiPrinterLibrary.printText('Hello World')
 ```
 
-### modify test
+### change style
 
 ```typescript
 await SunmiPrinterLibrary.setAlignment('center')
-await SunmiPrinterLibrary.setPrinterStyle('bold', true)
+await SunmiPrinterLibrary.setTextStyle('bold', true)
+await SunmiPrinterLibrary.setParagraphStyle('textRightSpacing', 5)
 await SunmiPrinterLibrary.setFontSize(32)
 await SunmiPrinterLibrary.printText('Hello World')
 ```
@@ -53,8 +54,8 @@ await SunmiPrinterLibrary.printText('Hello World')
 
 ```typescript
 const base64 = 'data:image/png;base64,iVBORw0KGgoAAAA...'
-await SunmiPrinterLibrary.printBitmapBase64(base64, 384)
-await SunmiPrinterLibrary.printBitmapBase64Custom(base64, 384, 'grayscale')
+await SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'binary')
+await SunmiPrinterLibrary.printImage(base64, 384, 'grayscale')
 ```
 
 ### print QR code
@@ -66,7 +67,7 @@ await SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
 ### scan QR code
 
 ```typescript
-const reulst = await SunmiPrinterLibrary.scan()
+const result = await SunmiPrinterLibrary.scan()
 ```
 
 OR
@@ -74,6 +75,7 @@ OR
 ```typescript
 SunmiPrinterLibrary.scan()
 ```
+
 ```typescript
 useEffect(() => {
    DeviceEventEmitter.addListener(
@@ -92,7 +94,6 @@ useEffect(() => {
     }
 }, [])
 ```
-
 
 ### not support
 
