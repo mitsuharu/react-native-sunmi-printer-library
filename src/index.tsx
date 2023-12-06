@@ -633,7 +633,8 @@ export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'w
       }
 
       const lengthPerCharacter = 0.5
-      const pixelWidth = MaxPixelWidth[ await getPaperWidth()]
+      const paperWidth = await getPaperWidth()
+      const pixelWidth = MaxPixelWidth[paperWidth]
       const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
       const text = separator.repeat(count)
       await sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)

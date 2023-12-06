@@ -67,7 +67,7 @@ await SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
 ### scan QR code
 
 ```typescript
-const reulst = await SunmiPrinterLibrary.scan()
+const result = await SunmiPrinterLibrary.scan()
 ```
 
 OR
@@ -94,7 +94,6 @@ useEffect(() => {
     }
 }, [])
 ```
-
 
 ### not support
 
