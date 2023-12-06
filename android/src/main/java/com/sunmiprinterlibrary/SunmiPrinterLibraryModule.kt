@@ -99,10 +99,10 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
   fun getPrinterInfo(promise: Promise) {
     validatePrinterService(promise)
     try {
-      val serialNumber = printerService?.getPrinterSerialNo()
-      val printerVersion = printerService?.getPrinterVersion()
-      val serviceVersion = printerService?.getServiceVersion()
-      val printerModal = printerService?.getPrinterModal()
+      val serialNumber = printerService?.getPrinterSerialNo()?.replace("[\n\r]".toRegex(), "")
+      val printerVersion = printerService?.getPrinterVersion()?.replace("[\n\r]".toRegex(), "")
+      val serviceVersion = printerService?.getServiceVersion()?.replace("[\n\r]".toRegex(), "")
+      val printerModal = printerService?.getPrinterModal()?.replace("[\n\r]".toRegex(), "")
       val paperWidth = if (printerService?.getPrinterPaper() == 1) "58mm" else "80mm"
 
       val map: WritableMap = Arguments.createMap()

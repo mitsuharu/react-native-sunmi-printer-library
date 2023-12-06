@@ -203,6 +203,41 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.printText('Print Table')
       await SunmiPrinterLibrary.lineWrap(1)
 
+      const {
+        serialNumber, printerVersion, serviceVersion, printerModal, paperWidth, pixelWidth
+      } = await SunmiPrinterLibrary.getPrinterInfo()
+
+      const widths = [30, 25]
+      await SunmiPrinterLibrary.printColumnsString(
+        ['name', 'value'], 
+        widths, 
+        ['center', 'center' ])
+      await SunmiPrinterLibrary.printColumnsString(
+        ['serial number:', serialNumber], 
+        widths, 
+        ['left', 'left'])
+      await SunmiPrinterLibrary.printColumnsString(
+        ['printer version:', printerVersion], 
+        widths, 
+        ['left', 'left'])
+      await SunmiPrinterLibrary.printColumnsString(
+        ['service version:', serviceVersion], 
+        widths, 
+        ['left', 'left'])
+      await SunmiPrinterLibrary.printColumnsString(
+        ['printer modal:', printerModal], 
+        widths, 
+        ['left', 'left'])
+      await SunmiPrinterLibrary.printColumnsString(
+        ['paper width:', paperWidth], 
+        widths, 
+        ['left', 'left'])
+      await SunmiPrinterLibrary.printColumnsString(
+        ['pixel width:', `${pixelWidth}`], 
+        widths, 
+        ['left', 'left'])
+          
+      SunmiPrinterLibrary.lineWrap(1)
       await SunmiPrinterLibrary.printHR('plus')
 
       await SunmiPrinterLibrary.printColumnsString(
@@ -232,7 +267,7 @@ const Container: React.FC<Props> = () => {
         ['left', 'center', 'center', 'center'])
 
       await SunmiPrinterLibrary.printHR('star')
-        
+
       await SunmiPrinterLibrary.lineWrap(3)
     } catch(error: any) {
       console.warn(error)
