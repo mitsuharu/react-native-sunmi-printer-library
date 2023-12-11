@@ -640,7 +640,7 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
       await sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
       return Promise.resolve()
     } catch(error: any) {
-      Promise.reject('printHR is failed.' + error.message)
+      return Promise.reject('printHR is failed.' + error.message)
     }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
