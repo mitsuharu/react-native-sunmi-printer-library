@@ -584,7 +584,7 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
       await sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
       return Promise.resolve()
     } catch (error: any) {
-      Promise.reject('printImage is failed.')
+      return Promise.reject('printImage is failed.')
     }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
