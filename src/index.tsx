@@ -84,6 +84,7 @@ export type PrinterInfo = NativePrinterInfo & {
   pixelWidth: number,
 }
 export type PrintImageType = 'binary' | 'grayscale'
+export type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
 
 /**
  * connect printer
@@ -606,7 +607,7 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
  * await SunmiPrinterLibrary.printHR('plus') 
  * 
  */
-export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star') => Promise<void>>({
+export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
   android: async (barType) => {
     try {
       let separator = '-'
