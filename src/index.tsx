@@ -83,6 +83,7 @@ export type PrinterInfo = NativePrinterInfo & {
   paperWidth: PaperWidth,
   pixelWidth: number,
 }
+export type PrintImageType = 'binary' | 'grayscale'
 
 /**
  * connect printer
@@ -570,12 +571,12 @@ export const getCutPaperTimes = Platform.select<() => Promise<number>>({
  * 
  * @param {string} base64 'data:image/png;base64,iVBORw0KGgoAAAA...'
  * @param {number} pixelWidth if paper width is 58mm then max 384 or it is 80mm then max 576.
- * @param {'binary' | 'grayscale'} type 'binary' or 'grayscale'
+ * @param {PrintImageType} type 'binary' or 'grayscale'
  * 
  * @example
  * SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'grayscale')
  */
-export const printImage = Platform.select<(base64: string, pixelWidth: number, type: 'binary' | 'grayscale') => Promise<void>>({
+export const printImage = Platform.select<(base64: string, pixelWidth: number, type: PrintImageType) => Promise<void>>({
   android: async (base64, pixelWidth, type) => {
     try{
       const _type: number = type === 'binary' ? 0 : 2
