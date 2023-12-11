@@ -83,6 +83,8 @@ export type PrinterInfo = NativePrinterInfo & {
   paperWidth: PaperWidth,
   pixelWidth: number,
 }
+export type PrintImageType = 'binary' | 'grayscale'
+export type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
 
 /**
  * connect printer
@@ -570,19 +572,19 @@ export const getCutPaperTimes = Platform.select<() => Promise<number>>({
  * 
  * @param {string} base64 'data:image/png;base64,iVBORw0KGgoAAAA...'
  * @param {number} pixelWidth if paper width is 58mm then max 384 or it is 80mm then max 576.
- * @param {'binary' | 'grayscale'} type 'binary' or 'grayscale'
+ * @param {PrintImageType} type 'binary' or 'grayscale'
  * 
  * @example
  * SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'grayscale')
  */
-export const printImage = Platform.select<(base64: string, pixelWidth: number, type: 'binary' | 'grayscale') => Promise<void>>({
+export const printImage = Platform.select<(base64: string, pixelWidth: number, type: PrintImageType) => Promise<void>>({
   android: async (base64, pixelWidth, type) => {
     try{
       const _type: number = type === 'binary' ? 0 : 2
       await sunmiPrinterLibrary.printBitmapBase64Custom(base64, pixelWidth, _type)
       return Promise.resolve()
     } catch (error: any) {
-      Promise.reject('printImage is failed.')
+      return Promise.reject('printImage is failed.')
     }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
@@ -605,7 +607,7 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
  * await SunmiPrinterLibrary.printHR('plus') 
  * 
  */
-export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star') => Promise<void>>({
+export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
   android: async (barType) => {
     try {
       let separator = '-'
@@ -638,7 +640,7 @@ export const printHR = Platform.select<(barType: 'line' | 'double' | 'dots' | 'w
       await sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
       return Promise.resolve()
     } catch(error: any) {
-      Promise.reject('printHR is failed.' + error.message)
+      return Promise.reject('printHR is failed.' + error.message)
     }
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
@@ -693,14 +695,18 @@ export const scan = Platform.select<() => Promise<string>>({
  */
 export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
   android: async () => {
-    const nativeResult: NativePrinterInfo = await sunmiPrinterLibrary.getPrinterInfo()
-    const paperWidth: PaperWidth = nativeResult.paperWidth as PaperWidth
-    const result: PrinterInfo = {
-      ...nativeResult,
-      paperWidth: paperWidth,
-      pixelWidth : MaxPixelWidth[paperWidth],
+    try{
+      const nativeResult: NativePrinterInfo = await sunmiPrinterLibrary.getPrinterInfo()
+      const paperWidth: PaperWidth = nativeResult.paperWidth as PaperWidth
+      const result: PrinterInfo = {
+        ...nativeResult,
+        paperWidth: paperWidth,
+        pixelWidth : MaxPixelWidth[paperWidth],
+      }
+      return Promise.resolve(result)
+    } catch (error: any){
+      return Promise.reject('getPrinterInfo is failed.')
     }
-    return Promise.resolve(result)
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
