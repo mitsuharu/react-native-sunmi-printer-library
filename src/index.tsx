@@ -695,14 +695,18 @@ export const scan = Platform.select<() => Promise<string>>({
  */
 export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
   android: async () => {
-    const nativeResult: NativePrinterInfo = await sunmiPrinterLibrary.getPrinterInfo()
-    const paperWidth: PaperWidth = nativeResult.paperWidth as PaperWidth
-    const result: PrinterInfo = {
-      ...nativeResult,
-      paperWidth: paperWidth,
-      pixelWidth : MaxPixelWidth[paperWidth],
+    try{
+      const nativeResult: NativePrinterInfo = await sunmiPrinterLibrary.getPrinterInfo()
+      const paperWidth: PaperWidth = nativeResult.paperWidth as PaperWidth
+      const result: PrinterInfo = {
+        ...nativeResult,
+        paperWidth: paperWidth,
+        pixelWidth : MaxPixelWidth[paperWidth],
+      }
+      return Promise.resolve(result)
+    } catch (error: any){
+      return Promise.reject('getPrinterInfo is failed.')
     }
-    return Promise.resolve(result)
   },
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
