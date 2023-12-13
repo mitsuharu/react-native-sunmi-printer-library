@@ -25,7 +25,11 @@ import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-libr
 ```
 
 ```typescript
-await SunmiPrinterLibrary.prepare()
+try {
+	await SunmiPrinterLibrary.prepare()
+} catch (error: any) {
+	console.warn("This device is not supported.")
+}
 ```
 
 ### print Text
@@ -54,7 +58,7 @@ await SunmiPrinterLibrary.printText('Hello World')
 
 ```typescript
 const base64 = 'data:image/png;base64,iVBORw0KGgoAAAA...'
-await SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'binary')
+await SunmiPrinterLibrary.printImage(base64, 384, 'binary')
 await SunmiPrinterLibrary.printImage(base64, 384, 'grayscale')
 ```
 
