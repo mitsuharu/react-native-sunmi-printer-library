@@ -26,9 +26,9 @@ import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-libr
 
 ```typescript
 try {
-	await SunmiPrinterLibrary.prepare()
+    await SunmiPrinterLibrary.prepare()
 } catch (error: any) {
-	console.warn("This device is not supported.")
+    console.warn("This device is not supported.")
 }
 ```
 
