@@ -2,9 +2,12 @@
 
 React Native module that support for SUNMI mobile printer devices.
 
-### Support devices
+### devices that test my libarary
 
-It is tested with GMS [^GMS] enable and developable SUNMI V2 PRO and V2 as follows. Thougth I do not have V1 series, users report to work with V1s.
+- SUNMI V2 PRO
+- SUNMI V2s
+
+I test with GMS [^GMS] enable and developable SUNMI V2 PRO and V2s as follows. Though I do not have V1 series, users report to work with V1s.
 
 | | Android | SUNMI OS | firmware | storage | memory | NFC |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
