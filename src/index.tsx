@@ -711,3 +711,12 @@ export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
 
+/**
+ * Send raw data to printer
+ *
+ * @param {string} base64
+ */
+export const sendRAWData = Platform.select<(text: string) => Promise<void>>({
+  android: (base64) => sunmiPrinterLibrary.sendRAWData(base64),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
