@@ -80,7 +80,7 @@ android {
 
   kotlinOptions {
     jvmTarget = java_version.majorVersion
-}
+  }
 }
 
 repositories {
