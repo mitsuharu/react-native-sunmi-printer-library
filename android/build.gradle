@@ -71,7 +71,7 @@ android {
     disable "GradleCompatible"
   }
 
-  def java_version = JavaVersion.VERSION_11
+  def java_version = JavaVersion.VERSION_17
 
   compileOptions {
     sourceCompatibility java_version
@@ -100,4 +100,3 @@ dependencies {
   // https://mvnrepository.com/artifact/com.sunmi/printerlibrary
   implementation "com.sunmi:printerlibrary:1.0.22"
 }
-
