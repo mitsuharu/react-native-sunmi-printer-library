@@ -132,6 +132,10 @@ yarn
 yarn example android
 ```
 
+### Guides
+
+I recommend that also modify test, readme and example.
+
 ## License
 
 MIT
