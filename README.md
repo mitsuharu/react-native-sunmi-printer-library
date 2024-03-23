@@ -2,12 +2,9 @@
 
 React Native module that support for SUNMI mobile printer devices.
 
-### devices that test my libarary
+## Verification devices
 
-- SUNMI V2 PRO
-- SUNMI V2s
-
-I test with GMS [^GMS] enable and developable SUNMI V2 PRO and V2s as follows. Though I do not have other devices, users report to work with V1s and V2.
+I validate it with GMS enable and developable SUNMI V2 PRO and SUNMI V2s as follows. Though I do not have other devices, users report to work with V1s and V2.
 
 | | Android | SUNMI OS | firmware | storage | memory | NFC |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
@@ -54,11 +51,14 @@ try {
 await SunmiPrinterLibrary.printText('Hello World')
 ```
 
-OR
+or
 
 ```typescript
 SunmiPrinterLibrary.printText('Hello World')
 ```
+
+> [!WARNING]
+> Printing without `await` is faster, but may be interrupted by other printing.
 
 ### change style
 
@@ -90,7 +90,7 @@ await SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
 const result = await SunmiPrinterLibrary.scan()
 ```
 
-OR
+or
 
 ```typescript
 SunmiPrinterLibrary.scan()
