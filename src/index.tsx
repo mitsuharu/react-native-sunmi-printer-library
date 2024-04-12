@@ -56,7 +56,7 @@ interface SunmiScannerLibrary {
 const sunmiPrinterLibrary: SunmiPrinterLibrary = NativeModules.SunmiPrinterLibrary
 const sunmiScannerLibrary: SunmiScannerLibrary = NativeModules.SunmiScannerLibrary
 
-const OS_DOSE_NOT_SUPPORT = 'Your OS does not support'
+const OS_DOES_NOT_SUPPORT = 'Your OS does not support'
 
 export type TextStyle = 'doubleWidth' | 'doubleHeight' | 'bold' | 'underline' | 'antiWhite' | 'strikethrough' | 'italic' | 'invert'
 export type ParagraphStyle = 'textRightSpacing' | 'relativePosition' | 'absolutePosition' | 'lineSpacing' | 'leftSpacing' | 'strikethroughStyle'
@@ -98,7 +98,7 @@ export type BarType = 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star'
  */
 const connect = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.connect(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -112,7 +112,7 @@ const connect = Platform.select<() => Promise<boolean>>({
  */
 const printerInit = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.printerInit(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -167,7 +167,7 @@ export const resetPrinterStyle = async () => {
 //  */
 // export const disconnect  = Platform.select<() => Promise<void>>({
 //   android: () => sunmiPrinterLibrary.disconnect(),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 /**
@@ -175,7 +175,7 @@ export const resetPrinterStyle = async () => {
  */
 export const printSelfChecking = Platform.select<() => Promise<boolean>>({
   android: () => sunmiPrinterLibrary.printerSelfChecking(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 // /**
@@ -183,7 +183,7 @@ export const printSelfChecking = Platform.select<() => Promise<boolean>>({
 //  */
 // export const getPrinterSerialNo = Platform.select<() => Promise<string>>({
 //   android: () => sunmiPrinterLibrary.getPrinterSerialNo(),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 // /**
@@ -191,7 +191,7 @@ export const printSelfChecking = Platform.select<() => Promise<boolean>>({
 //  */
 // export const getPrinterVersion = Platform.select<() => Promise<string>>({
 //   android: () => sunmiPrinterLibrary.getPrinterVersion(),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 // /**
@@ -199,7 +199,7 @@ export const printSelfChecking = Platform.select<() => Promise<boolean>>({
 //  */
 // export const getServiceVersion = Platform.select<() => Promise<string>>({
 //   android: () => sunmiPrinterLibrary.getServiceVersion(),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 // /**
@@ -207,7 +207,7 @@ export const printSelfChecking = Platform.select<() => Promise<boolean>>({
 //  */
 // export const getPrinterModal = Platform.select<() => Promise<string>>({
 //   android: () => sunmiPrinterLibrary.getPrinterModal(),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 /**
@@ -224,7 +224,7 @@ const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
       return Promise.reject('getPaperWidth() is failed.' + error.message)
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -232,7 +232,7 @@ const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
  */
 export const getPrintedLength = Platform.select<() => Promise<string>>({
   android: () => sunmiPrinterLibrary.getPrintedLength(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 const PrinterState = {
@@ -264,7 +264,7 @@ export const getPrinterState = Platform.select<() => Promise<{value: number, des
       return Promise.reject('getPrinterState() is failed.' + error.message)
     } 
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -274,7 +274,7 @@ export const getPrinterState = Platform.select<() => Promise<{value: number, des
  */
 export const setTextStyle = Platform.select<((style: TextStyle, value: boolean) => Promise<boolean>)>({
   android: (style, value) => sunmiPrinterLibrary.setTextStyle(style as TextStyle, value),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -284,7 +284,7 @@ export const setTextStyle = Platform.select<((style: TextStyle, value: boolean) 
  */
 export const setParagraphStyle = Platform.select<((style: ParagraphStyle, value: number) => Promise<boolean>)>({
   android: (style, value) => sunmiPrinterLibrary.setParagraphStyle(style as ParagraphStyle, value),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -294,7 +294,7 @@ export const setParagraphStyle = Platform.select<((style: ParagraphStyle, value:
  */
 export const setAlignment = Platform.select<(alignment: Alignment) => Promise<void>>({
   android: (alignment) => sunmiPrinterLibrary.setAlignment(alignment),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 // !!! This is temporarily comment-out because it is not available. !!!
@@ -309,7 +309,7 @@ export const setAlignment = Platform.select<(alignment: Alignment) => Promise<vo
 //  */
 // export const setFontName = Platform.select<(fontName: FontName) => Promise<void>>({
 //   android: (fontName) => sunmiPrinterLibrary.setFontName(fontName),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 /**
@@ -319,7 +319,7 @@ export const setAlignment = Platform.select<(alignment: Alignment) => Promise<vo
  */
 export const setFontSize = Platform.select<(fontSize: number) => Promise<void>>({
   android: (fontSize) => sunmiPrinterLibrary.setFontSize(fontSize),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -340,7 +340,7 @@ export const setDefaultFontSize = () => sunmiPrinterLibrary.setFontSize(defaultF
 // // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // const setBold = Platform.select<(isBold: boolean) => Promise<void>>({
 //   android: (isBold) => sunmiPrinterLibrary.setBold(isBold),
-//   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+//   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 // })
 
 /**
@@ -350,7 +350,7 @@ export const setDefaultFontSize = () => sunmiPrinterLibrary.setFontSize(defaultF
  */
 export const printText = Platform.select<(text: string) => Promise<void>>({
   android: (text) => sunmiPrinterLibrary.printText(text),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -362,7 +362,7 @@ export const printText = Platform.select<(text: string) => Promise<void>>({
  */
 export const printTextWithFont = Platform.select<(text: string, typeface: Typeface, fontSize: number) => Promise<void>>({
   android: (text, typeface, fontSize) => sunmiPrinterLibrary.printTextWithFont(text, typeface, fontSize),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -376,7 +376,7 @@ export const printTextWithFont = Platform.select<(text: string, typeface: Typefa
  */
 export const printOriginalText = Platform.select<(text: string) => Promise<void>>({
   android: (text) => sunmiPrinterLibrary.printOriginalText(text),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -394,7 +394,7 @@ export const printOriginalText = Platform.select<(text: string) => Promise<void>
  */
 export const printColumnsText = Platform.select<(texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>>({
   android: (texts, widths, alignments) => sunmiPrinterLibrary.printColumnsText(texts, widths, alignments),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -411,7 +411,7 @@ export const printColumnsText = Platform.select<(texts: string[], widths: number
  */
 export const printColumnsString = Platform.select<(texts: string[], widths: number[], alignments: Alignment[]) => Promise<void>>({
   android: (texts, widths, alignments) => sunmiPrinterLibrary.printColumnsString(texts, widths, alignments),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -448,7 +448,7 @@ export const printColumnsString = Platform.select<(texts: string[], widths: numb
  */
 export const printBarcode = Platform.select<(text: string, symbology: Barcode1DSymbology, height: number, width: number, textPosition: TextPosition) => Promise<void>>({
   android: (text, symbology, height, width, textPosition) => sunmiPrinterLibrary.printBarcode(text, symbology, height, width, textPosition),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -477,7 +477,7 @@ export const printQRCode = Platform.select<(text: string, moduleSize: number, er
       return Promise.reject(`printQRCode is failed. ${error.message}`)
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -506,7 +506,7 @@ export const print2DCodePDF417 = Platform.select<((text: string,  moduleSize: nu
       return Promise.reject('print2DCodePDF417() is failed.' + error.message)
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -535,7 +535,7 @@ export const print2DCodeDataMatrix = Platform.select<((text: string, moduleSize:
       return Promise.reject('print2DCodeDataMatrix() is failed.' + error.message)
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -543,7 +543,7 @@ export const print2DCodeDataMatrix = Platform.select<((text: string, moduleSize:
  */
 export const lineWrap = Platform.select<(count: number) => Promise<void>>({
   android: (count) => sunmiPrinterLibrary.lineWrap(count),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -554,7 +554,7 @@ export const lineWrap = Platform.select<(count: number) => Promise<void>>({
  */
 export const cutPaper = Platform.select<() => Promise<void>>({
   android: () => sunmiPrinterLibrary.cutPaper(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -565,7 +565,7 @@ export const cutPaper = Platform.select<() => Promise<void>>({
  */
 export const getCutPaperTimes = Platform.select<() => Promise<number>>({
   android: () => sunmiPrinterLibrary.getCutPaperTimes(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -591,7 +591,7 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
       return Promise.reject('printImage is failed.')
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -647,7 +647,7 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
       return Promise.reject('printHR is failed.' + error.message)
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -683,7 +683,7 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
  */
 export const scan = Platform.select<() => Promise<string>>({
   android: () => sunmiScannerLibrary.scan(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -712,7 +712,7 @@ export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
       return Promise.reject('getPrinterInfo is failed.')
     }
   },
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -722,7 +722,7 @@ export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
  */
 export const sendRAWData = Platform.select<(text: string) => Promise<void>>({
   android: (base64) => sunmiPrinterLibrary.sendRAWData(base64),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -734,7 +734,7 @@ export const sendRAWData = Platform.select<(text: string) => Promise<void>>({
  */
 export const enterPrinterBuffer = Platform.select<(clear: boolean) => Promise<void>>({
   android: (clear) => sunmiPrinterLibrary.enterPrinterBuffer(clear),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -746,7 +746,7 @@ export const enterPrinterBuffer = Platform.select<(clear: boolean) => Promise<vo
  */
 export const exitPrinterBuffer = Platform.select<(commit: boolean) => Promise<void>>({
   android: (commit) => sunmiPrinterLibrary.exitPrinterBuffer(commit),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
 
 /**
@@ -754,5 +754,5 @@ export const exitPrinterBuffer = Platform.select<(commit: boolean) => Promise<vo
  */
 export const commitPrinterBuffer = Platform.select<() => Promise<void>>({
   android: () => sunmiPrinterLibrary.commitPrinterBuffer(),
-  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })
