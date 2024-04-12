@@ -24,6 +24,7 @@ type ComponentProps = {
   onPressPrintImage: () => void
   onPressPrintBarcode: () => void
   onPressScan: () => void
+  onPressTransaction: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
@@ -37,6 +38,7 @@ const Component: React.FC<ComponentProps> = ({
   onPressPrintImage,
   onPressPrintBarcode,
   onPressScan,
+  onPressTransaction,
 }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -82,6 +84,10 @@ const Component: React.FC<ComponentProps> = ({
           <Button
             text="scan"
             onPress={onPressScan}
+          />
+          <Button
+            text="print text with transaction"
+            onPress={onPressTransaction}
           />
         </View>
       </ScrollView>
@@ -390,6 +396,25 @@ const Container: React.FC<Props> = () => {
     }
   }, [])
 
+  const onPressTransaction = useCallback(async ()=>{
+    try{
+      await SunmiPrinterLibrary.enterPrinterBuffer(true)
+
+      SunmiPrinterLibrary.printText('Transaction Test 0')
+
+      await SunmiPrinterLibrary.commitPrinterBuffer()
+
+      SunmiPrinterLibrary.printText('Transaction Test 1')
+      SunmiPrinterLibrary.printText('Transaction Test 2')
+      SunmiPrinterLibrary.printText('Transaction Test 3')
+      SunmiPrinterLibrary.lineWrap(4)
+
+      await SunmiPrinterLibrary.exitPrinterBuffer(true)
+    } catch(error: any) {
+      console.warn(error)
+    }
+  }, [])
+
   return (
     <Component {...{
       onPressPrepare,
@@ -401,7 +426,8 @@ const Container: React.FC<Props> = () => {
       onPressPrintChangingStyle, 
       onPressPrintBarcode,
       onPressPrintImage,
-      onPressScan
+      onPressScan,
+      onPressTransaction
     }} />
   )
 }
