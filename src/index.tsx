@@ -40,7 +40,6 @@ interface SunmiPrinterLibrary {
   getCutPaperTimes: () => Promise<number>
   printBitmapBase64: (base64: string, pixelWidth: number) => Promise<void>
   printBitmapBase64Custom: (base64: string, pixelWidth: number, type: number) => Promise<void>
-
   enterPrinterBuffer: (clear: boolean) => Promise<void>
   exitPrinterBuffer: (commit: boolean) => Promise<void>
   commitPrinterBuffer: () => Promise<void>
