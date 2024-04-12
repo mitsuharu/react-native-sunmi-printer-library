@@ -613,4 +613,36 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     return value
   }
 
+  @ReactMethod
+  fun enterPrinterBuffer(clear: Boolean, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      printerService?.enterPrinterBuffer(clear)
+      promise.resolve(true)
+    } catch (e: Exception) {
+      promise.reject("0", "native#enterPrinterBuffer is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun exitPrinterBuffer(commit: Boolean, promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise, "native#exitPrinterBuffer() is failed.")
+      printerService?.exitPrinterBufferWithCallback(commit, callback)
+    } catch (e: Exception) {
+      promise.reject("0", "native#exitPrinterBuffer is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun commitPrinterBuffer(promise: Promise) {
+    validatePrinterService(promise)
+    try {
+      val callback = makeInnerResultCallback(promise, "native#commitPrinterBuffer() is failed.")
+      printerService?.commitPrinterBufferWithCallback(callback)
+    } catch (e: Exception) {
+      promise.reject("0", "native#commitPrinterBuffer is failed. " + e.message)
+    }
+  }
 }

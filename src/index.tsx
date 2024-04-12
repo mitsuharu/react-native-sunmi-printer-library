@@ -40,6 +40,10 @@ interface SunmiPrinterLibrary {
   getCutPaperTimes: () => Promise<number>
   printBitmapBase64: (base64: string, pixelWidth: number) => Promise<void>
   printBitmapBase64Custom: (base64: string, pixelWidth: number, type: number) => Promise<void>
+
+  enterPrinterBuffer: (clear: boolean) => Promise<void>
+  exitPrinterBuffer: (commit: boolean) => Promise<void>
+  commitPrinterBuffer: () => Promise<void>
 }
 
 /**
@@ -718,5 +722,37 @@ export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
  */
 export const sendRAWData = Platform.select<(text: string) => Promise<void>>({
   android: (base64) => sunmiPrinterLibrary.sendRAWData(base64),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * Enable transaction printing mode
+ * 
+ * @param {boolean} clear - whether to clear the content in the buffer area:
+ * if true, clears the last transaction to print uncommitted content.
+ * if false, does not clear that the last transaction printed uncommitted content, and the next commit will contain the last.
+ */
+export const enterPrinterBuffer = Platform.select<(clear: boolean) => Promise<void>>({
+  android: (clear) => sunmiPrinterLibrary.enterPrinterBuffer(clear),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * Exit transaction mode
+ * 
+ * @param {boolean} commit - Whether commit prints out the buffer content:
+ * if true, prints everything in the transaction queue.
+ * if false, does not print content in the transaction queue, which is saved until the next commit.
+ */
+export const exitPrinterBuffer = Platform.select<(commit: boolean) => Promise<void>>({
+  android: (commit) => sunmiPrinterLibrary.exitPrinterBuffer(commit),
+  default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
+})
+
+/**
+ * Commit transaction printing
+ */
+export const commitPrinterBuffer = Platform.select<() => Promise<void>>({
+  android: () => sunmiPrinterLibrary.commitPrinterBuffer(),
   default: () => Promise.reject(OS_DOSE_NOT_SUPPORT),
 })
