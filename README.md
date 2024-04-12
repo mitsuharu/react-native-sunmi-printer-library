@@ -115,9 +115,25 @@ useEffect(() => {
 }, [])
 ```
 
+### Transaction
+
+```typescript
+await SunmiPrinterLibrary.enterPrinterBuffer(true)
+
+SunmiPrinterLibrary.printText('Transaction Test 0')
+
+await SunmiPrinterLibrary.commitPrinterBuffer()
+
+SunmiPrinterLibrary.printText('Transaction Test 1')
+SunmiPrinterLibrary.printText('Transaction Test 2')
+SunmiPrinterLibrary.printText('Transaction Test 3')
+SunmiPrinterLibrary.lineWrap(4)
+
+await SunmiPrinterLibrary.exitPrinterBuffer(true)
+```
+
 ### not support
 
-- Transaction Print API
 - Cash Drawer API
 - Black Mark Print API
 
