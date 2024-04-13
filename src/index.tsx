@@ -594,7 +594,7 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
 })
 
 /**
- * print HorizontalRule by text
+ * get text for HorizontalRule
  * 
  * @note
  * It NEEDs await.
@@ -607,10 +607,10 @@ export const printImage = Platform.select<(base64: string, pixelWidth: number, t
  * @param {BarType} barType - 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star' 
  * 
  * @example
- * await SunmiPrinterLibrary.printHR('plus') 
+ * const hr = await SunmiPrinterLibrary.hr('plus') 
  * 
  */
-export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
+export const hr = Platform.select<(barType: BarType) => Promise<string>>({
   android: async (barType) => {
     try {
       let separator = '-'
@@ -640,6 +640,36 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
       const pixelWidth = MaxPixelWidth[paperWidth]
       const count = pixelWidth / (lengthPerCharacter * defaultFontSize)
       const text = separator.repeat(count)
+      return Promise.resolve(text)
+    } catch(error: any) {
+      return Promise.reject('hr is failed.' + error.message)
+    }
+  },
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
+})
+
+
+/**
+ * print HorizontalRule by text
+ * 
+ * @note
+ * It NEEDs await.
+ * 
+ * @note
+ * This function is an original method.
+ * It may not be displayed correctly depending on your environment.
+ * It is calculated from the character width.
+ * 
+ * @param {BarType} barType - 'line' | 'double' | 'dots' | 'wave' | 'plus' | 'star' 
+ * 
+ * @example
+ * await SunmiPrinterLibrary.printHR('plus') 
+ * 
+ */
+export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
+  android: async (barType) => {
+    try {
+      const text = await hr(barType)
       await sunmiPrinterLibrary.printTextWithFont(text, 'default', defaultFontSize)
       return Promise.resolve()
     } catch(error: any) {
