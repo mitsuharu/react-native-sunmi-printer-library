@@ -398,9 +398,12 @@ const Container: React.FC<Props> = () => {
 
   const onPressTransaction = useCallback(async ()=>{
     try{
+      const hr = await SunmiPrinterLibrary.hr('line')
+
       await SunmiPrinterLibrary.enterPrinterBuffer(true)
 
       SunmiPrinterLibrary.printText('Transaction Test 0')
+      SunmiPrinterLibrary.printText(hr)
 
       await SunmiPrinterLibrary.commitPrinterBuffer()
 
