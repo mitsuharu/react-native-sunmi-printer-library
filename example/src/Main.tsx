@@ -11,6 +11,7 @@ import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-libr
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
 import { sampleImageBase64, sampleTextEn, sampleTextHelloWorld, sampleTextJa } from './SampleResource'
+import { Buffer } from 'buffer'
 
 type Props = Record<string, never>
 type ComponentProps = {
@@ -19,6 +20,7 @@ type ComponentProps = {
   onPressPrintText: () => void,
   onPressPrintTextAwait: () => void
   onPressPrintTextAsync:() => void,
+  onPressSendRAWData:() => void,
   onPressPrintTable: () => void
   onPressPrintChangingStyle: () => void
   onPressPrintImage: () => void
@@ -33,6 +35,7 @@ const Component: React.FC<ComponentProps> = ({
   onPressPrintText,
   onPressPrintTextAwait,
   onPressPrintTextAsync,
+  onPressSendRAWData,
   onPressPrintTable,
   onPressPrintChangingStyle,
   onPressPrintImage,
@@ -64,6 +67,10 @@ const Component: React.FC<ComponentProps> = ({
           <Button
             text="print text (async)"
             onPress={onPressPrintTextAsync}
+          />
+          <Button
+            text="send raw data"
+            onPress={onPressSendRAWData}
           />
           <Button
             text="print table"
@@ -201,6 +208,29 @@ const Container: React.FC<Props> = () => {
     } catch(error: any) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
+    }
+  }, [toast])
+
+  const onPressSendRAWData = useCallback(async () => {
+    try {
+      const boldOn = new Uint8Array([0x1B, 0x45, 0x01])
+      const boldOnBase64 = Buffer.from(boldOn).toString('base64')
+      await SunmiPrinterLibrary.sendRAWData(boldOnBase64)
+
+      await SunmiPrinterLibrary.printText('\'sendRAWData\' sets Bold to ON')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      const boldOff = new Uint8Array([0x1B, 0x45, 0x00])
+      const boldOffBase64= Buffer.from(boldOff).toString('base64')
+      await SunmiPrinterLibrary.sendRAWData(boldOffBase64)
+
+      await SunmiPrinterLibrary.printText('\'sendRAWData\' sets Bold to OFF')
+      await SunmiPrinterLibrary.lineWrap(1)
+
+      await SunmiPrinterLibrary.lineWrap(3)
+    } catch(error: any) {
+      console.warn(error)
+      toast.show(`onPressSendRAWData is failed. ${error}`)
     }
   }, [toast])
 
@@ -425,6 +455,7 @@ const Container: React.FC<Props> = () => {
       onPressPrintText,
       onPressPrintTextAwait,
       onPressPrintTextAsync,
+      onPressSendRAWData,
       onPressPrintTable,
       onPressPrintChangingStyle, 
       onPressPrintBarcode,
