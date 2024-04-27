@@ -1,6 +1,6 @@
 # @mitsuharu/react-native-sunmi-printer-library
 
-React Native module that support for SUNMI mobile printer devices.
+React Native module that supports for SUNMI mobile printer devices.
 
 ## Verification devices
 
@@ -58,7 +58,7 @@ SunmiPrinterLibrary.printText('Hello World')
 ```
 
 > [!WARNING]
-> Printing without `await` is faster, but may be interrupted by other printing.
+> Printing without `await` is faster, but may be interrupted by other printing. When it use without `await`, it is better to use with Transaction.
 
 ### change style
 
@@ -130,6 +130,27 @@ SunmiPrinterLibrary.printText('Transaction Test 3')
 SunmiPrinterLibrary.lineWrap(4)
 
 await SunmiPrinterLibrary.exitPrinterBuffer(true)
+```
+
+### Raw Data (ESC/POS command)
+
+```typescript
+// use to convert data to Base 64
+import { Buffer } from 'buffer'
+
+// ESC/POS command
+// https://www.epson-biz.com/modules/ref_escpos_ja/index.php?content_id=25
+const boldOn = new Uint8Array([0x1B, 0x45, 0x01])
+const boldOnBase64 = Buffer.from(boldOn).toString('base64')
+await SunmiPrinterLibrary.sendRAWData(boldOnBase64)
+
+await SunmiPrinterLibrary.printText('Bold is ON')
+
+const boldOff = new Uint8Array([0x1B, 0x45, 0x00])
+const boldOffBase64= Buffer.from(boldOff).toString('base64')
+await SunmiPrinterLibrary.sendRAWData(boldOffBase64)
+
+await SunmiPrinterLibrary.printText('Bold is OFF')
 ```
 
 ### not support
