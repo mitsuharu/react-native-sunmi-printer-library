@@ -169,9 +169,19 @@ yarn
 yarn example android
 ```
 
+### example
+
+- Example supports React Native 0.74.
+- It uses this example to develop this library.
+
 ### Guides
 
-I recommend that also modify test, readme and example.
+- It creates Pull Requests to be merged into the develop branch.
+- I recommend that add or fix test, readme and example.
+
+### リリース
+
+（管理者のみ）develop ブランチのバージョン更新して、main ブランチへPRを作ってください。マージを行うと、自動で npm にリリースされます。
 
 ## License
 
