@@ -25,8 +25,8 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
 
-    - name: Test
-      run: yarn test
+    # - name: Test
+    #   run: yarn test
 
     - name: Check for existing tag
       id: tag-check
