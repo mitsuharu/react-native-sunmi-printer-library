@@ -1,0 +1,59 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Test
+      run: yarn test
+
+    - name: Check for existing tag
+      id: tag-check
+      run: |
+        VERSION=$(jq -r '.version' package.json)
+        TAG="v$VERSION"
+        if git rev-parse "$TAG" >/dev/null 2>&1; then
+          echo "Tag $TAG already exists"
+          echo "::set-output name=tag_exists::true"
+        else
+          echo "Tag $TAG does not exist"
+          echo "::set-output name=tag_exists::false"
+        fi
+
+    - name: Create and push tag
+      id: create-tag
+      if: steps.tag-check.outputs.tag_exists == 'false'
+      run: |
+        VERSION=$(jq -r '.version' package.json)
+        TAG="v$VERSION"
+        git config user.name 'github-actions'
+        git config user.email 'github-actions@github.com'
+        git tag -a "$TAG" -m "Release version $VERSION"
+        git push origin "$TAG"
+
+    # - name: Publish to npm
+    #   if: steps.tag-check.outputs.tag_exists == 'false'
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    #   run: npm publish
