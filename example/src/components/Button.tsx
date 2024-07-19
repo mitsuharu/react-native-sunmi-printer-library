@@ -20,7 +20,7 @@ type Props = ContentProps & {
   accessibilityLabel?: string
   hitSlop?: Insets
 }
-type ComponentProps = Props & {}
+type ComponentProps = Props & object
 
 const Component: React.FC<ComponentProps> = ({
   text,
