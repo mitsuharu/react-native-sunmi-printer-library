@@ -139,7 +139,7 @@ await SunmiPrinterLibrary.exitPrinterBuffer(true)
 import { Buffer } from 'buffer'
 
 // ESC/POS command
-// https://www.epson-biz.com/modules/ref_escpos_ja/index.php?content_id=25
+// see: https://developer.sunmi.com/docs/en-US/index
 const boldOn = new Uint8Array([0x1B, 0x45, 0x01])
 const boldOnBase64 = Buffer.from(boldOn).toString('base64')
 await SunmiPrinterLibrary.sendRAWData(boldOnBase64)
