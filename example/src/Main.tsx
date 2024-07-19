@@ -10,17 +10,22 @@ import {
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
-import { sampleImageBase64, sampleTextEn, sampleTextHelloWorld, sampleTextJa } from './SampleResource'
+import {
+  sampleImageBase64,
+  sampleTextEn,
+  sampleTextHelloWorld,
+  sampleTextJa,
+} from './SampleResource'
 import { Buffer } from 'buffer'
 
 type Props = Record<string, never>
 type ComponentProps = {
   onPressPrepare: () => void
   onPressPrintSelfChecking: () => void
-  onPressPrintText: () => void,
+  onPressPrintText: () => void
   onPressPrintTextAwait: () => void
-  onPressPrintTextAsync:() => void,
-  onPressSendRAWData:() => void,
+  onPressPrintTextAsync: () => void
+  onPressSendRAWData: () => void
   onPressPrintTable: () => void
   onPressPrintChangingStyle: () => void
   onPressPrintImage: () => void
@@ -47,35 +52,19 @@ const Component: React.FC<ComponentProps> = ({
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>@mitsuharu/react-native-sunmi-printer-library</Text>
-          <Button
-            text="[MUST] prepare"
-            onPress={onPressPrepare}
-          />
+          <Text style={styles.sectionTitle}>
+            @mitsuharu/react-native-sunmi-printer-library
+          </Text>
+          <Button text="[MUST] prepare" onPress={onPressPrepare} />
           <Button
             text="print Self-Checking"
             onPress={onPressPrintSelfChecking}
           />
-          <Button
-            text="print text"
-            onPress={onPressPrintText}
-          />
-          <Button
-            text="print text (await)"
-            onPress={onPressPrintTextAwait}
-          />
-          <Button
-            text="print text (async)"
-            onPress={onPressPrintTextAsync}
-          />
-          <Button
-            text="send raw data"
-            onPress={onPressSendRAWData}
-          />
-          <Button
-            text="print table"
-            onPress={onPressPrintTable}
-          />
+          <Button text="print text" onPress={onPressPrintText} />
+          <Button text="print text (await)" onPress={onPressPrintTextAwait} />
+          <Button text="print text (async)" onPress={onPressPrintTextAsync} />
+          <Button text="send raw data" onPress={onPressSendRAWData} />
+          <Button text="print table" onPress={onPressPrintTable} />
           <Button
             text="Print changing styles"
             onPress={onPressPrintChangingStyle}
@@ -84,14 +73,8 @@ const Component: React.FC<ComponentProps> = ({
             text="print Barcode / QR code"
             onPress={onPressPrintBarcode}
           />
-          <Button
-            text="print image"
-            onPress={onPressPrintImage}
-          />
-          <Button
-            text="scan"
-            onPress={onPressScan}
-          />
+          <Button text="print image" onPress={onPressPrintImage} />
+          <Button text="scan" onPress={onPressScan} />
           <Button
             text="print text with transaction"
             onPress={onPressTransaction}
@@ -106,12 +89,17 @@ const Container: React.FC<Props> = () => {
   const toast = useToast()
 
   const onPressPrepare = useCallback(async () => {
-    try{
+    try {
       const isPrepared: boolean = await SunmiPrinterLibrary.prepare()
       console.log(`isPrepared is ${isPrepared}`)
 
       const {
-        serialNumber, printerVersion, serviceVersion, printerModal, paperWidth, pixelWidth
+        serialNumber,
+        printerVersion,
+        serviceVersion,
+        printerModal,
+        paperWidth,
+        pixelWidth,
       } = await SunmiPrinterLibrary.getPrinterInfo()
       console.log(`serialNumber is ${serialNumber}`)
       console.log(`printerVersion is ${printerVersion}`)
@@ -123,25 +111,24 @@ const Container: React.FC<Props> = () => {
       const printedLength = await SunmiPrinterLibrary.getPrintedLength()
       console.log(`printedLength is ${printedLength}`)
 
-      const {value, description} = await SunmiPrinterLibrary.getPrinterState()
+      const { value, description } = await SunmiPrinterLibrary.getPrinterState()
       console.log(`getPrinterState is (${value}, ${description}).`)
 
       toast.show('Prepare is OK')
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`Prepare is failed. ${error}`)
     }
   }, [toast])
 
   const onPressPrintSelfChecking = useCallback(async () => {
-    try{
+    try {
       await SunmiPrinterLibrary.printText('Print Self-Checking')
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.printSelfChecking()
       await SunmiPrinterLibrary.lineWrap(1)
-      
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`onPressPrintSelfChecking is failed. ${error}`)
     }
@@ -159,7 +146,7 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.lineWrap(3)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
     }
@@ -182,7 +169,7 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.printText('9 ' + sampleTextHelloWorld)
 
       await SunmiPrinterLibrary.lineWrap(3)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
     }
@@ -205,7 +192,7 @@ const Container: React.FC<Props> = () => {
       SunmiPrinterLibrary.printText('9 ' + sampleTextHelloWorld)
 
       SunmiPrinterLibrary.lineWrap(3)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
     }
@@ -213,22 +200,22 @@ const Container: React.FC<Props> = () => {
 
   const onPressSendRAWData = useCallback(async () => {
     try {
-      const boldOn = new Uint8Array([0x1B, 0x45, 0x01])
+      const boldOn = new Uint8Array([0x1b, 0x45, 0x01])
       const boldOnBase64 = Buffer.from(boldOn).toString('base64')
       await SunmiPrinterLibrary.sendRAWData(boldOnBase64)
 
       await SunmiPrinterLibrary.printText('\'sendRAWData\' sets Bold to ON')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      const boldOff = new Uint8Array([0x1B, 0x45, 0x00])
-      const boldOffBase64= Buffer.from(boldOff).toString('base64')
+      const boldOff = new Uint8Array([0x1b, 0x45, 0x00])
+      const boldOffBase64 = Buffer.from(boldOff).toString('base64')
       await SunmiPrinterLibrary.sendRAWData(boldOffBase64)
 
       await SunmiPrinterLibrary.printText('\'sendRAWData\' sets Bold to OFF')
       await SunmiPrinterLibrary.lineWrap(1)
 
       await SunmiPrinterLibrary.lineWrap(3)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`onPressSendRAWData is failed. ${error}`)
     }
@@ -240,72 +227,87 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.lineWrap(1)
 
       const {
-        serialNumber, printerVersion, serviceVersion, printerModal, paperWidth, pixelWidth
+        serialNumber,
+        printerVersion,
+        serviceVersion,
+        printerModal,
+        paperWidth,
+        pixelWidth,
       } = await SunmiPrinterLibrary.getPrinterInfo()
 
       const widths = [30, 25]
+      await SunmiPrinterLibrary.printColumnsString(['name', 'value'], widths, [
+        'center',
+        'center',
+      ])
       await SunmiPrinterLibrary.printColumnsString(
-        ['name', 'value'], 
-        widths, 
-        ['center', 'center' ])
+        ['serial number:', serialNumber],
+        widths,
+        ['left', 'left']
+      )
       await SunmiPrinterLibrary.printColumnsString(
-        ['serial number:', serialNumber], 
-        widths, 
-        ['left', 'left'])
+        ['printer version:', printerVersion],
+        widths,
+        ['left', 'left']
+      )
       await SunmiPrinterLibrary.printColumnsString(
-        ['printer version:', printerVersion], 
-        widths, 
-        ['left', 'left'])
+        ['service version:', serviceVersion],
+        widths,
+        ['left', 'left']
+      )
       await SunmiPrinterLibrary.printColumnsString(
-        ['service version:', serviceVersion], 
-        widths, 
-        ['left', 'left'])
+        ['printer modal:', printerModal],
+        widths,
+        ['left', 'left']
+      )
       await SunmiPrinterLibrary.printColumnsString(
-        ['printer modal:', printerModal], 
-        widths, 
-        ['left', 'left'])
+        ['paper width:', paperWidth],
+        widths,
+        ['left', 'left']
+      )
       await SunmiPrinterLibrary.printColumnsString(
-        ['paper width:', paperWidth], 
-        widths, 
-        ['left', 'left'])
-      await SunmiPrinterLibrary.printColumnsString(
-        ['pixel width:', `${pixelWidth}`], 
-        widths, 
-        ['left', 'left'])
-          
+        ['pixel width:', `${pixelWidth}`],
+        widths,
+        ['left', 'left']
+      )
+
       SunmiPrinterLibrary.lineWrap(1)
       await SunmiPrinterLibrary.printHR('plus')
 
       await SunmiPrinterLibrary.printColumnsString(
-        ['', 'apple', 'mellon', 'banana'], 
-        [8, 8, 8, 8], 
-        ['left', 'center', 'center', 'center'])
+        ['', 'apple', 'mellon', 'banana'],
+        [8, 8, 8, 8],
+        ['left', 'center', 'center', 'center']
+      )
 
       await SunmiPrinterLibrary.printHR('double')
 
       await SunmiPrinterLibrary.printColumnsString(
-        ['color', 'red', 'green', 'yellow'], 
-        [8, 8, 8, 8], 
-        ['left', 'center', 'center', 'center'])
+        ['color', 'red', 'green', 'yellow'],
+        [8, 8, 8, 8],
+        ['left', 'center', 'center', 'center']
+      )
 
       await SunmiPrinterLibrary.printHR('line')
 
       await SunmiPrinterLibrary.printColumnsString(
-        ['taste', 'good', 'good', 'good'], 
-        [8, 8, 8, 8], 
-        ['left', 'center', 'center', 'center'])
-        
+        ['taste', 'good', 'good', 'good'],
+        [8, 8, 8, 8],
+        ['left', 'center', 'center', 'center']
+      )
+
       await SunmiPrinterLibrary.printHR('wave')
 
       await SunmiPrinterLibrary.printColumnsString(
-        ['shape', 'small', 'ball', 'crescent'], 
-        [8, 8, 6, 10], 
-        ['left', 'center', 'center', 'center'])
+        ['shape', 'small', 'ball', 'crescent'],
+        [8, 8, 6, 10],
+        ['left', 'center', 'center', 'center']
+      )
 
       await SunmiPrinterLibrary.printHR('star')
 
       await SunmiPrinterLibrary.lineWrap(3)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
     }
@@ -324,11 +326,11 @@ const Container: React.FC<Props> = () => {
 
       await SunmiPrinterLibrary.setAlignment('left')
       await SunmiPrinterLibrary.printText('left')
-      
+
       await SunmiPrinterLibrary.setTextStyle('bold', true)
       await SunmiPrinterLibrary.printText('bold')
       await SunmiPrinterLibrary.setTextStyle('bold', false)
-      
+
       await SunmiPrinterLibrary.setTextStyle('italic', true)
       await SunmiPrinterLibrary.printText('italic')
       await SunmiPrinterLibrary.setTextStyle('italic', false)
@@ -344,17 +346,19 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.printText('font size is 32')
 
       await SunmiPrinterLibrary.setDefaultFontSize()
-      await SunmiPrinterLibrary.printText(`font size is default (${SunmiPrinterLibrary.defaultFontSize})`)
+      await SunmiPrinterLibrary.printText(
+        `font size is default (${SunmiPrinterLibrary.defaultFontSize})`
+      )
 
       await SunmiPrinterLibrary.resetPrinterStyle()
       await SunmiPrinterLibrary.lineWrap(3)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`PrintText is failed. ${error}`)
     }
   }, [toast])
 
-  const onPressPrintBarcode = useCallback(async() => {
+  const onPressPrintBarcode = useCallback(async () => {
     try {
       await SunmiPrinterLibrary.printText('Print Barcode')
       await SunmiPrinterLibrary.lineWrap(1)
@@ -362,7 +366,13 @@ const Container: React.FC<Props> = () => {
       await SunmiPrinterLibrary.printText('(1) Barcode')
       await SunmiPrinterLibrary.lineWrap(1)
 
-      await SunmiPrinterLibrary.printBarcode('1234567890', 'CODE128', 162, 2, 'textUnderBarcode')
+      await SunmiPrinterLibrary.printBarcode(
+        '1234567890',
+        'CODE128',
+        162,
+        2,
+        'textUnderBarcode'
+      )
       await SunmiPrinterLibrary.lineWrap(2)
 
       await SunmiPrinterLibrary.printText('(2) QR code')
@@ -370,14 +380,13 @@ const Container: React.FC<Props> = () => {
 
       await SunmiPrinterLibrary.printQRCode('Hello World', 8, 'middle')
       await SunmiPrinterLibrary.lineWrap(4)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`onPressPrintImage is failed. ${error}`)
     }
   }, [toast])
 
-
-  const onPressPrintImage = useCallback(async() => {
+  const onPressPrintImage = useCallback(async () => {
     try {
       await SunmiPrinterLibrary.printText('Print Image')
       await SunmiPrinterLibrary.lineWrap(1)
@@ -393,17 +402,17 @@ const Container: React.FC<Props> = () => {
 
       await SunmiPrinterLibrary.printImage(sampleImageBase64, 384, 'grayscale')
       await SunmiPrinterLibrary.lineWrap(4)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`onPressPrintImage is failed. ${error}`)
     }
   }, [toast])
 
-  const onPressScan = useCallback(async ()=>{
-    try{
+  const onPressScan = useCallback(async () => {
+    try {
       const result = await SunmiPrinterLibrary.scan()
       console.warn(`onPressScan is ${result}`)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
       toast.show(`onPressScan is failed. ${error}`)
     }
@@ -414,20 +423,26 @@ const Container: React.FC<Props> = () => {
       SunmiPrinterLibrary.EventType.onScanSuccess,
       (message) => {
         console.log(`[onScanSuccess] ${message}`)
-      })
+      }
+    )
     DeviceEventEmitter.addListener(
-      SunmiPrinterLibrary.EventType.onScanFailed, 
+      SunmiPrinterLibrary.EventType.onScanFailed,
       (message) => {
         console.log(`[onScanFailed] ${message}`)
-      })
+      }
+    )
     return () => {
-      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanSuccess)
-      DeviceEventEmitter.removeAllListeners(SunmiPrinterLibrary.EventType.onScanFailed)
+      DeviceEventEmitter.removeAllListeners(
+        SunmiPrinterLibrary.EventType.onScanSuccess
+      )
+      DeviceEventEmitter.removeAllListeners(
+        SunmiPrinterLibrary.EventType.onScanFailed
+      )
     }
   }, [])
 
-  const onPressTransaction = useCallback(async ()=>{
-    try{
+  const onPressTransaction = useCallback(async () => {
+    try {
       const hr = await SunmiPrinterLibrary.hr('line')
 
       await SunmiPrinterLibrary.enterPrinterBuffer(true)
@@ -443,26 +458,28 @@ const Container: React.FC<Props> = () => {
       SunmiPrinterLibrary.lineWrap(4)
 
       await SunmiPrinterLibrary.exitPrinterBuffer(true)
-    } catch(error: any) {
+    } catch (error) {
       console.warn(error)
     }
   }, [])
 
   return (
-    <Component {...{
-      onPressPrepare,
-      onPressPrintSelfChecking,
-      onPressPrintText,
-      onPressPrintTextAwait,
-      onPressPrintTextAsync,
-      onPressSendRAWData,
-      onPressPrintTable,
-      onPressPrintChangingStyle, 
-      onPressPrintBarcode,
-      onPressPrintImage,
-      onPressScan,
-      onPressTransaction
-    }} />
+    <Component
+      {...{
+        onPressPrepare,
+        onPressPrintSelfChecking,
+        onPressPrintText,
+        onPressPrintTextAwait,
+        onPressPrintTextAsync,
+        onPressSendRAWData,
+        onPressPrintTable,
+        onPressPrintChangingStyle,
+        onPressPrintBarcode,
+        onPressPrintImage,
+        onPressScan,
+        onPressTransaction,
+      }}
+    />
   )
 }
 

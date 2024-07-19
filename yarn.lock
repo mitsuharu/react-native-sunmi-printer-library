@@ -3308,7 +3308,6 @@ __metadata:
     del-cli: "npm:^5.1.0"
     eslint: "npm:^8.57.0"
     eslint-config-prettier: "npm:^8.5.0"
-    eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-react: "npm:^7.30.1"
     jest: "npm:^29.7.0"
     metro-react-native-babel-preset: "npm:^0.77.0"

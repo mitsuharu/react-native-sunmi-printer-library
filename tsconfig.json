@@ -23,6 +23,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
+    "useUnknownInCatchVariables": false,
     "verbatimModuleSyntax": true
   }
 }

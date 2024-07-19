@@ -6,3 +6,5 @@ local-package-source
 jest/*
 lib/*
 example/react-native.config.js
+example/index.js
+*.yml
