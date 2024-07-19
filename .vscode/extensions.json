@@ -1,8 +1,4 @@
 {
-  "recommendations": [
-    "dbaeumer.vscode-eslint",
-  ],
-  "unwantedRecommendations": [
-    "eg2.tslint",
-  ]
+  "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+  "unwantedRecommendations": ["eg2.tslint"]
 }

@@ -1,24 +1,21 @@
 {
-    "files.insertFinalNewline": true,
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
-    },
-    "cSpell.words": [
-      "Consts",
-      "Emoto",
-      "gradlew",
-      "grayscale",
-      "mitsuharu",
-      "podspec",
-      "pressable",
-      "sunmi",
-      "typecheck",
-      "Woyou"
-    ],
-  }
-  
+  "files.insertFinalNewline": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "Consts",
+    "Emoto",
+    "gradlew",
+    "grayscale",
+    "mitsuharu",
+    "podspec",
+    "pressable",
+    "sunmi",
+    "typecheck",
+    "Woyou"
+  ]
+}
