@@ -29,13 +29,19 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
 
-    - name: Bump version
-      run: yarn release --no-npm.publish --no-github.release -- ${{ github.event.inputs.version_bump }}
-
-    - name: Commit and push changes
+    - name: Configure Git
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    
+    - name: Bump version
+      run: |
+        yarn release --no-npm.publish --no-github.release -- ${{
+          github.event.inputs.version_bump
+        }}
+
+    - name: Commit and push changes
+      run: |
         git add .
         git commit -m "chore: bump version to ${{
           github.event.inputs.version_bump
