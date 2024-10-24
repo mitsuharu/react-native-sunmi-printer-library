@@ -559,9 +559,24 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val pureBase64Encoded = base64.substring(base64.indexOf(",") + 1)
       val decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT)
       val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+      if (decodedBitmap == null) {
+        promise.reject("0", "Failed to decode base64 image.")
+        return
+      }
       val w = decodedBitmap.width
       val h = decodedBitmap.height
-      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
+      if (w <= 0 || h <= 0) {
+        promise.reject("0", "Invalid image dimensions: width and height must be greater than 0.")
+        return
+      }
+      // Tính chiều cao mới và làm tròn giá trị
+      val newHeight = Math.round(pixelWidth.toFloat() / w * h)
+
+      if (newHeight <= 0) {
+        promise.reject("0", "Calculated height is invalid.")
+        return
+      }
+      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, newHeight, false)
       printerService?.printBitmapCustom(image, type, callback)
     } catch (e: Exception) {
       promise.reject("0", "native#printBitmapBase64Custom is failed. " + e.message)
