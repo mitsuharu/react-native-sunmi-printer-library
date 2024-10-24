@@ -1,5 +1,5 @@
 {
-  "name": "@mitsuharu/react-native-sunmi-printer-library",
+  "name": "@sandboxvn/react-native-sunmi-printer-library",
   "version": "2.2.0",
   "description": "React Native module that support SUNMI mobile printer devices.",
   "main": "lib/commonjs/index",
@@ -40,13 +40,13 @@
     "sunmi",
     "printer"
   ],
-  "repository": "https://github.com/mitsuharu/react-native-sunmi-printer-library",
-  "author": "Mitsuharu Emoto <mthr1982@gmail.com> (https://github.com/mitsuharu)",
+  "repository": "https://github.com/sandboxvn/react-native-sunmi-printer-library.git",
+  "author": "SandboxVN",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mitsuharu/react-native-sunmi-printer-library/issues"
+    "url": "https://github.com/sandboxvn/react-native-sunmi-printer-library.git/issues"
   },
-  "homepage": "https://github.com/mitsuharu/react-native-sunmi-printer-library#readme",
+  "homepage": "https://github.com/sandboxvn/react-native-sunmi-printer-library.git#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
