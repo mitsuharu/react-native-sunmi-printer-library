@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  publish:
+  lint_and_test:
     runs-on: ubuntu-latest
 
     env:
