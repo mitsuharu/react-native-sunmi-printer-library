@@ -371,26 +371,34 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     try {
       val callback = makeInnerResultCallback(promise, "native#printColumnsText is failed.")
 
-      var _texts = arrayOf<String>()
+      var _texts = mutableListOf<String>()
       for (i in 0..(texts.size()-1)){
-        _texts += texts.getString(i)
+        val s = texts.getString(i)
+        if (s != null) {
+            _texts.add(s)
+        }
       }
 
-      var _widths = intArrayOf()
+      var _widths = mutableListOf<Int>()
       for (i in 0..(widths.size()-1)){
-        _widths += widths.getInt(i)
+        if (!widths.isNull(i)) {
+            _widths.add(widths.getInt(i))
+        }
       }
 
-      var _alignments = intArrayOf()
+      var _alignments = mutableListOf<Int>()
       for (i in 0..(alignments.size()-1)){
-        val temp = alignmentToInt(alignments.getString(i))
-        if(temp != null){
-          _alignments += temp
+        val s = alignments.getString(i)
+        if (s != null) {
+          val temp = alignmentToInt(s)
+          if(temp != null){
+            _alignments.add(temp)
+          }
         }
       }
 
       if (_texts.size == _alignments.size && _texts.size == _widths.size) {
-         printerService?.printColumnsText(_texts, _widths, _alignments, callback)
+         printerService?.printColumnsText(_texts.toTypedArray(), _widths.toIntArray(), _alignments.toIntArray(), callback)
        } else {
          promise.reject("0", "native#printColumnsText is failed because alignments is incorrect.")
        }
@@ -404,27 +412,35 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
     validatePrinterService(promise)
     try {
       val callback = makeInnerResultCallback(promise, "native#printColumnsString is failed.")
-
-      var _texts = arrayOf<String>()
+      
+      var _texts = mutableListOf<String>()
       for (i in 0..(texts.size()-1)){
-        _texts += texts.getString(i)
+        val s = texts.getString(i)
+        if (s != null) {
+            _texts.add(s)
+        }
       }
 
-      var _widths = intArrayOf()
+      var _widths = mutableListOf<Int>()
       for (i in 0..(widths.size()-1)){
-        _widths += widths.getInt(i)
+        if (!widths.isNull(i)) {
+            _widths.add(widths.getInt(i))
+        }
       }
 
-      var _alignments = intArrayOf()
+      var _alignments = mutableListOf<Int>()
       for (i in 0..(alignments.size()-1)){
-        val temp = alignmentToInt(alignments.getString(i))
-        if(temp != null){
-          _alignments += temp
+        val s = alignments.getString(i)
+        if (s != null) {
+          val temp = alignmentToInt(s)
+          if(temp != null){
+            _alignments.add(temp)
+          }
         }
       }
 
       if (_texts.size == _alignments.size && _texts.size == _widths.size) {
-         printerService?.printColumnsString(_texts, _widths, _alignments, callback)
+         printerService?.printColumnsString(_texts.toTypedArray(), _widths.toIntArray(), _alignments.toIntArray(), callback)
        } else {
          promise.reject("0", "native#printColumnsString is failed because alignments is incorrect.")
        }
