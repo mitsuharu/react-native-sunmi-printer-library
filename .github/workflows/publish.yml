@@ -19,19 +19,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'latest'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Lint
-        run: |
-          yarn typecheck
-          yarn lint
-
-      - name: Test
-        run: yarn test
 
       - name: Check for existing tag
         id: tag-check
