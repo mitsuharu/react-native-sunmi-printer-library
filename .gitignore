@@ -32,14 +32,16 @@ project.xcworkspace
 
 # Android/IJ
 #
-.classpath
-.cxx
-.gradle
+build/
 .idea
-.project
-.settings
+.gradle
 local.properties
-android.iml
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+.kotlin/
 
 # Cocoapods
 #
