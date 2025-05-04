@@ -4004,8 +4004,8 @@ __metadata:
     "@react-native/eslint-config": "npm:^0.74.85"
     "@release-it/conventional-changelog": "npm:^8.0.1"
     "@types/jest": "npm:^29.5.12"
-    "@types/react": "npm:~18.3.3"
-    "@types/react-native": "npm:0.73.0"
+    "@types/react": "npm:^19.1.2"
+    "@types/react-native": "npm:^0.73.0"
     "@typescript-eslint/eslint-plugin": "npm:^7.16.1"
     "@typescript-eslint/parser": "npm:^7.16.1"
     del-cli: "npm:^5.1.0"
@@ -4016,8 +4016,8 @@ __metadata:
     metro-react-native-babel-preset: "npm:^0.77.0"
     pod-install: "npm:^0.2.2"
     prettier: "npm:^2.8.8"
-    react: "npm:18.3.1"
-    react-native: "npm:0.74.3"
+    react: "npm:19.0.0"
+    react-native: "npm:0.79.2"
     react-native-builder-bob: "npm:^0.26.0"
     release-it: "npm:^17.6.0"
     turbo: "npm:^2.0.7"
@@ -5319,7 +5319,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-native@npm:0.73.0":
+"@types/react-native@npm:^0.73.0":
   version: 0.73.0
   resolution: "@types/react-native@npm:0.73.0"
   dependencies:
@@ -13212,7 +13212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:*, react-native@npm:0.74.3":
+"react-native@npm:*":
   version: 0.74.3
   resolution: "react-native@npm:0.74.3"
   dependencies:
@@ -13352,15 +13352,6 @@ __metadata:
   peerDependencies:
     react: ^19.1.0
   checksum: 10/73ae0ea779bacd0ff084dd3644b763a4431d68adf9c6acffdaa3d0810aab5322f24c95c60259c23b77f38b5f36d9d614ffaa46d91a33840536f2d4b7188dcc89
-  languageName: node
-  linkType: hard
-
-"react@npm:18.3.1":
-  version: 18.3.1
-  resolution: "react@npm:18.3.1"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-  checksum: 10/261137d3f3993eaa2368a83110466fc0e558bc2c7f7ae7ca52d94f03aac945f45146bd85e5f481044db1758a1dbb57879e2fcdd33924e2dde1bdc550ce73f7bf
   languageName: node
   linkType: hard
 
