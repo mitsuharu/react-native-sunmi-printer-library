@@ -12842,15 +12842,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pod-install@npm:^0.3.9":
-  version: 0.3.9
-  resolution: "pod-install@npm:0.3.9"
-  bin:
-    pod-install: build/index.js
-  checksum: 10/327b579e53f08984a93170a876d3ea0c2918ba80ac7187cf51a64d430fdffc0d151b80c940740489c28a9a5b9b7e96b840e8a81e60e4aa44cad0b9ced090dda8
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -13202,7 +13193,6 @@ __metadata:
     babel-plugin-module-resolver: "npm:^5.0.2"
     buffer: "npm:^6.0.3"
     jest: "npm:^29.7.0"
-    pod-install: "npm:^0.3.9"
     prettier: "npm:^3.3.3"
     react: "npm:19.0.0"
     react-native: "npm:0.79.2"
