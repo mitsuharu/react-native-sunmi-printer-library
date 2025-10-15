@@ -661,4 +661,24 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       promise.reject("0", "native#commitPrinterBuffer is failed. " + e.message)
     }
   }
+
+  @ReactMethod
+  fun labelLocate(promise: Promise){
+    validatePrinterService(promise)
+    try {
+      printerService?.labelLocate()
+    }catch (e: Exception) {
+      promise.reject("0", "native#labelLocate is failed. " + e.message)
+    }
+  }
+
+  @ReactMethod
+  fun labelOutput(promise: Promise){
+    validatePrinterService(promise)
+    try{
+      printerService?.labelOutput()
+    }catch(e: Exception){
+      promise.reject("0", "native#labelOutput is failed. " + e.message)
+    }
+  }
 }
