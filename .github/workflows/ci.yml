@@ -1,3 +1,5 @@
+# PRが作成または更新されたときに実行されるCIワークフロー
+# Lintとテストを実行
 name: CI
 
 on:
@@ -16,17 +18,21 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # リポジトリをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      # Node.jsをセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version: 'latest'
-          registry-url: 'https://registry.npmjs.org'
+          node-version-file: '.node-version'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          corepack enable
+          yarn install --immutable
 
       - name: Lint
         run: |
