@@ -1,21 +1,18 @@
-# PRが作成または更新されたときに実行されるCIワークフロー
-# Lintとテストを実行
-name: CI
+# AikidoSec/safe-chain を利用して、悪意ある npm パッケージが含まれていないかチェックする
+# https://github.com/AikidoSec/safe-chain
+name: Check npm packages by AikidoSec Safe Chain
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-
-permissions:
-  contents: write
-  pull-requests: write
+    paths:
+      - package.json
+      - package-lock.json
+      - yarn.lock
 
 jobs:
-  lint_and_test:
+  check-npm-packages-by-aikidosec-safe-chain:
     runs-on: ubuntu-latest
-
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       # リポジトリをチェックアウト
@@ -29,15 +26,14 @@ jobs:
           node-version-file: '.node-version'
           cache: 'npm'
 
+      # AikidoSec Safe Chain　をセットアップ
+      - name: Setup safe-chain
+        run: |
+          npm i -g @aikidosec/safe-chain@1.1.5
+          safe-chain setup-ci
+
+      # lock ファイルに基づいて依存関係をインストールする
       - name: Install dependencies
         run: |
           corepack enable
           yarn install --immutable
-
-      - name: Lint
-        run: |
-          yarn typecheck
-          yarn lint
-
-      - name: Test
-        run: yarn test
