@@ -74,6 +74,8 @@ interface SunmiPrinterLibrary {
   enterPrinterBuffer: (clear: boolean) => Promise<void>
   exitPrinterBuffer: (commit: boolean) => Promise<void>
   commitPrinterBuffer: () => Promise<void>
+  labelLocate: () => Promise<void>
+  labelOutput: () => Promise<void>
 }
 
 /**
@@ -925,5 +927,15 @@ export const exitPrinterBuffer = Platform.select<
  */
 export const commitPrinterBuffer = Platform.select<() => Promise<void>>({
   android: () => sunmiPrinterLibrary.commitPrinterBuffer(),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
+})
+
+export const labelLocate = Platform.select<() => Promise<void>>({
+  android: () => sunmiPrinterLibrary.labelLocate(),
+  default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
+})
+
+export const labelOutput = Platform.select<() => Promise<void>>({
+  android: () => sunmiPrinterLibrary.labelOutput(),
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
 })

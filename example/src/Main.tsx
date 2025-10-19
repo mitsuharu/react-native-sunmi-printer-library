@@ -32,6 +32,8 @@ type ComponentProps = {
   onPressPrintBarcode: () => void
   onPressScan: () => void
   onPressTransaction: () => void
+  onPressLabelLocate: () => void
+  onPressLabelOutput: () => void
 }
 
 const Component: React.FC<ComponentProps> = ({
@@ -47,6 +49,8 @@ const Component: React.FC<ComponentProps> = ({
   onPressPrintBarcode,
   onPressScan,
   onPressTransaction,
+  onPressLabelLocate,
+  onPressLabelOutput,
 }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -79,6 +83,8 @@ const Component: React.FC<ComponentProps> = ({
             text="print text with transaction"
             onPress={onPressTransaction}
           />
+          <Button text="Label locate" onPress={onPressLabelLocate} />
+          <Button text="Label output" onPress={onPressLabelOutput} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -463,6 +469,22 @@ const Container: React.FC<Props> = () => {
     }
   }, [])
 
+  const onPressLabelLocate = useCallback(async () => {
+    try {
+      await SunmiPrinterLibrary.labelLocate()
+    } catch (error) {
+      console.warn(error)
+    }
+  }, [])
+
+  const onPressLabelOutput = useCallback(async () => {
+    try {
+      await SunmiPrinterLibrary.labelOutput()
+    } catch (error) {
+      console.warn(error)
+    }
+  }, [])
+
   return (
     <Component
       {...{
@@ -478,6 +500,8 @@ const Container: React.FC<Props> = () => {
         onPressPrintImage,
         onPressScan,
         onPressTransaction,
+        onPressLabelLocate,
+        onPressLabelOutput,
       }}
     />
   )

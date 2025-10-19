@@ -1,6 +1,6 @@
 {
   "name": "@mitsuharu/react-native-sunmi-printer-library",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "React Native module that support SUNMI mobile printer devices.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -32,7 +32,9 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
-    "release": "release-it"
+    "release": "release-it",
+    "install:safe-chain": "npm install -g @aikidosec/safe-chain@1.1.5 && safe-chain setup && ./scripts/relogin.sh",
+    "uninstall:safe-chain": "safe-chain teardown && npm uninstall -g @aikidosec/safe-chain && ./scripts/relogin.sh"
   },
   "keywords": [
     "react-native",
@@ -81,7 +83,7 @@
   "workspaces": [
     "example"
   ],
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "yarn@4.10.3",
   "engines": {
     "node": ">= 18.0.0"
   },

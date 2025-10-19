@@ -23,6 +23,8 @@ updates:
         patterns:
           - 'textlint'
           - 'textlint-*'
+    cooldown:
+      default-days: 7
   - package-ecosystem: 'github-actions'
     directory: '/'
     target-branch: 'develop'
@@ -30,3 +32,5 @@ updates:
       interval: 'monthly'
     commit-message:
       prefix: '[skip ci] '
+    cooldown:
+      default-days: 7
