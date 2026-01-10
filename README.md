@@ -183,6 +183,21 @@ yarn example android
 
 （管理者のみ）develop ブランチのバージョン更新して、main ブランチへPRを作ってください。マージを行うと、自動で npm にリリースされます。
 
+## セキュリティ対策
+
+ローカルおよび CI で、[@aikidosec/safe-chain](https://github.com/AikidoSec/safe-chain) を利用して、npm パッケージの安全性を確認できます。
+
+### ローカル環境
+
+[@aikidosec/safe-chain](https://github.com/AikidoSec/safe-chain) の README にしたがって、ローカル環境にインストールしてください。
+
+### CI
+
+package.json またはロックファイルの変更を含む PR が作成されたら、GitHub Actions でパッケージが確認されます。なお、Actions で利用する`@aikidosec/safe-chain` はバージョン固定しています。`@aikidosec/safe-chain` が更新されたら、それ自身の安全性を確認した後に、次のファイルを更新してください。
+
+- `.github/workflows/aikidosec-safe-chain.yml`
+	- `name: Install safe-chain` の `export SAFE_CHAIN_VERSION=1.3.2` で指定するバージョンを更新する
+
 ## License
 
 MIT

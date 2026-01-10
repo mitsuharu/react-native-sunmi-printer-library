@@ -9,31 +9,72 @@ on:
       - package.json
       - package-lock.json
       - yarn.lock
+      - pnpm-lock.yaml
 
 jobs:
   check-npm-packages-by-aikidosec-safe-chain:
+    # 2025/12/18 時点では runner を ubuntu-slim にすると、AikidoSec/safe-chain が動作しない
     runs-on: ubuntu-latest
 
     steps:
       # リポジトリをチェックアウト
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
+      # どのパッケージマネージャーのファイルが変更されたかを検出する
+      # ni などパッケージマネージャーのラッパーツールは、safe-chain が対応していないため、直接 lockfile を見る
+      - name: Detect changed files
+        id: changes
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        with:
+          filters: |
+            manifest:
+              - 'package.json'
+            npm:
+              - 'package-lock.json'
+            yarn:
+              - 'yarn.lock'
+            pnpm:
+              - 'pnpm-lock.yaml'
+      
+      # 1つだけ許可：複数 lockfile が変わったら fail
+      - name: Fail if multiple lockfiles changed
+        run: |
+          count=0
+          [[ "${{ steps.changes.outputs.npm }}" == "true" ]] && count=$((count+1))
+          [[ "${{ steps.changes.outputs.yarn }}" == "true" ]] && count=$((count+1))
+          [[ "${{ steps.changes.outputs.pnpm }}" == "true" ]] && count=$((count+1))
+
+          if [ "$count" -gt 1 ]; then
+            echo "::error::Multiple lockfiles were changed in this PR. Please update only one package manager lockfile."
+            exit 1
+          fi
+      
       # Node.jsをセットアップ
       - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version-file: '.node-version'
-          cache: 'npm'
 
-      # AikidoSec Safe Chain　をセットアップ
-      - name: Setup safe-chain
+      # AikidoSec Safe Chain をセットアップ
+      - name: Install safe-chain
         run: |
-          npm i -g @aikidosec/safe-chain@1.1.5
-          safe-chain setup-ci
+          export SAFE_CHAIN_VERSION=1.3.2
+          curl -fsSL "https://raw.githubusercontent.com/AikidoSec/safe-chain/$SAFE_CHAIN_VERSION/install-scripts/install-safe-chain.sh" | sh -s -- --ci
 
       # lock ファイルに基づいて依存関係をインストールする
-      - name: Install dependencies
+      - name: Install dependencies (npm ci)
+        if: steps.changes.outputs.npm == 'true'
+        run: npm ci
+
+      - name: Install dependencies (yarn immutable)
+        if: steps.changes.outputs.yarn == 'true'
         run: |
-          corepack enable
+          corepack enable || true
           yarn install --immutable
+
+      - name: Install dependencies (pnpm frozen-lockfile)
+        if: steps.changes.outputs.pnpm == 'true'
+        run: |
+          corepack enable || true
+          pnpm install --frozen-lockfile
