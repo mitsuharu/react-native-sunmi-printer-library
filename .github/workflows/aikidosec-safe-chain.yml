@@ -70,11 +70,13 @@ jobs:
       - name: Install dependencies (yarn immutable)
         if: steps.changes.outputs.yarn == 'true'
         run: |
+          # corepack may already be enabled, ignore errors
           corepack enable || true
           yarn install --immutable
 
       - name: Install dependencies (pnpm frozen-lockfile)
         if: steps.changes.outputs.pnpm == 'true'
         run: |
+          # corepack may already be enabled, ignore errors
           corepack enable || true
           pnpm install --frozen-lockfile
