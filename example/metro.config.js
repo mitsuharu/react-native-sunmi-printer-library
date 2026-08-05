@@ -1,6 +1,6 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
 const path = require('path')
-const escape = require('escape-string-regexp')
+const escapeStringRegexp = require('escape-string-regexp')
 const exclusionList = require('metro-config/src/defaults/exclusionList')
 const pak = require('../package.json')
 
@@ -22,7 +22,9 @@ const config = {
     blacklistRE: exclusionList(
       modules.map(
         (m) =>
-          new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`),
+          new RegExp(
+            `^${escapeStringRegexp(path.join(root, 'node_modules', m))}\\/.*$`,
+          ),
       ),
     ),
 

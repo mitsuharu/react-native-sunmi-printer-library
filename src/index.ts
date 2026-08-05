@@ -192,7 +192,7 @@ export const prepare = async () => {
     await setDefaultFontSize()
     return true
   } catch (error) {
-    return Promise.reject('prepare() is failed.' + error.message)
+    return Promise.reject(`prepare() is failed. ${error.message}`)
   }
 }
 
@@ -208,7 +208,7 @@ export const resetPrinterStyle = async () => {
     await setDefaultFontSize()
     return true
   } catch (error) {
-    return Promise.reject('resetPrinterStyle() is failed.' + error.message)
+    return Promise.reject(`resetPrinterStyle() is failed. ${error.message}`)
   }
 }
 
@@ -282,7 +282,7 @@ const getPaperWidth = Platform.select<() => Promise<PaperWidth>>({
       const result = await sunmiPrinterLibrary.getPrinterPaper()
       return Promise.resolve(result as PaperWidth)
     } catch (error) {
-      return Promise.reject('getPaperWidth() is failed.' + error.message)
+      return Promise.reject(`getPaperWidth() is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
@@ -325,7 +325,7 @@ export const getPrinterState = Platform.select<
       const description = PrinterState[value]
       return Promise.resolve({ value, description })
     } catch (error) {
-      return Promise.reject('getPrinterState() is failed.' + error.message)
+      return Promise.reject(`getPrinterState() is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
@@ -619,7 +619,7 @@ export const print2DCodePDF417 = Platform.select<
       )
       return Promise.resolve()
     } catch (error) {
-      return Promise.reject('print2DCodePDF417() is failed.' + error.message)
+      return Promise.reject(`print2DCodePDF417() is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
@@ -660,7 +660,7 @@ export const print2DCodeDataMatrix = Platform.select<
       return Promise.resolve()
     } catch (error) {
       return Promise.reject(
-        'print2DCodeDataMatrix() is failed.' + error.message,
+        `print2DCodeDataMatrix() is failed. ${error.message}`,
       )
     }
   },
@@ -723,7 +723,7 @@ export const printImage = Platform.select<
       )
       return Promise.resolve()
     } catch (error) {
-      return Promise.reject('printImage is failed.')
+      return Promise.reject(`printImage is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
@@ -778,7 +778,7 @@ export const hr = Platform.select<(barType: BarType) => Promise<string>>({
       const text = separator.repeat(count)
       return Promise.resolve(text)
     } catch (error) {
-      return Promise.reject('hr is failed.' + error.message)
+      return Promise.reject(`hr is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
@@ -812,7 +812,7 @@ export const printHR = Platform.select<(barType: BarType) => Promise<void>>({
       )
       return Promise.resolve()
     } catch (error) {
-      return Promise.reject('printHR is failed.' + error.message)
+      return Promise.reject(`printHR is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
@@ -878,7 +878,7 @@ export const getPrinterInfo = Platform.select<() => Promise<PrinterInfo>>({
       }
       return Promise.resolve(result)
     } catch (error) {
-      return Promise.reject('getPrinterInfo is failed.')
+      return Promise.reject(`getPrinterInfo is failed. ${error.message}`)
     }
   },
   default: () => Promise.reject(OS_DOES_NOT_SUPPORT),
