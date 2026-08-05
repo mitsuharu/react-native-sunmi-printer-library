@@ -83,7 +83,7 @@
   "workspaces": [
     "example"
   ],
-  "packageManager": "yarn@4.10.3",
+  "packageManager": "yarn@4.18.0",
   "engines": {
     "node": ">= 18.0.0"
   },
