@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.node-version'
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
 
       - name: Install dependencies
         run: |
@@ -50,6 +52,8 @@ jobs:
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.node-version'
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
 
       - name: Setup Java
         uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
