@@ -30,7 +30,7 @@ yarn test
 yarn example build:android
 ```
 
-Android exampleのビルドでは、`arm64-v8a` 向けに `assembleDebug` を実行します。この検証で確認できるのはコンパイルとリンクまでです。プリンターの実動作は、対応するSUNMI端末で別途確認します。
+Android exampleのビルドでは、`armeabi-v7a` と `arm64-v8a` 向けに `assembleDebug` を実行します。この検証で確認できるのはコンパイルとリンクまでです。プリンターの実動作は、対応するSUNMI端末で別途確認します。
 
 ## 変更時のルール
 
@@ -38,7 +38,7 @@ Android exampleのビルドでは、`arm64-v8a` 向けに `assembleDebug` を実
 - 明示的に破壊的変更を求められていない限り、公開されているTypeScript APIの後方互換性を維持します。
 - APIを変更するときは、TypeScript定義、Kotlinブリッジ、テスト、READMEの使用例、exampleアプリの内容を一致させます。
 - JavaScriptまたはTypeScriptの振る舞いを変更するときは、可能な限りJestテストを追加または更新します。
-- ネイティブ実装を変更するときはAndroid exampleをビルドし、未実施のSUNMI端末上の確認事項をPRに記載します。
+- ネイティブ実装や印刷動作に影響するコードを変更するときはAndroid exampleをビルドし、接続可能な対応SUNMI端末で実機確認します。実施内容と結果、または実施できなかった確認事項をPRに記載します。
 - タスクに必要でない限り、生成物、依存関係のロックファイル、リリース設定、ワークフローを変更しません。
 - GitHub Actionsの依存先は完全なコミットSHAに固定し、SHAの横にバージョンコメントを残します。
 - 認証情報、署名鍵、端末識別子、`local.properties` などのローカルAndroid設定はコミットしません。

@@ -36,7 +36,7 @@ describe('SunmiPrinterLibrary', () => {
     const text = 'こんにちは、プリンター！'
     await printText(text)
     expect(NativeModules.SunmiPrinterLibrary.printText).toHaveBeenCalledWith(
-      text
+      text,
     )
   })
 
