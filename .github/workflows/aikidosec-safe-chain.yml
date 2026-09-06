@@ -2,6 +2,10 @@
 # https://github.com/AikidoSec/safe-chain
 name: Check npm packages by AikidoSec Safe Chain
 
+env:
+  AIKIDO_SAFE_CHAIN_VERSION: '1.5.16'
+  AIKIDO_SAFE_CHAIN_INSTALLER_SHA256: '7a7b6e54c2e0adbcb53bc1bf7d258cc974f8f31e77ed048b88e4d2e4ac758839'
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -24,13 +28,16 @@ jobs:
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.node-version'
-          cache: 'npm'
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
 
-      # AikidoSec Safe Chain　をセットアップ
+      # AikidoSec Safe Chainをセットアップ
       - name: Setup safe-chain
         run: |
-          npm i -g @aikidosec/safe-chain@1.1.5
-          safe-chain setup-ci
+          curl -fsSL "https://github.com/AikidoSec/safe-chain/releases/download/${AIKIDO_SAFE_CHAIN_VERSION}/install-safe-chain.sh" -o /tmp/install-safe-chain.sh
+          echo "${AIKIDO_SAFE_CHAIN_INSTALLER_SHA256}  /tmp/install-safe-chain.sh" | sha256sum -c -
+          sh /tmp/install-safe-chain.sh --ci
+          rm /tmp/install-safe-chain.sh
 
       # lock ファイルに基づいて依存関係をインストールする
       - name: Install dependencies
