@@ -23,6 +23,10 @@ apply plugin: "kotlin-android"
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
+
+  react {
+    jsRootDir = file("../src")
+  }
 }
 
 def getExtOrDefault(name) {
