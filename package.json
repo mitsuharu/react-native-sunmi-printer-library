@@ -33,9 +33,7 @@
     "lint-force": "biome check --write",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
-    "release": "release-it",
-    "install:safe-chain": "npm install -g @aikidosec/safe-chain@1.1.5 && safe-chain setup && ./scripts/relogin.sh",
-    "uninstall:safe-chain": "safe-chain teardown && npm uninstall -g @aikidosec/safe-chain && ./scripts/relogin.sh"
+    "release": "release-it"
   },
   "keywords": [
     "react-native",
