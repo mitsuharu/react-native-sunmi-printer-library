@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect } from 'react'
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
   DeviceEventEmitter,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
 import { useToast } from 'react-native-toast-notifications'
