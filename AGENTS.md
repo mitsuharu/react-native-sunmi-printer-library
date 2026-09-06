@@ -15,6 +15,7 @@
 
 - `.node-version` に記載されたNode.jsを使用します。
 - `.yarn/releases/` にコミットされたYarnを使用し、依存関係のインストールにnpmを使用しません。
+- Node.js製の開発CLIはグローバルインストールせず、ルートの `devDependencies` に固定して `yarn <command>` で実行します。
 - リポジトリのルートで `corepack enable`、続けて `yarn install --immutable` を実行して依存関係をインストールします。
 - Android開発にはJDK 17と、`example/android/build.gradle` に定義されたバージョンのAndroid SDKが必要です。
 - リポジトリに含まれるGradle Wrapperを使用し、グローバルにインストールされたGradleには依存しません。
@@ -32,6 +33,27 @@ yarn example build:android
 
 Android exampleのビルドでは、`armeabi-v7a` と `arm64-v8a` 向けに `assembleDebug` を実行します。この検証で確認できるのはコンパイルとリンクまでです。プリンターの実動作は、対応するSUNMI端末で別途確認します。
 
+## React Nativeの更新
+
+- 更新対象のアプリは `example/` です。ルートのReact Native関連 `devDependencies` も、テストとビルドで同じ実体を使うためexampleと同じバージョンに揃えます。
+- 更新前にCallstackの `upgrading-react-native` スキルが利用可能なら読み込み、Upgrade Helperおよび `react-native-community/rn-diff-purge` の正規テンプレート差分を基準にします。
+- 現在値は `example/package.json` から取得し、更新先はnpmの `react-native` の `latest` とrn-diff-purgeの `RELEASES` の両方で存在を確認します。近いパッチバージョンを推測で代用しません。
+- `react`、`react-test-renderer`、`@types/react`、React NativeのBabel・Metro・Jest・TypeScript設定、Community CLIは、対象React Nativeのテンプレートに記載された互換セットとして一括更新します。
+- 依存関係の編集後はルートでYarnによるインストールを1回行い、`yarn.lock` を更新します。npmやパッケージ単位の追加インストールを繰り返しません。
+- Androidテンプレート差分は、SDK、Kotlin、Gradle Wrapper、`MainApplication.kt`、Manifest、Gradle propertiesを確認します。Gradle WrapperのJARとスクリプトも対象バージョンのテンプレートに揃えます。
+- example固有のアプリID、SUNMIサービスの `queries`、`armeabi-v7a` / `arm64-v8a`、ライブラリソースを参照するBabel・Metro設定は保持します。テンプレートのアプリ名やサンプル画面で上書きしません。
+- このライブラリはAndroid専用のため、React NativeテンプレートのiOS差分は適用しません。
+- New ArchitectureのCodegenでは、ライブラリ側の `android/build.gradle` にある `jsRootDir` を `src/` に限定します。リポジトリ全体を探索するとexampleの依存パッケージの生成コードがライブラリAARへ混入し、クラスが重複します。
+- React Native更新後は必須検証をすべて実行し、接続中のSUNMI端末がある場合はプロジェクト内の `agent-device` を使ってAPKのインストールと起動を確認します。
+
+```sh
+yarn agent-device install com.sunmiprinterlibraryexample example/android/app/build/outputs/apk/debug/app-debug.apk --platform android
+yarn agent-device open com.sunmiprinterlibraryexample --platform android --relaunch
+yarn agent-device close
+```
+
+印刷、スキャンなどハードウェア依存機能は、アプリ起動だけで確認済みとせず、対応するSUNMI実機で操作結果を確認してPRへ記載します。
+
 ## 変更時のルール
 
 - PRは1つの目的に絞り、無関係な整理や修正を含めません。
@@ -47,7 +69,7 @@ Android exampleのビルドでは、`armeabi-v7a` と `arm64-v8a` 向けに `ass
 
 - 現在の統合ブランチおよびPRのデフォルトのベースは `develop` です。明示的な依頼がない限り、デフォルトブランチやリリースフローを変更しません。
 - コミットメッセージには `feat:`、`fix:`、`test:`、`docs:`、`refactor:`、`chore:` などのConventional Commits形式を使用します。
-- コミットは、1つのまとまった目的を持ちレビュー可能な大きさに分割します。
+- コミットは目的単位または機能単位に分け、1コミットが1つのまとまった変更になる、レビュー可能な適度な粒度にします。無関係な変更や複数の独立した目的を1コミットへ混在させません。
 - PR本文には変更の概要、検証コマンドと結果、未実施の端末テストを記載します。
 - 作業ツリーに既に存在する無関係な変更を、書き換えたり破棄したりコミットへ含めたりしません。
 

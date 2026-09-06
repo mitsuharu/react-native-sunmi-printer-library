@@ -58,7 +58,7 @@ class SunmiScannerLibraryModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun scan(promise: Promise) {
-    val activity: Activity? = getCurrentActivity()
+    val activity: Activity? = reactApplicationContext.currentActivity
     if (activity == null) {
       sendEventFailed("scan is failed. There is not an activity.")
       return
