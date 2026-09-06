@@ -5,11 +5,11 @@ import {
   View,
   Text,
   DeviceEventEmitter,
+  ToastAndroid,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as SunmiPrinterLibrary from '@mitsuharu/react-native-sunmi-printer-library'
 import { Button } from './components/Button'
-import { useToast } from 'react-native-toast-notifications'
 import {
   sampleImageBase64,
   sampleTextEn,
@@ -19,6 +19,11 @@ import {
 import { Buffer } from 'buffer'
 
 type Props = Record<string, never>
+
+const toast = {
+  show: (message: string) => ToastAndroid.show(message, ToastAndroid.SHORT),
+}
+
 type ComponentProps = {
   onPressPrepare: () => void
   onPressPrintSelfChecking: () => void
@@ -92,8 +97,6 @@ const Component: React.FC<ComponentProps> = ({
 }
 
 const Container: React.FC<Props> = () => {
-  const toast = useToast()
-
   const onPressPrepare = useCallback(async () => {
     try {
       const isPrepared: boolean = await SunmiPrinterLibrary.prepare()

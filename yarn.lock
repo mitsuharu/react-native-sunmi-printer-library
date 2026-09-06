@@ -8382,21 +8382,10 @@ __metadata:
     react: "npm:19.2.3"
     react-native: "npm:0.87.1"
     react-native-safe-area-context: "npm:^5.5.2"
-    react-native-toast-notifications: "npm:^3.4.0"
     react-test-renderer: "npm:19.2.3"
     typescript: "npm:^6.0.3"
   languageName: unknown
   linkType: soft
-
-"react-native-toast-notifications@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "react-native-toast-notifications@npm:3.4.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/1e60ca9155bd19a2c47670a80f60438dbd88be2a4193d6dedce04f3179a529b5fdc85c4b5283926d383f8641d757ac302b96d1a1eb2760a6424e4b433582ad79
-  languageName: node
-  linkType: hard
 
 "react-native@npm:0.87.1":
   version: 0.87.1
