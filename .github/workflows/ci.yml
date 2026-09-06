@@ -1,5 +1,3 @@
-# PRが作成または更新されたときに実行されるCIワークフロー
-# Lintとテストを実行
 name: CI
 
 on:
@@ -7,27 +5,25 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint_and_test:
     runs-on: ubuntu-latest
-
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 15
 
     steps:
-      # リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      # Node.jsをセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.node-version'
-          cache: 'npm'
 
       - name: Install dependencies
         run: |
@@ -41,3 +37,33 @@ jobs:
 
       - name: Test
         run: yarn test
+
+  build_android_example:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: '.node-version'
+
+      - name: Setup Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@0f4528296b4bc09e8ae0fc7be30185a4ab435545 # v6.0.0
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Build Android example
+        run: yarn example build:android
