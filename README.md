@@ -29,7 +29,8 @@ yarn add @mitsuharu/react-native-sunmi-printer-library
 
 ## Usage
 
-You see `example` directory for details.
+See the React Native example in `example/` or the Expo example in
+`example-expo/` for details.
 
 ### prepare
 
@@ -169,10 +170,52 @@ yarn
 yarn example android
 ```
 
-### example
+### Examples
 
-- Example supports React Native 0.74.
-- It uses this example to develop this library.
+- `example/` is the bare React Native example and uses React Native 0.87.
+- `example-expo/` is the Expo example and uses Expo SDK 57 with React Native
+  0.86.
+- Both examples reuse the same printer operation screen.
+
+The Expo example uses local Continuous Native Generation. It does not use EAS
+Build or any other cloud build service. Generate a fresh Android project with
+Expo Prebuild and build the APK with the generated Gradle Wrapper:
+
+```shell
+yarn example:expo build:android
+```
+
+The generated `example-expo/android/` directory is intentionally ignored. Do
+not edit it directly; update the Expo app configuration or a config plugin and
+run Prebuild again.
+
+#### Android 7.xでのdevelopment buildの注意点
+
+Expo SDK 57の `expo-dev-client` はdevelopment launcherの起動時に
+`java.time.Duration` を使用します。このAPIをそのまま含むAPKはAndroid 8.0
+未満で利用できないため、SUNMI V2 PROなどのAndroid 7.1端末では次の例外で
+起動直後に停止します。
+
+```text
+java.lang.NoClassDefFoundError: Failed resolution of: Ljava/time/Duration;
+```
+
+このexampleでは
+`example-expo/plugins/withAndroidCoreLibraryDesugaring.js` を `app.json` の
+config pluginとして登録し、Prebuild時にcore library desugaringと
+`desugar_jdk_libs` を設定しています。これによりAndroid 7.xでも
+development buildを起動できます。この設定を生成後の
+`example-expo/android/app/build.gradle` へ直接追加すると、次回の
+`expo prebuild --clean` で消えるため、必ずconfig plugin側を保守してください。
+詳細は[Expoのconfig plugin](https://docs.expo.dev/config-plugins/introduction/)
+および[AndroidのJava API desugaring](https://developer.android.com/studio/write/java8-support?hl=ja)
+のドキュメントを参照してください。
+
+To start the Expo development server for an installed development build:
+
+```shell
+yarn example:expo start
+```
 
 ### Guides
 
