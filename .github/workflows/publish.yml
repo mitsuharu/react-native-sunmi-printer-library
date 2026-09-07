@@ -1,13 +1,25 @@
-name: Publish to npm
+name: Release to npm
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version from package.json to release (for example, 2.5.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-to-npm
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -16,45 +28,96 @@ jobs:
       # リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: main
+          fetch-depth: 0
 
       # Node.jsをセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.node-version'
-          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Validate release version
+        id: release
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          if [[ ! "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Release version must be a valid SemVer version: $RELEASE_VERSION" >&2
+            exit 1
+          fi
+
+          if [ "$RELEASE_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Requested version $RELEASE_VERSION does not match package.json version $PACKAGE_VERSION" >&2
+            exit 1
+          fi
+
+          TAG="$PACKAGE_VERSION"
+          HEAD_COMMIT=$(git rev-parse HEAD)
+          TAG_EXISTS=false
+          if git rev-parse --verify "refs/tags/$TAG" >/dev/null 2>&1; then
+            TAG_COMMIT=$(git rev-list -n 1 "$TAG")
+            if [ "$TAG_COMMIT" != "$HEAD_COMMIT" ]; then
+              echo "Tag $TAG already points to $TAG_COMMIT instead of main commit $HEAD_COMMIT" >&2
+              exit 1
+            fi
+            TAG_EXISTS=true
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "tag_exists=$TAG_EXISTS" >> "$GITHUB_OUTPUT"
 
       - name: Install dependencies
         run: |
           corepack enable
           yarn install --immutable
 
-      - name: Check for existing tag
-        id: tag-check
+      - name: Verify package
         run: |
-          VERSION=$(jq -r '.version' package.json)
-          TAG="$VERSION"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists"
-            echo "::set-output name=tag_exists::true"
+          yarn typecheck
+          yarn lint
+          yarn test
+          yarn prepare
+          npm pack --dry-run
+
+      - name: Check npm registry
+        id: npm
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.tag }}
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          if npm view "$PACKAGE_NAME@$RELEASE_VERSION" version >/dev/null 2>&1; then
+            if [ "${{ steps.release.outputs.tag_exists }}" != "true" ]; then
+              echo "$PACKAGE_NAME@$RELEASE_VERSION is already published, but tag $RELEASE_VERSION does not exist" >&2
+              exit 1
+            fi
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Tag $TAG does not exist"
-            echo "::set-output name=tag_exists::false"
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create and push tag
-        id: create-tag
-        if: steps.tag-check.outputs.tag_exists == 'false'
+        if: steps.release.outputs.tag_exists != 'true'
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
-          VERSION=$(jq -r '.version' package.json)
-          TAG="$VERSION"
           git config user.name 'github-actions'
           git config user.email 'github-actions@github.com'
-          git tag -a "$TAG" -m "Release version $VERSION"
-          git push origin "$TAG"
+          git tag -a "$RELEASE_TAG" -m "Release version $RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
 
       - name: Publish to npm
-        if: steps.tag-check.outputs.tag_exists == 'false'
+        if: steps.npm.outputs.already_published != 'true'
+        run: npm publish --access public --provenance
+
+      - name: Create GitHub release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access=public
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --generate-notes --title "$RELEASE_TAG"
+          fi
