@@ -14,11 +14,6 @@ updates:
     schedule:
       interval: 'weekly'
     groups:
-      update-eslint:
-        patterns:
-          - 'eslint'
-          - 'eslint-*'
-          - '@eslint/*'
       update-textlint:
         patterns:
           - 'textlint'

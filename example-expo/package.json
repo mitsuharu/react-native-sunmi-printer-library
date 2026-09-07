@@ -1,0 +1,41 @@
+{
+  "name": "react-native-sunmi-printer-library-expo-example",
+  "version": "0.0.1",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "doctor": "expo-doctor",
+    "typecheck": "tsc --noEmit",
+    "prebuild:android": "expo prebuild --platform android --clean --no-install",
+    "build:android:native": "cd android && NODE_ENV=development ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=armeabi-v7a,arm64-v8a",
+    "build:android": "yarn prebuild:android && yarn build:android:native"
+  },
+  "dependencies": {
+    "@mitsuharu/react-native-sunmi-printer-library": "workspace:*",
+    "buffer": "^6.0.3",
+    "expo": "57.0.19",
+    "expo-dev-client": "~57.0.18",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "expo-doctor": "1.20.4",
+    "typescript": "~6.0.3"
+  },
+  "engines": {
+    "node": ">= 22.13.0"
+  },
+  "expo": {
+    "autolinking": {
+      "searchPaths": [
+        "./node_modules"
+      ]
+    }
+  },
+  "packageManager": "yarn@4.18.0"
+}

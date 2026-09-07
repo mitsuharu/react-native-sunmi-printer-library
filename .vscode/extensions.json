@@ -1,4 +1,3 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
-  "unwantedRecommendations": ["eg2.tslint"]
+  "recommendations": ["biomejs.biome", "streetsidesoftware.code-spell-checker"]
 }
