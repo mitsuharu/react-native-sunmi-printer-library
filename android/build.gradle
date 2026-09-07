@@ -103,4 +103,6 @@ dependencies {
 
   // https://mvnrepository.com/artifact/com.sunmi/printerlibrary
   implementation "com.sunmi:printerlibrary:1.0.24"
+
+  testImplementation "junit:junit:4.13.2"
 }

@@ -560,7 +560,8 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
       val w = decodedBitmap.width
       val h = decodedBitmap.height
-      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
+      val scaledHeight = calculateScaledBitmapHeight(pixelWidth, w, h)
+      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, scaledHeight, false)
       printerService?.printBitmap(image, callback)
     } catch (e: Exception) {
       promise.reject("0", "native#printBitmapBase64 is failed. " + e.message)
@@ -577,7 +578,8 @@ class SunmiPrinterLibraryModule(reactContext: ReactApplicationContext) :
       val decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
       val w = decodedBitmap.width
       val h = decodedBitmap.height
-      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, pixelWidth / w * h, false)
+      val scaledHeight = calculateScaledBitmapHeight(pixelWidth, w, h)
+      val image = Bitmap.createScaledBitmap(decodedBitmap, pixelWidth, scaledHeight, false)
       printerService?.printBitmapCustom(image, type, callback)
     } catch (e: Exception) {
       promise.reject("0", "native#printBitmapBase64Custom is failed. " + e.message)

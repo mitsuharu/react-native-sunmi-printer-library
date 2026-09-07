@@ -29,6 +29,7 @@
     "example": "yarn workspace react-native-sunmi-printer-library-example",
     "example:expo": "yarn workspace react-native-sunmi-printer-library-expo-example",
     "test": "jest",
+    "test:android": "cd example/android && ./gradlew :mitsuharu_react-native-sunmi-printer-library:testDebugUnitTest --no-daemon --console=plain",
     "typecheck": "tsc --noEmit",
     "lint": "biome check",
     "lint-force": "biome check --write",
