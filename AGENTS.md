@@ -8,6 +8,7 @@
 - `src/` にはTypeScriptの公開APIとテストがあります。
 - `android/` にはSUNMIプリンターSDKをラップするKotlinブリッジがあります。
 - `example/` は結合確認とAndroidビルド検証に使用するReact Nativeアプリです。
+- `example-expo/` はExpo Prebuildとの結合確認とAndroidビルド検証に使用するExpoアプリです。画面実装は `example/src/` と共有します。
 - `lib/` 配下の生成物やGradleのビルド生成物はコミットしません。
 - このライブラリはiOSをサポートしていません。プロジェクトとして明示的に決定されない限り、iOS対応を追加したり、対応済みと記載したりしません。
 
@@ -29,9 +30,37 @@ yarn typecheck
 yarn lint
 yarn test
 yarn example build:android
+yarn example:expo build:android
 ```
 
-Android exampleのビルドでは、`armeabi-v7a` と `arm64-v8a` 向けに `assembleDebug` を実行します。この検証で確認できるのはコンパイルとリンクまでです。プリンターの実動作は、対応するSUNMI端末で別途確認します。
+2つのAndroid exampleのビルドでは、`armeabi-v7a` と `arm64-v8a` 向けに `assembleDebug` を実行します。この検証で確認できるのはコンパイルとリンクまでです。プリンターの実動作は、対応するSUNMI端末で別途確認します。
+
+## Expo exampleの開発
+
+- Expo exampleは `example-expo/` に置き、bare React Native版の `example/` と併存させます。一方だけの置き換えや削除は行いません。
+- ExpoおよびExpo関連CLIはワークスペースの依存関係として固定し、`npx`、npm、グローバルインストールを使用しません。ルートから `yarn example:expo <script>` で実行します。
+- Expo SDKが対応するReact Nativeのバージョンを使用します。bare React Native版と異なるバージョンになる場合は、ワークスペースごとの `node_modules` とMetro設定で実体を分離します。
+- Androidネイティブプロジェクトは `yarn example:expo prebuild:android` でローカル生成します。EAS Buildなどのクラウドビルドは使用しません。
+- `example-expo/android/` と `example-expo/ios/` は生成物としてコミットせず、直接編集しません。ネイティブ設定が必要な場合は `app.json` またはconfig pluginに反映し、`--clean` 付きPrebuildで再生成できる状態を維持します。
+- Android 7.xではExpo development launcherが使用する `java.time.Duration` のため、core library desugaringが必要です。`example-expo/plugins/withAndroidCoreLibraryDesugaring.js` と `app.json` のplugin登録を保持し、生成後の `build.gradle` だけを修正しません。
+- このライブラリはAndroid専用のため、Expo exampleの `platforms` もAndroidだけにします。
+- CIではPrebuildと生成されたGradle Wrapperによる `assembleDebug` を別々のステップで実行し、YarnとGradleのキャッシュを利用します。
+- Expo Doctorは補助診断として利用します。Expo SDKとbare React Native版が異なる間は、monorepo内のReact Native重複を報告するため、PrebuildとAndroidビルドを必須の合否判定にします。
+
+```sh
+yarn example:expo typecheck
+yarn example:expo doctor
+yarn example:expo build:android
+```
+
+Expo exampleを実機で確認するときは、生成したAPKをプロジェクト内の `agent-device` でインストールし、開発サーバーを起動してアプリを開きます。
+
+```sh
+yarn agent-device install com.sunmiprinterlibraryexpoexample example-expo/android/app/build/outputs/apk/debug/app-debug.apk --platform android
+yarn example:expo start
+```
+
+Metro起動後にExpo CLIで `a` を入力してdevelopment buildへ接続します。アプリ本体が表示された後は、`yarn agent-device open com.sunmiprinterlibraryexpoexample --platform android --foreground` で操作と表示を確認します。
 
 ## React Nativeの更新
 

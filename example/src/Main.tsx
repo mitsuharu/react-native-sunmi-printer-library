@@ -18,13 +18,16 @@ import {
 } from './SampleResource'
 import { Buffer } from 'buffer'
 
-type Props = Record<string, never>
+type Props = {
+  runtime: 'React Native' | 'Expo'
+}
 
 const toast = {
   show: (message: string) => ToastAndroid.show(message, ToastAndroid.SHORT),
 }
 
 type ComponentProps = {
+  runtime: Props['runtime']
   onPressPrepare: () => void
   onPressPrintSelfChecking: () => void
   onPressPrintText: () => void
@@ -42,6 +45,7 @@ type ComponentProps = {
 }
 
 const Component: React.FC<ComponentProps> = ({
+  runtime,
   onPressPrepare,
   onPressPrintSelfChecking,
   onPressPrintText,
@@ -64,6 +68,7 @@ const Component: React.FC<ComponentProps> = ({
           <Text style={styles.sectionTitle}>
             @mitsuharu/react-native-sunmi-printer-library
           </Text>
+          <Text style={styles.runtimeLabel}>{runtime} example</Text>
           <Button text="[MUST] prepare" onPress={onPressPrepare} />
           <Button
             text="print Self-Checking"
@@ -96,7 +101,7 @@ const Component: React.FC<ComponentProps> = ({
   )
 }
 
-const Container: React.FC<Props> = () => {
+const Container: React.FC<Props> = ({ runtime }) => {
   const onPressPrepare = useCallback(async () => {
     try {
       const isPrepared: boolean = await SunmiPrinterLibrary.prepare()
@@ -490,6 +495,7 @@ const Container: React.FC<Props> = () => {
 
   return (
     <Component
+      runtime={runtime}
       {...{
         onPressPrepare,
         onPressPrintSelfChecking,
@@ -526,5 +532,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     color: '#000000',
+  },
+  runtimeLabel: {
+    marginBottom: 12,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#555555',
   },
 })

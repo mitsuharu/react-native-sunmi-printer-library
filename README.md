@@ -17,6 +17,8 @@ I validate it with GMS enable and developable SUNMI V2 PRO and SUNMI V2s as foll
 
 ## Installation
 
+### React Native
+
 ```shell
 npm install @mitsuharu/react-native-sunmi-printer-library
 ```
@@ -27,9 +29,30 @@ or
 yarn add @mitsuharu/react-native-sunmi-printer-library
 ```
 
+### Expo
+
+This package contains custom Android native code, so it does not work in Expo
+Go. Install it in an Expo project that uses a development build:
+
+```shell
+yarn expo install expo-dev-client @mitsuharu/react-native-sunmi-printer-library
+```
+
+Regenerate the Android project after installing or updating the package, then
+compile and install it locally. An EAS Build or Expo account is not required:
+
+```shell
+yarn expo prebuild --platform android --clean
+yarn expo run:android --device
+```
+
+See [Expo's development build documentation](https://docs.expo.dev/develop/development-builds/introduction/)
+for details. This library supports Android only.
+
 ## Usage
 
-You see `example` directory for details.
+See the React Native example in `example/` or the Expo example in
+`example-expo/` for details.
 
 ### prepare
 
@@ -169,19 +192,62 @@ yarn
 yarn example android
 ```
 
-### example
+### Examples
 
-- Example supports React Native 0.74.
-- It uses this example to develop this library.
+- `example/` is the bare React Native example and uses React Native 0.87.
+- `example-expo/` is the Expo example and uses Expo SDK 57 with React Native
+  0.86.
+- Both examples reuse the same printer operation screen.
+
+The Expo example uses local Continuous Native Generation. It does not use EAS
+Build or any other cloud build service. Generate a fresh Android project with
+Expo Prebuild and build the APK with the generated Gradle Wrapper:
+
+```shell
+yarn example:expo build:android
+```
+
+The generated `example-expo/android/` directory is intentionally ignored. Do
+not edit it directly; update the Expo app configuration or a config plugin and
+run Prebuild again.
+
+#### Development builds on Android 7.x
+
+The Expo SDK 57 development launcher uses `java.time.Duration` during startup.
+Without compatibility handling, the APK cannot resolve this API below Android
+8.0 and crashes at startup on Android 7.1 devices such as the SUNMI V2 PRO:
+
+```text
+java.lang.NoClassDefFoundError: Failed resolution of: Ljava/time/Duration;
+```
+
+The Expo example registers
+`example-expo/plugins/withAndroidCoreLibraryDesugaring.js` as a config plugin
+in `app.json`. During Prebuild, it enables core library desugaring and adds
+`desugar_jdk_libs`, allowing the development build to start on Android 7.x.
+
+Do not add this configuration directly to the generated
+`example-expo/android/app/build.gradle`; `expo prebuild --clean` will replace
+that file. Keep native configuration in the config plugin instead. See the
+[Expo config plugin documentation](https://docs.expo.dev/config-plugins/introduction/)
+and [Android Java API desugaring documentation](https://developer.android.com/studio/write/java8-support)
+for more information.
+
+To start the Expo development server for an installed development build:
+
+```shell
+yarn example:expo start
+```
 
 ### Guides
 
 - It creates Pull Requests to be merged into the develop branch.
 - I recommend that add or fix test, readme and example.
 
-### リリース
+### Release
 
-（管理者のみ）develop ブランチのバージョン更新して、main ブランチへPRを作ってください。マージを行うと、自動で npm にリリースされます。
+Maintainers only: update the version on the `develop` branch and create a pull
+request to `main`. Merging it publishes the package to npm automatically.
 
 ## License
 
