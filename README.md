@@ -17,6 +17,8 @@ I validate it with GMS enable and developable SUNMI V2 PRO and SUNMI V2s as foll
 
 ## Installation
 
+### React Native
+
 ```shell
 npm install @mitsuharu/react-native-sunmi-printer-library
 ```
@@ -26,6 +28,26 @@ or
 ```shell
 yarn add @mitsuharu/react-native-sunmi-printer-library
 ```
+
+### Expo
+
+This package contains custom Android native code, so it does not work in Expo
+Go. Install it in an Expo project that uses a development build:
+
+```shell
+yarn expo install expo-dev-client @mitsuharu/react-native-sunmi-printer-library
+```
+
+Regenerate the Android project after installing or updating the package, then
+compile and install it locally. An EAS Build or Expo account is not required:
+
+```shell
+yarn expo prebuild --platform android --clean
+yarn expo run:android --device
+```
+
+See [Expo's development build documentation](https://docs.expo.dev/develop/development-builds/introduction/)
+for details. This library supports Android only.
 
 ## Usage
 
@@ -189,27 +211,27 @@ The generated `example-expo/android/` directory is intentionally ignored. Do
 not edit it directly; update the Expo app configuration or a config plugin and
 run Prebuild again.
 
-#### Android 7.xでのdevelopment buildの注意点
+#### Development builds on Android 7.x
 
-Expo SDK 57の `expo-dev-client` はdevelopment launcherの起動時に
-`java.time.Duration` を使用します。このAPIをそのまま含むAPKはAndroid 8.0
-未満で利用できないため、SUNMI V2 PROなどのAndroid 7.1端末では次の例外で
-起動直後に停止します。
+The Expo SDK 57 development launcher uses `java.time.Duration` during startup.
+Without compatibility handling, the APK cannot resolve this API below Android
+8.0 and crashes at startup on Android 7.1 devices such as the SUNMI V2 PRO:
 
 ```text
 java.lang.NoClassDefFoundError: Failed resolution of: Ljava/time/Duration;
 ```
 
-このexampleでは
-`example-expo/plugins/withAndroidCoreLibraryDesugaring.js` を `app.json` の
-config pluginとして登録し、Prebuild時にcore library desugaringと
-`desugar_jdk_libs` を設定しています。これによりAndroid 7.xでも
-development buildを起動できます。この設定を生成後の
-`example-expo/android/app/build.gradle` へ直接追加すると、次回の
-`expo prebuild --clean` で消えるため、必ずconfig plugin側を保守してください。
-詳細は[Expoのconfig plugin](https://docs.expo.dev/config-plugins/introduction/)
-および[AndroidのJava API desugaring](https://developer.android.com/studio/write/java8-support?hl=ja)
-のドキュメントを参照してください。
+The Expo example registers
+`example-expo/plugins/withAndroidCoreLibraryDesugaring.js` as a config plugin
+in `app.json`. During Prebuild, it enables core library desugaring and adds
+`desugar_jdk_libs`, allowing the development build to start on Android 7.x.
+
+Do not add this configuration directly to the generated
+`example-expo/android/app/build.gradle`; `expo prebuild --clean` will replace
+that file. Keep native configuration in the config plugin instead. See the
+[Expo config plugin documentation](https://docs.expo.dev/config-plugins/introduction/)
+and [Android Java API desugaring documentation](https://developer.android.com/studio/write/java8-support)
+for more information.
 
 To start the Expo development server for an installed development build:
 
@@ -222,9 +244,10 @@ yarn example:expo start
 - It creates Pull Requests to be merged into the develop branch.
 - I recommend that add or fix test, readme and example.
 
-### リリース
+### Release
 
-（管理者のみ）develop ブランチのバージョン更新して、main ブランチへPRを作ってください。マージを行うと、自動で npm にリリースされます。
+Maintainers only: update the version on the `develop` branch and create a pull
+request to `main`. Merging it publishes the package to npm automatically.
 
 ## License
 
