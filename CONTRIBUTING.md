@@ -99,8 +99,9 @@ is exactly the package version (for example, `2.5.0`), publishes to npm, and
 creates the corresponding GitHub release. A push or pull request to `main` does
 not publish automatically.
 
-The npm package should use npm trusted publishing for `.github/workflows/publish.yml`.
-`NPM_TOKEN` remains supported by the workflow as a migration fallback.
+The npm package uses npm trusted publishing for `.github/workflows/publish.yml`.
+The workflow authenticates through GitHub Actions OIDC and does not use a
+long-lived npm access token.
 
 ### Scripts
 
