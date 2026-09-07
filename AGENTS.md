@@ -29,6 +29,7 @@
 yarn typecheck
 yarn lint
 yarn test
+yarn test:android
 yarn example build:android
 yarn example:expo build:android
 ```

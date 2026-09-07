@@ -69,6 +69,9 @@ jobs:
           corepack enable
           yarn install --immutable
 
+      - name: Test Android library
+        run: yarn test:android
+
       - name: Build Android example
         run: yarn example build:android
 
