@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Sunmi Printer Expo Example",
+    "slug": "sunmi-printer-expo-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": ["android"],
+    "android": {
+      "package": "com.sunmiprinterlibraryexpoexample"
+    },
+    "plugins": ["expo-dev-client", "./plugins/withAndroidCoreLibraryDesugaring"]
+  }
+}

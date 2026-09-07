@@ -27,11 +27,12 @@
   ],
   "scripts": {
     "example": "yarn workspace react-native-sunmi-printer-library-example",
+    "example:expo": "yarn workspace react-native-sunmi-printer-library-expo-example",
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "biome check",
     "lint-force": "biome check --write",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build example-expo/android example-expo/ios lib",
     "prepare": "bob build",
     "release": "release-it"
   },
@@ -75,7 +76,8 @@
     "react-native": "*"
   },
   "workspaces": [
-    "example"
+    "example",
+    "example-expo"
   ],
   "packageManager": "yarn@4.18.0",
   "engines": {
