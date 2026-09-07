@@ -67,7 +67,7 @@
     "react-native": "0.87.1",
     "react-native-builder-bob": "^0.43.0",
     "react-test-renderer": "19.2.3",
-    "release-it": "^17.6.0",
+    "release-it": "^21.0.2",
     "turbo": "^2.0.7",
     "typescript": "^6.0.3"
   },
