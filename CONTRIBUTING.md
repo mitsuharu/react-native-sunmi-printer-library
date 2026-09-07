@@ -89,13 +89,18 @@ Our pre-commit hooks verify that the linter and tests pass when committing.
 
 ### Publishing to npm
 
-We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
+Package publishing is restricted to maintainers. Prepare a release by changing
+the version in `package.json` in a pull request against `main`. After merging the
+pull request, manually run the **Release to npm** workflow with the same version.
 
-To publish new versions, run the following:
+The workflow always checks out `main` and rejects a version that differs from
+`package.json`. It then verifies and builds the package, creates a tag whose name
+is exactly the package version (for example, `2.5.0`), publishes to npm, and
+creates the corresponding GitHub release. A push or pull request to `main` does
+not publish automatically.
 
-```sh
-yarn release
-```
+The npm package should use npm trusted publishing for `.github/workflows/publish.yml`.
+`NPM_TOKEN` remains supported by the workflow as a migration fallback.
 
 ### Scripts
 

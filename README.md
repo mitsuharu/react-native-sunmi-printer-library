@@ -241,13 +241,16 @@ yarn example:expo start
 
 ### Guides
 
-- It creates Pull Requests to be merged into the develop branch.
+- Create Pull Requests against the `main` branch.
 - I recommend that add or fix test, readme and example.
 
 ### Release
 
-Maintainers only: update the version on the `develop` branch and create a pull
-request to `main`. Merging it publishes the package to npm automatically.
+Maintainers only: update the version in `package.json` in a pull request against
+`main`. After the pull request is merged and CI succeeds, run the **Release to
+npm** workflow from the Actions tab and enter that exact version. The workflow
+builds and verifies the package, creates a matching tag and GitHub release, and
+publishes the package to npm. Merging into `main` never publishes a package.
 
 ## License
 

@@ -34,8 +34,7 @@
     "lint": "biome check",
     "lint-force": "biome check --write",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build example-expo/android example-expo/ios lib",
-    "prepare": "bob build",
-    "release": "release-it"
+    "prepare": "bob build"
   },
   "keywords": [
     "react-native",
@@ -57,7 +56,6 @@
     "@biomejs/biome": "^2.5.6",
     "@react-native/babel-preset": "0.87.1",
     "@react-native/jest-preset": "0.87.1",
-    "@release-it/conventional-changelog": "^8.0.1",
     "@types/jest": "^29.5.12",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
@@ -68,7 +66,6 @@
     "react-native": "0.87.1",
     "react-native-builder-bob": "^0.43.0",
     "react-test-renderer": "19.2.3",
-    "release-it": "^17.6.0",
     "turbo": "^2.0.7",
     "typescript": "^6.0.3"
   },
@@ -90,23 +87,6 @@
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
     ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
   },
   "prettier": {
     "quoteProps": "consistent",
