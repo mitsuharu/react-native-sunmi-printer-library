@@ -30,11 +30,15 @@ yarn typecheck
 yarn lint
 yarn test
 yarn test:android
+yarn example bundle:android
+yarn example:expo bundle:android
 yarn example build:android
 yarn example:expo build:android
 ```
 
 2つのAndroid exampleのビルドでは、`armeabi-v7a` と `arm64-v8a` 向けに `assembleDebug` を実行します。この検証で確認できるのはコンパイルとリンクまでです。プリンターの実動作は、対応するSUNMI端末で別途確認します。
+
+`assembleDebug` はJSをバンドルしないため、AndroidビルドではMetroとBabelを一切実行しません。Babel、Metro、JS依存関係を変更したときは、2つの `bundle:android` でJSバンドルまで確認します。
 
 ## Expo exampleの開発
 
