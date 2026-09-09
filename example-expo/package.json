@@ -9,6 +9,7 @@
     "doctor": "expo-doctor",
     "typecheck": "tsc --noEmit",
     "prebuild:android": "expo prebuild --platform android --clean --no-install",
+    "bundle:android": "expo export --platform android --output-dir build/export --clear",
     "build:android:native": "cd android && NODE_ENV=development ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=armeabi-v7a,arm64-v8a",
     "build:android": "yarn prebuild:android && yarn build:android:native"
   },

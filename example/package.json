@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "echo 'iOS is not supported in this project.' && exit 1",
     "start": "react-native start",
+    "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output build/index.android.bundle --assets-dest build",
     "build:android": "cd android && ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=armeabi-v7a,arm64-v8a",
     "build:ios": "cd ios && xcodebuild -workspace SunmiPrinterLibraryExample.xcworkspace -scheme SunmiPrinterLibraryExample -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO"
   },
