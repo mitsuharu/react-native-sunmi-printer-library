@@ -11,11 +11,36 @@ updates:
     open-pull-requests-limit: 10
     schedule:
       interval: 'weekly'
+    # 互換性を揃えて更新する必要がある依存関係をまとめます。
+    # パターンは前方一致ではないため、`react-native` のような完全一致は
+    # `react-native-safe-area-context` を巻き込みません。
     groups:
-      update-textlint:
+      react-native:
         patterns:
-          - 'textlint'
-          - 'textlint-*'
+          - 'react-native'
+          - '@react-native/*'
+          - '@react-native-community/*'
+      react:
+        patterns:
+          - 'react'
+          - 'react-test-renderer'
+          - '@types/react'
+          - '@types/react-test-renderer'
+      expo:
+        patterns:
+          - 'expo'
+          - 'expo-*'
+          - '@expo/*'
+      jest:
+        patterns:
+          - 'jest'
+          - 'jest-*'
+          - '@jest/*'
+          - 'babel-jest'
+          - '@types/jest'
+      babel:
+        patterns:
+          - '@babel/*'
     # React Nativeが対応するまでBabelのメジャー更新を保留します。
     # @react-native/babel-preset は @babel/core ^7 に依存しており、
     # exampleのBabelはReact Nativeのテンプレート由来の直接依存です。
