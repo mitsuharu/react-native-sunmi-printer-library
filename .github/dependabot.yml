@@ -16,6 +16,16 @@ updates:
         patterns:
           - 'textlint'
           - 'textlint-*'
+    # React Nativeが対応するまでBabelのメジャー更新を保留します。
+    # @react-native/babel-preset は @babel/core ^7 に依存しており、
+    # exampleのBabelはReact Nativeのテンプレート由来の直接依存です。
+    ignore:
+      - dependency-name: '@babel/core'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@babel/preset-env'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@babel/runtime'
+        update-types: ['version-update:semver-major']
     cooldown:
       default-days: 7
   - package-ecosystem: 'github-actions'
