@@ -8746,23 +8746,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:^5.5.2":
+"react-native-safe-area-context@npm:^5.5.2, react-native-safe-area-context@npm:~5.9.1":
   version: 5.9.1
   resolution: "react-native-safe-area-context@npm:5.9.1"
   peerDependencies:
     react: "*"
     react-native: "*"
   checksum: 10c0/ffe37c7d6ebd412673cb3042b370b2d2551b3ba32d73c51246fbd4f01bb6374ff3ec2511c96a55f62e895758ae645ac372e876fd93c690889cfd27a6daa4e389
-  languageName: node
-  linkType: hard
-
-"react-native-safe-area-context@npm:~5.7.0":
-  version: 5.7.0
-  resolution: "react-native-safe-area-context@npm:5.7.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/c3799e17321b41df1e0a10492c98472f8f8225ef0bbaf8146c4a9acb9519aae9ac11429059143c215e4402c2808e8445274850a339f8477522ded2461e18da80
   languageName: node
   linkType: hard
 
@@ -8809,7 +8799,7 @@ __metadata:
     expo-status-bar: "npm:~57.0.1"
     react: "npm:19.2.8"
     react-native: "npm:0.86.3"
-    react-native-safe-area-context: "npm:~5.7.0"
+    react-native-safe-area-context: "npm:~5.9.1"
     typescript: "npm:~6.0.3"
   languageName: unknown
   linkType: soft
