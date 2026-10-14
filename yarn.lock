@@ -2489,7 +2489,7 @@ __metadata:
     "@types/jest": "npm:^29.5.12"
     "@types/react": "npm:^19.2.0"
     "@types/react-test-renderer": "npm:^19.1.0"
-    agent-device: "npm:0.21.17"
+    agent-device: "npm:0.21.23"
     del-cli: "npm:^5.1.0"
     jest: "npm:^29.7.0"
     react: "npm:19.2.8"
@@ -3407,9 +3407,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"agent-device@npm:0.21.17":
-  version: 0.21.17
-  resolution: "agent-device@npm:0.21.17"
+"agent-device@npm:0.21.23":
+  version: 0.21.23
+  resolution: "agent-device@npm:0.21.23"
   peerDependencies:
     ai: ^6.0.0 || ^7.0.0
   peerDependenciesMeta:
@@ -3417,7 +3417,7 @@ __metadata:
       optional: true
   bin:
     agent-device: bin/agent-device.mjs
-  checksum: 10c0/cd7ffcfa26a875db1aa914f5babdf075491ed017b908bec2fe584b3cb08a7b9dff41c86dc213d8e145741de84e5c52b120bda0c1dbde1c6c6ae1bfcf5d1c327e
+  checksum: 10c0/6b8f9ed828d15a26a938a8cbccb757eea2bb40ad644051677d73f25cd4d1b8a49d75c6c37ec8ad6dd4fea3f815c207f73837ce37089448151aa4ea0ea3e0d7f0
   languageName: node
   linkType: hard
 
